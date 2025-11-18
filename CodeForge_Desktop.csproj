@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <None Include="Resources\magnifying-glass.png" />
     <None Include="Resources\chart.png" />
     <None Include="Resources\wall-clock %281%29.png" />
     <None Include="Resources\check-mark %281%29.png" />
