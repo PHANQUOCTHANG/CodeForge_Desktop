@@ -99,7 +99,7 @@
             this.btnCaiDat.ForeColor = System.Drawing.Color.White;
             this.btnCaiDat.Location = new System.Drawing.Point(0, 145);
             this.btnCaiDat.Name = "btnCaiDat";
-            this.btnCaiDat.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
+            this.btnCaiDat.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.btnCaiDat.Size = new System.Drawing.Size(240, 45);
             this.btnCaiDat.TabIndex = 4;
             this.btnCaiDat.Text = "⚙  Cài đặt";
@@ -118,7 +118,7 @@
             this.btnLichSuNopBai.ForeColor = System.Drawing.Color.White;
             this.btnLichSuNopBai.Location = new System.Drawing.Point(0, 100);
             this.btnLichSuNopBai.Name = "btnLichSuNopBai";
-            this.btnLichSuNopBai.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
+            this.btnLichSuNopBai.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.btnLichSuNopBai.Size = new System.Drawing.Size(240, 45);
             this.btnLichSuNopBai.TabIndex = 3;
             this.btnLichSuNopBai.Text = "🕐  Lịch sử nộp bài";
@@ -137,7 +137,7 @@
             this.btnDanhSachBaiTap.ForeColor = System.Drawing.Color.White;
             this.btnDanhSachBaiTap.Location = new System.Drawing.Point(0, 55);
             this.btnDanhSachBaiTap.Name = "btnDanhSachBaiTap";
-            this.btnDanhSachBaiTap.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
+            this.btnDanhSachBaiTap.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.btnDanhSachBaiTap.Size = new System.Drawing.Size(240, 45);
             this.btnDanhSachBaiTap.TabIndex = 2;
             this.btnDanhSachBaiTap.Text = "📋  Danh sách bài tập";
@@ -156,7 +156,7 @@
             this.btnTrangChu.ForeColor = System.Drawing.Color.White;
             this.btnTrangChu.Location = new System.Drawing.Point(0, 10);
             this.btnTrangChu.Name = "btnTrangChu";
-            this.btnTrangChu.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
+            this.btnTrangChu.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.btnTrangChu.Size = new System.Drawing.Size(240, 45);
             this.btnTrangChu.TabIndex = 1;
             this.btnTrangChu.Text = "🏠  Trang chủ";
