@@ -16,5 +16,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         {
             InitializeComponent();
         }
+
+        private void ucStudentDashboard_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

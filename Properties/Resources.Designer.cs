@@ -63,6 +63,26 @@ namespace CodeForge_Desktop.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap chart {
+            get {
+                object obj = ResourceManager.GetObject("chart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap check_mark__1_ {
+            get {
+                object obj = ResourceManager.GetObject("check-mark (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap group {
             get {
                 object obj = ResourceManager.GetObject("group", resourceCulture);
@@ -116,6 +136,16 @@ namespace CodeForge_Desktop.Properties {
         internal static System.Drawing.Bitmap trend__2_ {
             get {
                 object obj = ResourceManager.GetObject("trend (2)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap wall_clock__1_ {
+            get {
+                object obj = ResourceManager.GetObject("wall-clock (1)", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
