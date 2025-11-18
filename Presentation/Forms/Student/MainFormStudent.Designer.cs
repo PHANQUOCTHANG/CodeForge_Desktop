@@ -72,7 +72,6 @@
             this.btnDangXuat.Size = new System.Drawing.Size(240, 55);
             this.btnDangXuat.TabIndex = 5;
             this.btnDangXuat.Text = "Đăng xuất";
-            this.btnDangXuat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDangXuat.UseVisualStyleBackColor = false;
             // 
             // pnlMenu

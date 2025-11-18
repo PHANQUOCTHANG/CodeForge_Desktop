@@ -30,7 +30,6 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.lblDashboardTitle = new System.Windows.Forms.Label();
             this.pnlStats = new System.Windows.Forms.Panel();
             this.tblStats = new System.Windows.Forms.TableLayoutPanel();
             this.cardAverage = new System.Windows.Forms.Panel();
@@ -75,17 +74,6 @@
             this.pnlActions.SuspendLayout();
             this.SuspendLayout();
             // 
-            // lblDashboardTitle
-            // 
-            this.lblDashboardTitle.AutoSize = true;
-            this.lblDashboardTitle.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDashboardTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(33)))), ((int)(((byte)(33)))));
-            this.lblDashboardTitle.Location = new System.Drawing.Point(16, 0);
-            this.lblDashboardTitle.Name = "lblDashboardTitle";
-            this.lblDashboardTitle.Size = new System.Drawing.Size(220, 31);
-            this.lblDashboardTitle.TabIndex = 0;
-            this.lblDashboardTitle.Text = "Student Dashboard";
-            // 
             // pnlStats
             // 
             this.pnlStats.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -94,7 +82,7 @@
             this.pnlStats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlStats.Controls.Add(this.tblStats);
             this.pnlStats.Controls.Add(this.lblStatsTitle);
-            this.pnlStats.Location = new System.Drawing.Point(25, 34);
+            this.pnlStats.Location = new System.Drawing.Point(25, 0);
             this.pnlStats.Name = "pnlStats";
             this.pnlStats.Size = new System.Drawing.Size(1050, 193);
             this.pnlStats.TabIndex = 1;
@@ -114,6 +102,7 @@
             this.tblStats.Controls.Add(this.cardTotal, 0, 0);
             this.tblStats.Location = new System.Drawing.Point(15, 50);
             this.tblStats.Name = "tblStats";
+            this.tblStats.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
             this.tblStats.RowCount = 1;
             this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblStats.Size = new System.Drawing.Size(1020, 120);
@@ -127,10 +116,10 @@
             this.cardAverage.Controls.Add(this.lblValAvg);
             this.cardAverage.Controls.Add(this.lblDescAvg);
             this.cardAverage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cardAverage.Location = new System.Drawing.Point(768, 3);
+            this.cardAverage.Location = new System.Drawing.Point(769, 3);
             this.cardAverage.Margin = new System.Windows.Forms.Padding(3, 3, 15, 3);
             this.cardAverage.Name = "cardAverage";
-            this.cardAverage.Size = new System.Drawing.Size(237, 114);
+            this.cardAverage.Size = new System.Drawing.Size(236, 114);
             this.cardAverage.TabIndex = 3;
             // 
             // lblIconAvg
@@ -140,7 +129,7 @@
             this.lblIconAvg.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(39)))), ((int)(((byte)(176)))));
             this.lblIconAvg.Location = new System.Drawing.Point(3, 0);
             this.lblIconAvg.Name = "lblIconAvg";
-            this.lblIconAvg.Size = new System.Drawing.Size(64, 46);
+            this.lblIconAvg.Size = new System.Drawing.Size(62, 44);
             this.lblIconAvg.TabIndex = 2;
             this.lblIconAvg.Text = "📈";
             // 
@@ -163,7 +152,7 @@
             this.lblDescAvg.Location = new System.Drawing.Point(0, 87);
             this.lblDescAvg.Name = "lblDescAvg";
             this.lblDescAvg.Padding = new System.Windows.Forms.Padding(15, 0, 0, 5);
-            this.lblDescAvg.Size = new System.Drawing.Size(235, 25);
+            this.lblDescAvg.Size = new System.Drawing.Size(234, 25);
             this.lblDescAvg.TabIndex = 0;
             this.lblDescAvg.Text = "Điểm trung bình";
             this.lblDescAvg.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -176,10 +165,10 @@
             this.cardInProgress.Controls.Add(this.lblValProg);
             this.cardInProgress.Controls.Add(this.lblDescProg);
             this.cardInProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cardInProgress.Location = new System.Drawing.Point(513, 3);
+            this.cardInProgress.Location = new System.Drawing.Point(517, 3);
             this.cardInProgress.Margin = new System.Windows.Forms.Padding(3, 3, 15, 3);
             this.cardInProgress.Name = "cardInProgress";
-            this.cardInProgress.Size = new System.Drawing.Size(237, 114);
+            this.cardInProgress.Size = new System.Drawing.Size(234, 114);
             this.cardInProgress.TabIndex = 2;
             // 
             // lblIconProg
@@ -189,7 +178,7 @@
             this.lblIconProg.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
             this.lblIconProg.Location = new System.Drawing.Point(3, -1);
             this.lblIconProg.Name = "lblIconProg";
-            this.lblIconProg.Size = new System.Drawing.Size(67, 46);
+            this.lblIconProg.Size = new System.Drawing.Size(64, 44);
             this.lblIconProg.TabIndex = 2;
             this.lblIconProg.Text = "⏰";
             // 
@@ -212,7 +201,7 @@
             this.lblDescProg.Location = new System.Drawing.Point(0, 87);
             this.lblDescProg.Name = "lblDescProg";
             this.lblDescProg.Padding = new System.Windows.Forms.Padding(15, 0, 0, 5);
-            this.lblDescProg.Size = new System.Drawing.Size(235, 25);
+            this.lblDescProg.Size = new System.Drawing.Size(232, 25);
             this.lblDescProg.TabIndex = 0;
             this.lblDescProg.Text = "Đang làm";
             this.lblDescProg.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -225,10 +214,10 @@
             this.cardCompleted.Controls.Add(this.lblValComp);
             this.cardCompleted.Controls.Add(this.lblDescComp);
             this.cardCompleted.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cardCompleted.Location = new System.Drawing.Point(258, 3);
+            this.cardCompleted.Location = new System.Drawing.Point(265, 3);
             this.cardCompleted.Margin = new System.Windows.Forms.Padding(3, 3, 15, 3);
             this.cardCompleted.Name = "cardCompleted";
-            this.cardCompleted.Size = new System.Drawing.Size(237, 114);
+            this.cardCompleted.Size = new System.Drawing.Size(234, 114);
             this.cardCompleted.TabIndex = 1;
             // 
             // lblIconComp
@@ -238,7 +227,7 @@
             this.lblIconComp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
             this.lblIconComp.Location = new System.Drawing.Point(9, -4);
             this.lblIconComp.Name = "lblIconComp";
-            this.lblIconComp.Size = new System.Drawing.Size(45, 46);
+            this.lblIconComp.Size = new System.Drawing.Size(44, 44);
             this.lblIconComp.TabIndex = 2;
             this.lblIconComp.Text = "✓";
             // 
@@ -261,7 +250,7 @@
             this.lblDescComp.Location = new System.Drawing.Point(0, 87);
             this.lblDescComp.Name = "lblDescComp";
             this.lblDescComp.Padding = new System.Windows.Forms.Padding(15, 0, 0, 5);
-            this.lblDescComp.Size = new System.Drawing.Size(235, 25);
+            this.lblDescComp.Size = new System.Drawing.Size(232, 25);
             this.lblDescComp.TabIndex = 0;
             this.lblDescComp.Text = "Đã hoàn thành";
             this.lblDescComp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -274,10 +263,10 @@
             this.cardTotal.Controls.Add(this.lblValTotal);
             this.cardTotal.Controls.Add(this.lblDescTotal);
             this.cardTotal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cardTotal.Location = new System.Drawing.Point(3, 3);
+            this.cardTotal.Location = new System.Drawing.Point(13, 3);
             this.cardTotal.Margin = new System.Windows.Forms.Padding(3, 3, 15, 3);
             this.cardTotal.Name = "cardTotal";
-            this.cardTotal.Size = new System.Drawing.Size(237, 114);
+            this.cardTotal.Size = new System.Drawing.Size(234, 114);
             this.cardTotal.TabIndex = 0;
             // 
             // lblIconTotal
@@ -287,7 +276,7 @@
             this.lblIconTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.lblIconTotal.Location = new System.Drawing.Point(10, 0);
             this.lblIconTotal.Name = "lblIconTotal";
-            this.lblIconTotal.Size = new System.Drawing.Size(60, 46);
+            this.lblIconTotal.Size = new System.Drawing.Size(57, 44);
             this.lblIconTotal.TabIndex = 2;
             this.lblIconTotal.Text = "📄";
             // 
@@ -310,7 +299,7 @@
             this.lblDescTotal.Location = new System.Drawing.Point(0, 87);
             this.lblDescTotal.Name = "lblDescTotal";
             this.lblDescTotal.Padding = new System.Windows.Forms.Padding(15, 0, 0, 5);
-            this.lblDescTotal.Size = new System.Drawing.Size(235, 25);
+            this.lblDescTotal.Size = new System.Drawing.Size(232, 25);
             this.lblDescTotal.TabIndex = 0;
             this.lblDescTotal.Text = "Tổng số bài tập";
             this.lblDescTotal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -336,9 +325,9 @@
             this.pnlRecent.Controls.Add(this.dgvRecent);
             this.pnlRecent.Controls.Add(this.btnViewAll);
             this.pnlRecent.Controls.Add(this.lblRecentTitle);
-            this.pnlRecent.Location = new System.Drawing.Point(25, 260);
+            this.pnlRecent.Location = new System.Drawing.Point(25, 213);
             this.pnlRecent.Name = "pnlRecent";
-            this.pnlRecent.Size = new System.Drawing.Size(1050, 288);
+            this.pnlRecent.Size = new System.Drawing.Size(1050, 324);
             this.pnlRecent.TabIndex = 2;
             // 
             // dgvRecent
@@ -386,7 +375,7 @@
             this.dgvRecent.RowHeadersWidth = 51;
             this.dgvRecent.RowTemplate.Height = 40;
             this.dgvRecent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRecent.Size = new System.Drawing.Size(1020, 228);
+            this.dgvRecent.Size = new System.Drawing.Size(1020, 264);
             this.dgvRecent.TabIndex = 2;
             // 
             // colHash
@@ -462,7 +451,7 @@
             this.pnlActions.Controls.Add(this.btnActionHistory);
             this.pnlActions.Controls.Add(this.btnActionList);
             this.pnlActions.Controls.Add(this.lblActionsTitle);
-            this.pnlActions.Location = new System.Drawing.Point(25, 574);
+            this.pnlActions.Location = new System.Drawing.Point(25, 554);
             this.pnlActions.Name = "pnlActions";
             this.pnlActions.Size = new System.Drawing.Size(1050, 110);
             this.pnlActions.TabIndex = 3;
@@ -531,7 +520,6 @@
             this.Controls.Add(this.pnlActions);
             this.Controls.Add(this.pnlRecent);
             this.Controls.Add(this.pnlStats);
-            this.Controls.Add(this.lblDashboardTitle);
             this.Name = "ucStudentDashboard";
             this.Padding = new System.Windows.Forms.Padding(25);
             this.Size = new System.Drawing.Size(1100, 800);
@@ -552,13 +540,10 @@
             this.pnlActions.ResumeLayout(false);
             this.pnlActions.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label lblDashboardTitle;
         private System.Windows.Forms.Panel pnlStats;
         private System.Windows.Forms.Label lblStatsTitle;
         private System.Windows.Forms.TableLayoutPanel tblStats;

@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <None Include="Resources\export.png" />
     <None Include="Resources\user-interface.png" />
     <None Include="Resources\delete %283%29.png" />
     <None Include="Resources\magnifying-glass.png" />

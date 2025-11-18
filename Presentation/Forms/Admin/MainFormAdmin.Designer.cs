@@ -30,6 +30,7 @@
         {
             this.pnlSidebar = new System.Windows.Forms.Panel();
             this.pnlMenu = new System.Windows.Forms.Panel();
+            this.btnDangXuat = new System.Windows.Forms.Button();
             this.btnCaiDat = new System.Windows.Forms.Button();
             this.btnSystemLogs = new System.Windows.Forms.Button();
             this.btnQuanLyAssignments = new System.Windows.Forms.Button();
@@ -39,7 +40,6 @@
             this.lblAppName = new System.Windows.Forms.Label();
             this.lblLogo = new System.Windows.Forms.Label();
             this.pnlContent = new System.Windows.Forms.Panel();
-            this.btnDangXuat = new System.Windows.Forms.Button();
             this.pnlSidebar.SuspendLayout();
             this.pnlMenu.SuspendLayout();
             this.pnlLogo.SuspendLayout();
@@ -70,6 +70,24 @@
             this.pnlMenu.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.pnlMenu.Size = new System.Drawing.Size(250, 729);
             this.pnlMenu.TabIndex = 2;
+            // 
+            // btnDangXuat
+            // 
+            this.btnDangXuat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnDangXuat.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDangXuat.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnDangXuat.FlatAppearance.BorderSize = 0;
+            this.btnDangXuat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold);
+            this.btnDangXuat.ForeColor = System.Drawing.Color.White;
+            this.btnDangXuat.Location = new System.Drawing.Point(0, 674);
+            this.btnDangXuat.Name = "btnDangXuat";
+            this.btnDangXuat.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.btnDangXuat.Size = new System.Drawing.Size(250, 55);
+            this.btnDangXuat.TabIndex = 6;
+            this.btnDangXuat.Text = "Đăng xuất";
+            this.btnDangXuat.UseVisualStyleBackColor = false;
             // 
             // btnCaiDat
             // 
@@ -208,25 +226,6 @@
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(1532, 803);
             this.pnlContent.TabIndex = 1;
-            // 
-            // btnDangXuat
-            // 
-            this.btnDangXuat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.btnDangXuat.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDangXuat.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnDangXuat.FlatAppearance.BorderSize = 0;
-            this.btnDangXuat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold);
-            this.btnDangXuat.ForeColor = System.Drawing.Color.White;
-            this.btnDangXuat.Location = new System.Drawing.Point(0, 674);
-            this.btnDangXuat.Name = "btnDangXuat";
-            this.btnDangXuat.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
-            this.btnDangXuat.Size = new System.Drawing.Size(250, 55);
-            this.btnDangXuat.TabIndex = 6;
-            this.btnDangXuat.Text = "Đăng xuất";
-            this.btnDangXuat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDangXuat.UseVisualStyleBackColor = false;
             // 
             // MainFormAdmin
             // 
