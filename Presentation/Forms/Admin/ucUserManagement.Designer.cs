@@ -28,283 +28,302 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucUserManagement));
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.lblSummary = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.pnlTop = new System.Windows.Forms.Panel();
+            this.pnlSearchContainer = new System.Windows.Forms.Panel();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.lblSearchIcon = new System.Windows.Forms.Label();
+            this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnEdit = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.pnlFooter = new System.Windows.Forms.Panel();
+            this.lblSummary = new System.Windows.Forms.Label();
+            this.dgvUsers = new System.Windows.Forms.DataGridView();
+            this.colCheck = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUsername = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEmail = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRole = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCreated = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colActions = new System.Windows.Forms.DataGridViewImageColumn();
+            this.pnlTop.SuspendLayout();
+            this.pnlSearchContainer.SuspendLayout();
+            this.pnlButtons.SuspendLayout();
+            this.pnlFooter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).BeginInit();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // pnlTop
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(14, 88);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1316, 442);
-            this.tableLayoutPanel1.TabIndex = 8;
+            this.pnlTop.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.pnlTop.Controls.Add(this.pnlSearchContainer);
+            this.pnlTop.Controls.Add(this.pnlButtons);
+            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTop.Location = new System.Drawing.Point(0, 0);
+            this.pnlTop.Name = "pnlTop";
+            this.pnlTop.Padding = new System.Windows.Forms.Padding(10);
+            this.pnlTop.Size = new System.Drawing.Size(1100, 60);
+            this.pnlTop.TabIndex = 0;
             // 
-            // dataGridView1
+            // pnlSearchContainer
             // 
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column4,
-            this.Column5,
-            this.Column6});
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.EnableHeadersVisualStyles = false;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1310, 436);
-            this.dataGridView1.TabIndex = 0;
+            this.pnlSearchContainer.BackColor = System.Drawing.Color.White;
+            this.pnlSearchContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlSearchContainer.Controls.Add(this.txtSearch);
+            this.pnlSearchContainer.Controls.Add(this.lblSearchIcon);
+            this.pnlSearchContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlSearchContainer.Location = new System.Drawing.Point(290, 10);
+            this.pnlSearchContainer.Name = "pnlSearchContainer";
+            this.pnlSearchContainer.Padding = new System.Windows.Forms.Padding(5);
+            this.pnlSearchContainer.Size = new System.Drawing.Size(800, 40);
+            this.pnlSearchContainer.TabIndex = 1;
             // 
-            // Column1
+            // txtSearch
             // 
-            this.Column1.HeaderText = "ID";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
+            this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtSearch.ForeColor = System.Drawing.Color.Gray;
+            this.txtSearch.Location = new System.Drawing.Point(35, 5);
+            this.txtSearch.Multiline = true;
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(758, 28);
+            this.txtSearch.TabIndex = 1;
+            this.txtSearch.Text = "Tìm kiếm user...";
             // 
-            // Column2
+            // lblSearchIcon
             // 
-            this.Column2.HeaderText = "Username";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
+            this.lblSearchIcon.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblSearchIcon.Font = new System.Drawing.Font("Segoe UI Emoji", 12F);
+            this.lblSearchIcon.Location = new System.Drawing.Point(5, 5);
+            this.lblSearchIcon.Name = "lblSearchIcon";
+            this.lblSearchIcon.Size = new System.Drawing.Size(30, 28);
+            this.lblSearchIcon.TabIndex = 0;
+            this.lblSearchIcon.Text = "🔍";
+            this.lblSearchIcon.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // Column3
+            // pnlButtons
             // 
-            this.Column3.HeaderText = "Email";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
+            this.pnlButtons.Controls.Add(this.btnDelete);
+            this.pnlButtons.Controls.Add(this.btnEdit);
+            this.pnlButtons.Controls.Add(this.btnAdd);
+            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlButtons.Location = new System.Drawing.Point(10, 10);
+            this.pnlButtons.Name = "pnlButtons";
+            this.pnlButtons.Size = new System.Drawing.Size(280, 40);
+            this.pnlButtons.TabIndex = 0;
             // 
-            // Column4
+            // btnDelete
             // 
-            this.Column4.HeaderText = "Role";
-            this.Column4.MinimumWidth = 6;
-            this.Column4.Name = "Column4";
+            this.btnDelete.BackColor = System.Drawing.Color.White;
+            this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDelete.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnDelete.Location = new System.Drawing.Point(180, 3);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(90, 34);
+            this.btnDelete.TabIndex = 2;
+            this.btnDelete.Text = "🗑 Delete";
+            this.btnDelete.UseVisualStyleBackColor = false;
             // 
-            // Column5
+            // btnEdit
             // 
-            this.Column5.HeaderText = "Status";
-            this.Column5.MinimumWidth = 6;
-            this.Column5.Name = "Column5";
+            this.btnEdit.BackColor = System.Drawing.Color.White;
+            this.btnEdit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEdit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(110)))), ((int)(((byte)(253)))));
+            this.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEdit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnEdit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(110)))), ((int)(((byte)(253)))));
+            this.btnEdit.Location = new System.Drawing.Point(90, 3);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(80, 34);
+            this.btnEdit.TabIndex = 1;
+            this.btnEdit.Text = "📝 Edit";
+            this.btnEdit.UseVisualStyleBackColor = false;
             // 
-            // Column6
+            // btnAdd
             // 
-            this.Column6.HeaderText = "Created";
-            this.Column6.MinimumWidth = 6;
-            this.Column6.Name = "Column6";
+            this.btnAdd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(255)))), ((int)(((byte)(235)))));
+            this.btnAdd.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAdd.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdd.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnAdd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.btnAdd.Location = new System.Drawing.Point(0, 3);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(80, 34);
+            this.btnAdd.TabIndex = 0;
+            this.btnAdd.Text = "➕ Add";
+            this.btnAdd.UseVisualStyleBackColor = false;
             // 
-            // panel2
+            // pnlFooter
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.lblSummary);
-            this.panel2.Location = new System.Drawing.Point(14, 547);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1316, 49);
-            this.panel2.TabIndex = 0;
+            this.pnlFooter.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.pnlFooter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlFooter.Controls.Add(this.lblSummary);
+            this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlFooter.Location = new System.Drawing.Point(0, 660);
+            this.pnlFooter.Name = "pnlFooter";
+            this.pnlFooter.Size = new System.Drawing.Size(1100, 40);
+            this.pnlFooter.TabIndex = 1;
             // 
             // lblSummary
             // 
             this.lblSummary.AutoSize = true;
-            this.lblSummary.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblSummary.Location = new System.Drawing.Point(0, 0);
+            this.lblSummary.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblSummary.ForeColor = System.Drawing.Color.Gray;
+            this.lblSummary.Location = new System.Drawing.Point(10, 10);
             this.lblSummary.Name = "lblSummary";
-            this.lblSummary.Padding = new System.Windows.Forms.Padding(15);
-            this.lblSummary.Size = new System.Drawing.Size(336, 46);
-            this.lblSummary.TabIndex = 1;
-            this.lblSummary.Text = "Tổng số: 0 users | Students: 0 | Admins: 0 | Active: 0";
+            this.lblSummary.Size = new System.Drawing.Size(328, 20);
+            this.lblSummary.TabIndex = 0;
+            this.lblSummary.Text = "Tổng số: 7 users | Students: 5 | Admins: 2 | Active: 6";
             // 
-            // panel3
+            // dgvUsers
             // 
-            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.Controls.Add(this.btnAdd);
-            this.panel3.Controls.Add(this.button4);
-            this.panel3.Controls.Add(this.button5);
-            this.panel3.Controls.Add(this.panel4);
-            this.panel3.Controls.Add(this.pictureBox2);
-            this.panel3.Controls.Add(this.txtSearch);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1347, 70);
-            this.panel3.TabIndex = 9;
+            this.dgvUsers.AllowUserToAddRows = false;
+            this.dgvUsers.AllowUserToDeleteRows = false;
+            this.dgvUsers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvUsers.BackgroundColor = System.Drawing.Color.White;
+            this.dgvUsers.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvUsers.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvUsers.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvUsers.ColumnHeadersHeight = 40;
+            this.dgvUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCheck,
+            this.colId,
+            this.colUsername,
+            this.colEmail,
+            this.colRole,
+            this.colStatus,
+            this.colCreated,
+            this.colActions});
+            this.dgvUsers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvUsers.EnableHeadersVisualStyles = false;
+            this.dgvUsers.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dgvUsers.Location = new System.Drawing.Point(0, 60);
+            this.dgvUsers.Name = "dgvUsers";
+            this.dgvUsers.RowHeadersVisible = false;
+            this.dgvUsers.RowHeadersWidth = 51;
+            this.dgvUsers.RowTemplate.Height = 40;
+            this.dgvUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvUsers.Size = new System.Drawing.Size(1100, 600);
+            this.dgvUsers.TabIndex = 2;
             // 
-            // btnAdd
+            // colCheck
             // 
-            this.btnAdd.AutoSize = true;
-            this.btnAdd.BackColor = System.Drawing.Color.Gainsboro;
-            this.btnAdd.FlatAppearance.BorderColor = System.Drawing.Color.Lime;
-            this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.ForeColor = System.Drawing.Color.Black;
-            this.btnAdd.Image = ((System.Drawing.Image)(resources.GetObject("btnAdd.Image")));
-            this.btnAdd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAdd.Location = new System.Drawing.Point(7, 13);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(135, 37);
-            this.btnAdd.TabIndex = 9;
-            this.btnAdd.Text = "Add";
-            this.btnAdd.UseVisualStyleBackColor = false;
+            this.colCheck.FillWeight = 30F;
+            this.colCheck.HeaderText = "";
+            this.colCheck.MinimumWidth = 6;
+            this.colCheck.Name = "colCheck";
             // 
-            // button4
+            // colId
             // 
-            this.button4.AutoSize = true;
-            this.button4.BackColor = System.Drawing.Color.Gainsboro;
-            this.button4.FlatAppearance.BorderColor = System.Drawing.Color.Blue;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.ForeColor = System.Drawing.Color.Black;
-            this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
-            this.button4.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button4.Location = new System.Drawing.Point(144, 13);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(135, 37);
-            this.button4.TabIndex = 10;
-            this.button4.Text = "Edit";
-            this.button4.UseVisualStyleBackColor = false;
+            this.colId.FillWeight = 40F;
+            this.colId.HeaderText = "ID";
+            this.colId.MinimumWidth = 6;
+            this.colId.Name = "colId";
+            this.colId.ReadOnly = true;
             // 
-            // button5
+            // colUsername
             // 
-            this.button5.AutoSize = true;
-            this.button5.BackColor = System.Drawing.Color.Gainsboro;
-            this.button5.FlatAppearance.BorderColor = System.Drawing.Color.Red;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.ForeColor = System.Drawing.Color.Black;
-            this.button5.Image = ((System.Drawing.Image)(resources.GetObject("button5.Image")));
-            this.button5.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button5.Location = new System.Drawing.Point(281, 13);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(135, 37);
-            this.button5.TabIndex = 11;
-            this.button5.Text = "Delete";
-            this.button5.UseVisualStyleBackColor = false;
+            this.colUsername.FillWeight = 100F;
+            this.colUsername.HeaderText = "Username";
+            this.colUsername.MinimumWidth = 6;
+            this.colUsername.Name = "colUsername";
+            this.colUsername.ReadOnly = true;
             // 
-            // label1
+            // colEmail
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label1.Location = new System.Drawing.Point(7, 5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(18, 26);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "|";
+            this.colEmail.FillWeight = 150F;
+            this.colEmail.HeaderText = "Email";
+            this.colEmail.MinimumWidth = 6;
+            this.colEmail.Name = "colEmail";
+            this.colEmail.ReadOnly = true;
             // 
-            // panel4
+            // colRole
             // 
-            this.panel4.Controls.Add(this.label1);
-            this.panel4.Location = new System.Drawing.Point(418, 13);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(27, 37);
-            this.panel4.TabIndex = 12;
+            this.colRole.FillWeight = 80F;
+            this.colRole.HeaderText = "Role";
+            this.colRole.MinimumWidth = 6;
+            this.colRole.Name = "colRole";
+            this.colRole.ReadOnly = true;
             // 
-            // pictureBox2
+            // colStatus
             // 
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(462, 20);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(7);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(35, 27);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 13;
-            this.pictureBox2.TabStop = false;
+            this.colStatus.FillWeight = 80F;
+            this.colStatus.HeaderText = "Status";
+            this.colStatus.MinimumWidth = 6;
+            this.colStatus.Name = "colStatus";
+            this.colStatus.ReadOnly = true;
             // 
-            // txtSearch
+            // colCreated
             // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(500, 17);
-            this.txtSearch.Multiline = true;
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(835, 33);
-            this.txtSearch.TabIndex = 14;
+            this.colCreated.FillWeight = 100F;
+            this.colCreated.HeaderText = "Created";
+            this.colCreated.MinimumWidth = 6;
+            this.colCreated.Name = "colCreated";
+            this.colCreated.ReadOnly = true;
+            // 
+            // colActions
+            // 
+            this.colActions.FillWeight = 60F;
+            this.colActions.HeaderText = "Actions";
+            this.colActions.MinimumWidth = 6;
+            this.colActions.Name = "colActions";
+            this.colActions.ReadOnly = true;
             // 
             // ucUserManagement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.dgvUsers);
+            this.Controls.Add(this.pnlFooter);
+            this.Controls.Add(this.pnlTop);
             this.Name = "ucUserManagement";
-            this.Size = new System.Drawing.Size(1347, 722);
-            this.Load += new System.EventHandler(this.ucUserManagement_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.Size = new System.Drawing.Size(1100, 700);
+            this.pnlTop.ResumeLayout(false);
+            this.pnlSearchContainer.ResumeLayout(false);
+            this.pnlSearchContainer.PerformLayout();
+            this.pnlButtons.ResumeLayout(false);
+            this.pnlFooter.ResumeLayout(false);
+            this.pnlFooter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label lblSummary;
-        private System.Windows.Forms.Panel panel3;
+
+        private System.Windows.Forms.Panel pnlTop;
+        private System.Windows.Forms.Panel pnlButtons;
         private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Button btnEdit;
+        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Panel pnlSearchContainer;
         private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchIcon;
+        private System.Windows.Forms.Panel pnlFooter;
+        private System.Windows.Forms.Label lblSummary;
+        private System.Windows.Forms.DataGridView dgvUsers;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colCheck;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUsername;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEmail;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRole;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCreated;
+        private System.Windows.Forms.DataGridViewImageColumn colActions;
     }
 }
