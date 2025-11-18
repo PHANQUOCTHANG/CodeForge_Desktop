@@ -28,51 +28,51 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lblStatTotal = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.guna2PictureBox4 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.guna2PictureBox3 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.guna2PictureBox2 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.lblStatTotal = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label9 = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.label10 = new System.Windows.Forms.Label();
             this.dgvRecentProblems = new Guna.UI2.WinForms.Guna2DataGridView();
             this.colHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTenBaiTap = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDeadline = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrangThai = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDiem = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label10 = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.label11 = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnCaiDat = new Guna.UI2.WinForms.Guna2Button();
             this.btnDanhSachBaiTap = new Guna.UI2.WinForms.Guna2Button();
             this.btnLichSuNopBai = new Guna.UI2.WinForms.Guna2Button();
-            this.btnCaiDat = new Guna.UI2.WinForms.Guna2Button();
+            this.label11 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox4)).BeginInit();
+            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox3)).BeginInit();
+            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox2)).BeginInit();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).BeginInit();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -109,116 +109,8 @@
             this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 15);
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1390, 125);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1390, 154);
             this.tableLayoutPanel1.TabIndex = 1;
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.Gainsboro;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.lblStatTotal);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.guna2PictureBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 8);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(5);
-            this.panel1.Size = new System.Drawing.Size(341, 99);
-            this.panel1.TabIndex = 0;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Brown;
-            this.label2.Location = new System.Drawing.Point(91, 5);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(179, 31);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Tổng số bài tập";
-            // 
-            // lblStatTotal
-            // 
-            this.lblStatTotal.AutoSize = true;
-            this.lblStatTotal.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatTotal.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lblStatTotal.Location = new System.Drawing.Point(149, 43);
-            this.lblStatTotal.Name = "lblStatTotal";
-            this.lblStatTotal.Size = new System.Drawing.Size(52, 41);
-            this.lblStatTotal.TabIndex = 3;
-            this.lblStatTotal.Text = "00";
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Gainsboro;
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.guna2PictureBox2);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(350, 8);
-            this.panel2.Name = "panel2";
-            this.panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.panel2.Size = new System.Drawing.Size(341, 99);
-            this.panel2.TabIndex = 1;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.SeaGreen;
-            this.label3.Location = new System.Drawing.Point(149, 43);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(52, 41);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "00";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.LimeGreen;
-            this.label4.Location = new System.Drawing.Point(91, 5);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(172, 31);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Đã hoàn thành";
-            // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.Gainsboro;
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.Controls.Add(this.label5);
-            this.panel3.Controls.Add(this.label6);
-            this.panel3.Controls.Add(this.guna2PictureBox3);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(697, 8);
-            this.panel3.Name = "panel3";
-            this.panel3.Padding = new System.Windows.Forms.Padding(5);
-            this.panel3.Size = new System.Drawing.Size(341, 99);
-            this.panel3.TabIndex = 2;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.OrangeRed;
-            this.label5.Location = new System.Drawing.Point(149, 43);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(52, 41);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "00";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.Tomato;
-            this.label6.Location = new System.Drawing.Point(112, 5);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(117, 31);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "Đang làm";
             // 
             // panel4
             // 
@@ -231,7 +123,7 @@
             this.panel4.Location = new System.Drawing.Point(1044, 8);
             this.panel4.Name = "panel4";
             this.panel4.Padding = new System.Windows.Forms.Padding(5);
-            this.panel4.Size = new System.Drawing.Size(343, 99);
+            this.panel4.Size = new System.Drawing.Size(343, 128);
             this.panel4.TabIndex = 3;
             // 
             // label7
@@ -239,7 +131,7 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.SeaGreen;
-            this.label7.Location = new System.Drawing.Point(149, 43);
+            this.label7.Location = new System.Drawing.Point(1, 50);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(52, 41);
             this.label7.TabIndex = 3;
@@ -250,7 +142,7 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.LimeGreen;
-            this.label8.Location = new System.Drawing.Point(91, 5);
+            this.label8.Location = new System.Drawing.Point(2, 90);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(192, 31);
             this.label8.TabIndex = 2;
@@ -261,45 +153,153 @@
             this.guna2PictureBox4.BackColor = System.Drawing.Color.Transparent;
             this.guna2PictureBox4.Image = global::CodeForge_Desktop.Properties.Resources.chart;
             this.guna2PictureBox4.ImageRotate = 0F;
-            this.guna2PictureBox4.Location = new System.Drawing.Point(8, 19);
+            this.guna2PictureBox4.Location = new System.Drawing.Point(8, 8);
             this.guna2PictureBox4.Name = "guna2PictureBox4";
-            this.guna2PictureBox4.Size = new System.Drawing.Size(51, 65);
+            this.guna2PictureBox4.Size = new System.Drawing.Size(44, 39);
             this.guna2PictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.guna2PictureBox4.TabIndex = 0;
             this.guna2PictureBox4.TabStop = false;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.label5);
+            this.panel3.Controls.Add(this.label6);
+            this.panel3.Controls.Add(this.guna2PictureBox3);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(697, 8);
+            this.panel3.Name = "panel3";
+            this.panel3.Padding = new System.Windows.Forms.Padding(5);
+            this.panel3.Size = new System.Drawing.Size(341, 128);
+            this.panel3.TabIndex = 2;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.OrangeRed;
+            this.label5.Location = new System.Drawing.Point(8, 50);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(52, 41);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "00";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.Tomato;
+            this.label6.Location = new System.Drawing.Point(8, 90);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(117, 31);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Đang làm";
             // 
             // guna2PictureBox3
             // 
             this.guna2PictureBox3.BackColor = System.Drawing.Color.Transparent;
             this.guna2PictureBox3.Image = global::CodeForge_Desktop.Properties.Resources.wall_clock__1_;
             this.guna2PictureBox3.ImageRotate = 0F;
-            this.guna2PictureBox3.Location = new System.Drawing.Point(8, 28);
+            this.guna2PictureBox3.Location = new System.Drawing.Point(8, 4);
             this.guna2PictureBox3.Name = "guna2PictureBox3";
-            this.guna2PictureBox3.Size = new System.Drawing.Size(63, 47);
+            this.guna2PictureBox3.Size = new System.Drawing.Size(42, 43);
             this.guna2PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.guna2PictureBox3.TabIndex = 0;
             this.guna2PictureBox3.TabStop = false;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.guna2PictureBox2);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(350, 8);
+            this.panel2.Name = "panel2";
+            this.panel2.Padding = new System.Windows.Forms.Padding(5);
+            this.panel2.Size = new System.Drawing.Size(341, 128);
+            this.panel2.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.SeaGreen;
+            this.label3.Location = new System.Drawing.Point(12, 50);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(52, 41);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "00";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.LimeGreen;
+            this.label4.Location = new System.Drawing.Point(13, 90);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(172, 31);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Đã hoàn thành";
             // 
             // guna2PictureBox2
             // 
             this.guna2PictureBox2.BackColor = System.Drawing.Color.Transparent;
             this.guna2PictureBox2.Image = global::CodeForge_Desktop.Properties.Resources.check_mark__1_;
             this.guna2PictureBox2.ImageRotate = 0F;
-            this.guna2PictureBox2.Location = new System.Drawing.Point(-1, 5);
+            this.guna2PictureBox2.Location = new System.Drawing.Point(11, -1);
             this.guna2PictureBox2.Name = "guna2PictureBox2";
-            this.guna2PictureBox2.Size = new System.Drawing.Size(77, 79);
+            this.guna2PictureBox2.Size = new System.Drawing.Size(53, 55);
             this.guna2PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.guna2PictureBox2.TabIndex = 0;
             this.guna2PictureBox2.TabStop = false;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.lblStatTotal);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.guna2PictureBox1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 8);
+            this.panel1.Name = "panel1";
+            this.panel1.Padding = new System.Windows.Forms.Padding(5);
+            this.panel1.Size = new System.Drawing.Size(341, 128);
+            this.panel1.TabIndex = 0;
+            // 
+            // lblStatTotal
+            // 
+            this.lblStatTotal.AutoSize = true;
+            this.lblStatTotal.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatTotal.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lblStatTotal.Location = new System.Drawing.Point(8, 50);
+            this.lblStatTotal.Name = "lblStatTotal";
+            this.lblStatTotal.Size = new System.Drawing.Size(52, 41);
+            this.lblStatTotal.TabIndex = 3;
+            this.lblStatTotal.Text = "00";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.Brown;
+            this.label2.Location = new System.Drawing.Point(8, 90);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(179, 31);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Tổng số bài tập";
             // 
             // guna2PictureBox1
             // 
             this.guna2PictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.guna2PictureBox1.Image = global::CodeForge_Desktop.Properties.Resources.paper;
             this.guna2PictureBox1.ImageRotate = 0F;
-            this.guna2PictureBox1.Location = new System.Drawing.Point(8, 19);
+            this.guna2PictureBox1.Location = new System.Drawing.Point(13, 5);
             this.guna2PictureBox1.Name = "guna2PictureBox1";
-            this.guna2PictureBox1.Size = new System.Drawing.Size(61, 65);
+            this.guna2PictureBox1.Size = new System.Drawing.Size(47, 42);
             this.guna2PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.guna2PictureBox1.TabIndex = 0;
             this.guna2PictureBox1.TabStop = false;
@@ -335,52 +335,43 @@
             this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel6.Controls.Add(this.dgvRecentProblems);
             this.panel6.Controls.Add(this.label10);
-            this.panel6.Location = new System.Drawing.Point(6, 215);
+            this.panel6.Location = new System.Drawing.Point(6, 257);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(1387, 446);
+            this.panel6.Size = new System.Drawing.Size(1387, 423);
             this.panel6.TabIndex = 3;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(6, 14);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(136, 23);
-            this.label10.TabIndex = 4;
-            this.label10.Text = "Bài tập gần đây";
             // 
             // dgvRecentProblems
             // 
             this.dgvRecentProblems.AllowUserToAddRows = false;
             this.dgvRecentProblems.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle16.BackColor = System.Drawing.Color.White;
-            this.dgvRecentProblems.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.White;
+            this.dgvRecentProblems.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvRecentProblems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRecentProblems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
-            this.dgvRecentProblems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRecentProblems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            this.dgvRecentProblems.ColumnHeadersHeight = 18;
+            this.dgvRecentProblems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.dgvRecentProblems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colHash,
             this.colTenBaiTap,
             this.colDeadline,
             this.colTrangThai,
             this.colDiem});
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle18.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvRecentProblems.DefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvRecentProblems.DefaultCellStyle = dataGridViewCellStyle12;
             this.dgvRecentProblems.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvRecentProblems.Location = new System.Drawing.Point(3, 40);
             this.dgvRecentProblems.Name = "dgvRecentProblems";
@@ -401,7 +392,7 @@
             this.dgvRecentProblems.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.dgvRecentProblems.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgvRecentProblems.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
-            this.dgvRecentProblems.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRecentProblems.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.dgvRecentProblems.ThemeStyle.HeaderStyle.Height = 18;
             this.dgvRecentProblems.ThemeStyle.ReadOnly = true;
             this.dgvRecentProblems.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
@@ -452,6 +443,16 @@
             this.colDiem.Name = "colDiem";
             this.colDiem.ReadOnly = true;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(6, 14);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(136, 23);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Bài tập gần đây";
+            // 
             // panel7
             // 
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -461,16 +462,6 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(1396, 80);
             this.panel7.TabIndex = 5;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(6, 697);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(132, 23);
-            this.label11.TabIndex = 6;
-            this.label11.Text = "Thao tác nhanh";
             // 
             // tableLayoutPanel2
             // 
@@ -487,6 +478,21 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(516, 41);
             this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // btnCaiDat
+            // 
+            this.btnCaiDat.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnCaiDat.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnCaiDat.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnCaiDat.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnCaiDat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCaiDat.ForeColor = System.Drawing.Color.White;
+            this.btnCaiDat.Location = new System.Drawing.Point(415, 3);
+            this.btnCaiDat.Name = "btnCaiDat";
+            this.btnCaiDat.Size = new System.Drawing.Size(98, 35);
+            this.btnCaiDat.TabIndex = 2;
+            this.btnCaiDat.Text = "Cài đặt";
             // 
             // btnDanhSachBaiTap
             // 
@@ -520,20 +526,15 @@
             this.btnLichSuNopBai.TabIndex = 1;
             this.btnLichSuNopBai.Text = "Xem lịch sử làm bài";
             // 
-            // btnCaiDat
+            // label11
             // 
-            this.btnCaiDat.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnCaiDat.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnCaiDat.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnCaiDat.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnCaiDat.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCaiDat.ForeColor = System.Drawing.Color.White;
-            this.btnCaiDat.Location = new System.Drawing.Point(415, 3);
-            this.btnCaiDat.Name = "btnCaiDat";
-            this.btnCaiDat.Size = new System.Drawing.Size(98, 35);
-            this.btnCaiDat.TabIndex = 2;
-            this.btnCaiDat.Text = "Cài đặt";
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(6, 697);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(132, 23);
+            this.label11.TabIndex = 6;
+            this.label11.Text = "Thao tác nhanh";
             // 
             // ucStudentDashboard
             // 
@@ -550,17 +551,17 @@
             this.Size = new System.Drawing.Size(1396, 800);
             this.Load += new System.EventHandler(this.ucStudentDashboard_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox4)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox3)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox2)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
