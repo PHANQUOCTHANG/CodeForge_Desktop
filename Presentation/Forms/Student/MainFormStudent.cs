@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student
@@ -19,38 +13,75 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
         private void MainFormStudent_Load(object sender, EventArgs e)
         {
-            LoadUserControl(new ucStudentDashboard());
+            // Mặc định load Dashboard
+            btnTrangChu.PerformClick();
         }
+
         private void LoadUserControl(UserControl userControl)
         {
+            // Xóa control cũ (nếu muốn tiết kiệm bộ nhớ, hoặc giữ lại nếu muốn cache)
             pnlContent.Controls.Clear();
 
-            pnlContent.Controls.Add(userControl);
-
             userControl.Dock = DockStyle.Fill;
-
-            // Hiển thị nó
+            pnlContent.Controls.Add(userControl);
             userControl.BringToFront();
+        }
+
+        // Hàm helper để đổi màu nút đang chọn
+        private void SetActiveButton(Button activeButton)
+        {
+            // Reset màu các nút khác
+            foreach (Control ctrl in pnlMenu.Controls)
+            {
+                if (ctrl is Button btn)
+                {
+                    btn.BackColor = Color.Transparent;
+                    btn.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
+                }
+            }
+
+            // Set màu nút active
+            activeButton.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh nổi bật
+            activeButton.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         }
 
         private void btnTrangChu_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ucStudentDashboard());
+            SetActiveButton(btnTrangChu);
+            ShowDashboard();
         }
 
         private void btnDanhSachBaiTap_Click(object sender, EventArgs e)
         {
+            SetActiveButton(btnDanhSachBaiTap);
             LoadUserControl(new ucProblemList());
         }
 
         private void btnLichSuNopBai_Click(object sender, EventArgs e)
         {
+            SetActiveButton(btnLichSuNopBai);
             LoadUserControl(new ucSubmissions());
         }
 
         private void btnCaiDat_Click(object sender, EventArgs e)
         {
+            SetActiveButton(btnCaiDat);
+            // Giả sử có ucStudentSettings
             LoadUserControl(new ucStudentSettings());
         }
+
+        private void ShowDashboard()
+        {
+            var dashboard = new ucStudentDashboard();
+
+            // KẾT NỐI DÂY: Khi dashboard bắn sự kiện -> Gọi click của nút Sidebar tương ứng
+            // Điều này giúp tái sử dụng code chuyển trang và đổi màu nút
+            dashboard.ProblemListClicked += (s, args) => btnDanhSachBaiTap.PerformClick();
+            dashboard.SubmissionsClicked += (s, args) => btnLichSuNopBai.PerformClick();
+            dashboard.SettingsClicked += (s, args) => btnCaiDat.PerformClick();
+
+            LoadUserControl(dashboard);
+        }
+
     }
 }
