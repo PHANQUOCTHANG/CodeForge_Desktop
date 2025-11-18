@@ -33,8 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
+      <HintPath>packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,14 +52,113 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Presentation\Forms\Admin\MainFormAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\MainFormAdmin.Designer.cs">
+      <DependentUpon>MainFormAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminDashboard.Designer.cs">
+      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminSettings.Designer.cs">
+      <DependentUpon>ucAdminSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucProblemManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucProblemManagement.Designer.cs">
+      <DependentUpon>ucProblemManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucSystemLogs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucSystemLogs.Designer.cs">
+      <DependentUpon>ucSystemLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucUserManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucUserManagement.Designer.cs">
+      <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Forms\Login.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Presentation\Forms\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\Forms\Student\MainFormStudent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\MainFormStudent.Designer.cs">
+      <DependentUpon>MainFormStudent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemList.Designer.cs">
+      <DependentUpon>ucProblemList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentDashboard.Designer.cs">
+      <DependentUpon>ucStudentDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentSettings.Designer.cs">
+      <DependentUpon>ucStudentSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucSubmissions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucSubmissions.Designer.cs">
+      <DependentUpon>ucSubmissions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Presentation\Forms\Admin\MainFormAdmin.resx">
+      <DependentUpon>MainFormAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucAdminDashboard.resx">
+      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucAdminSettings.resx">
+      <DependentUpon>ucAdminSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucProblemManagement.resx">
+      <DependentUpon>ucProblemManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucSystemLogs.resx">
+      <DependentUpon>ucSystemLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucUserManagement.resx">
+      <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\MainFormStudent.resx">
+      <DependentUpon>MainFormStudent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucProblemList.resx">
+      <DependentUpon>ucProblemList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucStudentDashboard.resx">
+      <DependentUpon>ucStudentDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucStudentSettings.resx">
+      <DependentUpon>ucStudentSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucSubmissions.resx">
+      <DependentUpon>ucSubmissions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -62,7 +167,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -78,6 +185,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <None Include="Resources\setting.png" />
+    <None Include="Resources\trend %282%29.png" />
+    <None Include="Resources\paper.png" />
+    <None Include="Resources\group.png" />
+    <None Include="Resources\logout %281%29.png" />
+    <None Include="Resources\home.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\Interfaces\" />

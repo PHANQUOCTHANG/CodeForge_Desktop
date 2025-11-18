@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeForge_Desktop.Presentation.Forms;
+using CodeForge_Desktop.Presentation.Forms.Admin;
+using CodeForge_Desktop.Presentation.Forms.Student;
 
 namespace CodeForge_Desktop
 {
@@ -17,7 +19,7 @@ namespace CodeForge_Desktop
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+            Application.Run(new MainFormStudent());
         }
     }
 }
