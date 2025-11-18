@@ -1,0 +1,15 @@
+# Visual Studio temporary files
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.ide
+*.vsidx
+*.dbmdl
+*.db
+*.opendb
+
+.env
