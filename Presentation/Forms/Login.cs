@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CodeForge_Desktop.Presentation.Forms
@@ -15,6 +8,20 @@ namespace CodeForge_Desktop.Presentation.Forms
         public Login()
         {
             InitializeComponent();
+            // Gán sự kiện cho liên kết Đăng ký
+            //this.lblRegisterLink.Click += lblRegisterLink_Click;
         }
+   
+        /// Xử lý sự kiện khi người dùng nhấn liên kết Đăng ký.
+        private void lblRegisterLink_Click(object sender, EventArgs e)
+        {
+
+            this.Hide();
+            Registration registrationForm = new Registration();
+            registrationForm.Show();
+
+        }
+
+        // ... các phương thức khác ...
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace CodeForge_Desktop.Presentation.Forms
 {
-    partial class Login
+    partial class Registration
     {
         /// <summary>
         /// Required designer variable.
@@ -33,14 +33,15 @@
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.lblUsername = new System.Windows.Forms.Label();
             this.txtUsername = new System.Windows.Forms.TextBox();
+            this.lblEmail = new System.Windows.Forms.Label();
+            this.txtEmail = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.lblRole = new System.Windows.Forms.Label();
-            this.rdoStudent = new System.Windows.Forms.RadioButton();
-            this.rdoAdmin = new System.Windows.Forms.RadioButton();
+            this.lblConfirmPassword = new System.Windows.Forms.Label();
+            this.txtConfirmPassword = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnLogin = new System.Windows.Forms.Button();
-            this.lblRegisterLink = new System.Windows.Forms.Label();
+            this.btnRegister = new System.Windows.Forms.Button();
+            this.lblBackToLogin = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblLogo
@@ -69,17 +70,17 @@
             // 
             this.lblSubtitle.AutoSize = true;
             this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSubtitle.Location = new System.Drawing.Point(135, 105);
+            this.lblSubtitle.Location = new System.Drawing.Point(145, 105);
             this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(153, 17);
+            this.lblSubtitle.Size = new System.Drawing.Size(138, 17);
             this.lblSubtitle.TabIndex = 2;
-            this.lblSubtitle.Text = "Đăng nhập vào hệ thống";
+            this.lblSubtitle.Text = "Đăng ký tài khoản mới";
             // 
             // lblUsername
             // 
             this.lblUsername.AutoSize = true;
             this.lblUsername.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUsername.Location = new System.Drawing.Point(40, 150);
+            this.lblUsername.Location = new System.Drawing.Point(40, 140);
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(98, 17);
             this.lblUsername.TabIndex = 3;
@@ -88,116 +89,121 @@
             // txtUsername
             // 
             this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUsername.Location = new System.Drawing.Point(40, 175);
+            this.txtUsername.Location = new System.Drawing.Point(40, 165);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(320, 27);
             this.txtUsername.TabIndex = 4;
+            // 
+            // lblEmail
+            // 
+            this.lblEmail.AutoSize = true;
+            this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEmail.Location = new System.Drawing.Point(40, 215);
+            this.lblEmail.Name = "lblEmail";
+            this.lblEmail.Size = new System.Drawing.Size(42, 17);
+            this.lblEmail.TabIndex = 5;
+            this.lblEmail.Text = "Email:";
+            // 
+            // txtEmail
+            // 
+            this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEmail.Location = new System.Drawing.Point(40, 240);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(320, 27);
+            this.txtEmail.TabIndex = 6;
             // 
             // lblPassword
             // 
             this.lblPassword.AutoSize = true;
             this.lblPassword.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPassword.Location = new System.Drawing.Point(40, 220);
+            this.lblPassword.Location = new System.Drawing.Point(40, 290);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(65, 17);
-            this.lblPassword.TabIndex = 5;
+            this.lblPassword.TabIndex = 7;
             this.lblPassword.Text = "Mật khẩu:";
             // 
             // txtPassword
             // 
             this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPassword.Location = new System.Drawing.Point(40, 245);
+            this.txtPassword.Location = new System.Drawing.Point(40, 315);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(320, 27);
-            this.txtPassword.TabIndex = 6;
+            this.txtPassword.TabIndex = 8;
             // 
-            // lblRole
+            // lblConfirmPassword
             // 
-            this.lblRole.AutoSize = true;
-            this.lblRole.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRole.Location = new System.Drawing.Point(40, 290);
-            this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(49, 17);
-            this.lblRole.TabIndex = 7;
-            this.lblRole.Text = "Vai trò:";
+            this.lblConfirmPassword.AutoSize = true;
+            this.lblConfirmPassword.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblConfirmPassword.Location = new System.Drawing.Point(40, 365);
+            this.lblConfirmPassword.Name = "lblConfirmPassword";
+            this.lblConfirmPassword.Size = new System.Drawing.Size(121, 17);
+            this.lblConfirmPassword.TabIndex = 9;
+            this.lblConfirmPassword.Text = "Xác nhận mật khẩu:";
             // 
-            // rdoStudent
+            // txtConfirmPassword
             // 
-            this.rdoStudent.AutoSize = true;
-            this.rdoStudent.Checked = true;
-            this.rdoStudent.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdoStudent.Location = new System.Drawing.Point(40, 320);
-            this.rdoStudent.Name = "rdoStudent";
-            this.rdoStudent.Size = new System.Drawing.Size(132, 21);
-            this.rdoStudent.TabIndex = 8;
-            this.rdoStudent.TabStop = true;
-            this.rdoStudent.Text = "Học sinh (Student)";
-            this.rdoStudent.UseVisualStyleBackColor = true;
-            // 
-            // rdoAdmin
-            // 
-            this.rdoAdmin.AutoSize = true;
-            this.rdoAdmin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdoAdmin.Location = new System.Drawing.Point(185, 320);
-            this.rdoAdmin.Name = "rdoAdmin";
-            this.rdoAdmin.Size = new System.Drawing.Size(122, 21);
-            this.rdoAdmin.TabIndex = 9;
-            this.rdoAdmin.Text = "Quản trị (Admin)";
-            this.rdoAdmin.UseVisualStyleBackColor = true;
+            this.txtConfirmPassword.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtConfirmPassword.Location = new System.Drawing.Point(40, 390);
+            this.txtConfirmPassword.Name = "txtConfirmPassword";
+            this.txtConfirmPassword.PasswordChar = '*';
+            this.txtConfirmPassword.Size = new System.Drawing.Size(320, 27);
+            this.txtConfirmPassword.TabIndex = 10;
             // 
             // btnCancel
             // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(160, 370);
+            this.btnCancel.Location = new System.Drawing.Point(160, 440);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 30);
-            this.btnCancel.TabIndex = 10;
-            this.btnCancel.Text = "Hủy";
+            this.btnCancel.TabIndex = 11;
+            this.btnCancel.Text = "Hủy bỏ";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // btnLogin
+            // btnRegister
             // 
-            this.btnLogin.BackColor = System.Drawing.SystemColors.Highlight;
-            this.btnLogin.FlatAppearance.BorderSize = 0;
-            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLogin.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.ForeColor = System.Drawing.Color.White;
-            this.btnLogin.Location = new System.Drawing.Point(260, 370);
-            this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(100, 30);
-            this.btnLogin.TabIndex = 11;
-            this.btnLogin.Text = "Đăng nhập";
-            this.btnLogin.UseVisualStyleBackColor = false;
+            this.btnRegister.BackColor = System.Drawing.SystemColors.Highlight;
+            this.btnRegister.FlatAppearance.BorderSize = 0;
+            this.btnRegister.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRegister.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRegister.ForeColor = System.Drawing.Color.White;
+            this.btnRegister.Location = new System.Drawing.Point(260, 440);
+            this.btnRegister.Name = "btnRegister";
+            this.btnRegister.Size = new System.Drawing.Size(100, 30);
+            this.btnRegister.TabIndex = 12;
+            this.btnRegister.Text = "Đăng ký";
+            this.btnRegister.UseVisualStyleBackColor = false;
             // 
-            // lblRegisterLink
+            // lblBackToLogin
             // 
-            this.lblRegisterLink.AutoSize = true;
-            this.lblRegisterLink.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblRegisterLink.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRegisterLink.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(141)))), ((int)(((byte)(215)))));
-            this.lblRegisterLink.Location = new System.Drawing.Point(177, 421);
-            this.lblRegisterLink.Name = "lblRegisterLink";
-            this.lblRegisterLink.Size = new System.Drawing.Size(55, 17);
-            this.lblRegisterLink.TabIndex = 12;
-            this.lblRegisterLink.Text = "Đăng ký";
-            this.lblRegisterLink.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblRegisterLink.Click += new System.EventHandler(this.lblRegisterLink_Click);
+            this.lblBackToLogin.AutoSize = true;
+            this.lblBackToLogin.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblBackToLogin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBackToLogin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(141)))), ((int)(((byte)(215)))));
+            this.lblBackToLogin.Location = new System.Drawing.Point(177, 484);
+            this.lblBackToLogin.Name = "lblBackToLogin";
+            this.lblBackToLogin.Size = new System.Drawing.Size(72, 17);
+            this.lblBackToLogin.TabIndex = 13;
+            this.lblBackToLogin.Text = "Đăng nhập";
+            this.lblBackToLogin.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblBackToLogin.Click += new System.EventHandler(this.lblBackToLogin_Click);
             // 
-            // Login
+            // Registration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(400, 460);
-            this.Controls.Add(this.lblRegisterLink);
-            this.Controls.Add(this.btnLogin);
+            this.ClientSize = new System.Drawing.Size(400, 520);
+            this.Controls.Add(this.lblBackToLogin);
+            this.Controls.Add(this.btnRegister);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.rdoAdmin);
-            this.Controls.Add(this.rdoStudent);
-            this.Controls.Add(this.lblRole);
+            this.Controls.Add(this.txtConfirmPassword);
+            this.Controls.Add(this.lblConfirmPassword);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblPassword);
+            this.Controls.Add(this.txtEmail);
+            this.Controls.Add(this.lblEmail);
             this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.lblUsername);
             this.Controls.Add(this.lblSubtitle);
@@ -205,15 +211,14 @@
             this.Controls.Add(this.lblLogo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Login";
+            this.Name = "Registration";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "CodePractice Desktop - Đăng nhập";
+            this.Text = "CodePractice Desktop - Đăng ký";
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
-      
         #endregion
 
         // Khai báo các biến Controls
@@ -222,13 +227,14 @@
         private System.Windows.Forms.Label lblSubtitle;
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.Label lblEmail;
+        private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.Label lblRole;
-        private System.Windows.Forms.RadioButton rdoStudent;
-        private System.Windows.Forms.RadioButton rdoAdmin;
-        private System.Windows.Forms.Button btnCancel; // Khôi phục khai báo nút Hủy
-        private System.Windows.Forms.Button btnLogin;
-        private System.Windows.Forms.Label lblRegisterLink; // Khai báo liên kết Đăng ký
+        private System.Windows.Forms.Label lblConfirmPassword;
+        private System.Windows.Forms.TextBox txtConfirmPassword;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnRegister;
+        private System.Windows.Forms.Label lblBackToLogin;
     }
 }

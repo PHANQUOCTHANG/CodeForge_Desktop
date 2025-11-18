@@ -94,6 +94,12 @@
     <Compile Include="Presentation\Forms\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\Forms\Registration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Registration.Designer.cs">
+      <DependentUpon>Registration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Forms\Student\MainFormStudent.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +149,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Admin\ucUserManagement.resx">
       <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Registration.resx">
+      <DependentUpon>Registration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Student\MainFormStudent.resx">
       <DependentUpon>MainFormStudent.cs</DependentUpon>
