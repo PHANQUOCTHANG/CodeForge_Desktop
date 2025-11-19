@@ -8,7 +8,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
     public partial class ucProblemList : UserControl
     {
         private const string PlaceholderText = "Tìm kiếm bài tập...";
-
+        public event EventHandler<string> ProblemClicked;
         public ucProblemList()
         {
             InitializeComponent();
@@ -17,8 +17,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             SetupDataGridViewStyles(); // Thêm hàm style
             LoadMockData(); // Thêm hàm load data
 
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgvProblemList, new object[] { true });
+
             // Đăng ký sự kiện CellPainting để tô màu
             dgvProblemList.CellPainting += DgvProblemList_CellPainting;
+
+            // 2. Đăng ký sự kiện Click vào Cell
+            dgvProblemList.CellClick += DgvProblemList_CellClick;
         }
 
         /// <summary>
@@ -174,5 +181,22 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 txtSearch.ForeColor = System.Drawing.Color.Gray;
             }
         }
+
+        private void DgvProblemList_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Kiểm tra nếu click vào hàng hợp lệ (không phải header)
+            // VÀ click vào cột "Tên bài tập" (colProblemName)
+            if (e.RowIndex >= 0 && dgvProblemList.Columns[e.ColumnIndex].Name == "colProblemName")
+            {
+                // Lấy tên bài tập
+                string problemName = dgvProblemList.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+
+                // Debug (nếu cần): MessageBox.Show("Clicked: " + problemName);
+
+                // Kích hoạt sự kiện để MainForm bắt được
+                ProblemClicked?.Invoke(this, problemName);
+            }
+        }
+
     }
 }

@@ -29,8 +29,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle41 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle42 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.btnBack = new System.Windows.Forms.Button();
@@ -62,7 +62,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.pnlHeader.Controls.Add(this.btnBack);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
-            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(13, 12, 13, 12);
             this.pnlHeader.Size = new System.Drawing.Size(1117, 44);
@@ -85,7 +85,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBack.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.btnBack.Location = new System.Drawing.Point(3, 3);
-            this.btnBack.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnBack.Margin = new System.Windows.Forms.Padding(4);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(112, 34);
             this.btnBack.TabIndex = 0;
@@ -127,7 +127,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.colStatus,
             this.colScore});
             this.dgvProblemList.Location = new System.Drawing.Point(12, 130);
-            this.dgvProblemList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dgvProblemList.Margin = new System.Windows.Forms.Padding(4);
             this.dgvProblemList.Name = "dgvProblemList";
             this.dgvProblemList.ReadOnly = true;
             this.dgvProblemList.RowHeadersVisible = false;
@@ -135,6 +135,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.dgvProblemList.RowTemplate.Height = 35;
             this.dgvProblemList.Size = new System.Drawing.Size(1092, 400);
             this.dgvProblemList.TabIndex = 2;
+            this.dgvProblemList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvProblemList_CellClick);
             // 
             // colHash
             // 
@@ -146,8 +147,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             // 
             // colProblemName
             // 
-            dataGridViewCellStyle41.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.colProblemName.DefaultCellStyle = dataGridViewCellStyle41;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.colProblemName.DefaultCellStyle = dataGridViewCellStyle5;
             this.colProblemName.FillWeight = 35F;
             this.colProblemName.HeaderText = "Tên bài tập";
             this.colProblemName.MinimumWidth = 6;
@@ -182,8 +183,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             // 
             // colScore
             // 
-            dataGridViewCellStyle42.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.colScore.DefaultCellStyle = dataGridViewCellStyle42;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.colScore.DefaultCellStyle = dataGridViewCellStyle6;
             this.colScore.FillWeight = 10F;
             this.colScore.HeaderText = "Điểm";
             this.colScore.MinimumWidth = 6;
@@ -197,7 +198,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.pnlFilters.Controls.Add(this.pnlSearchContainer);
             this.pnlFilters.Controls.Add(this.btnFilter);
             this.pnlFilters.Location = new System.Drawing.Point(0, 52);
-            this.pnlFilters.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlFilters.Margin = new System.Windows.Forms.Padding(4);
             this.pnlFilters.Name = "pnlFilters";
             this.pnlFilters.Padding = new System.Windows.Forms.Padding(13, 12, 13, 12);
             this.pnlFilters.Size = new System.Drawing.Size(1117, 59);
@@ -212,7 +213,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.pnlSearchContainer.Controls.Add(this.txtSearch);
             this.pnlSearchContainer.Controls.Add(this.picSearchIcon);
             this.pnlSearchContainer.Location = new System.Drawing.Point(12, 13);
-            this.pnlSearchContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlSearchContainer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlSearchContainer.Name = "pnlSearchContainer";
             this.pnlSearchContainer.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
             this.pnlSearchContainer.Size = new System.Drawing.Size(971, 33);
@@ -223,7 +224,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 11.25F);
             this.txtSearch.Location = new System.Drawing.Point(36, 3);
-            this.txtSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(4);
             this.txtSearch.Multiline = true;
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(937, 25);
@@ -234,7 +235,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.picSearchIcon.Dock = System.Windows.Forms.DockStyle.Left;
             this.picSearchIcon.Image = global::CodeForge_Desktop.Properties.Resources.magnifying_glass;
             this.picSearchIcon.Location = new System.Drawing.Point(7, 0);
-            this.picSearchIcon.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picSearchIcon.Margin = new System.Windows.Forms.Padding(4);
             this.picSearchIcon.Name = "picSearchIcon";
             this.picSearchIcon.Size = new System.Drawing.Size(27, 31);
             this.picSearchIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -262,7 +263,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.Controls.Add(this.lblSummary);
             this.Controls.Add(this.pnlFilters);
             this.Controls.Add(this.pnlHeader);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ucProblemList";
             this.Size = new System.Drawing.Size(1117, 697);
             this.pnlHeader.ResumeLayout(false);

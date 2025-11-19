@@ -54,7 +54,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private void btnDanhSachBaiTap_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnDanhSachBaiTap);
-            LoadUserControl(new ucProblemList());
+            ShowProblemList();
         }
 
         private void btnLichSuNopBai_Click(object sender, EventArgs e)
@@ -81,6 +81,35 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             dashboard.SettingsClicked += (s, args) => btnCaiDat.PerformClick();
 
             LoadUserControl(dashboard);
+        }
+
+        private void ShowProblemList()
+        {
+            var problemList = new ucProblemList();
+
+            // Lắng nghe sự kiện: Khi chọn bài tập -> Chuyển sang màn hình làm bài
+            problemList.ProblemClicked += (s, problemName) =>
+            {
+                ShowProblemDetail(problemName);
+            };
+
+            LoadUserControl(problemList);
+        }
+
+        private void ShowProblemDetail(string problemName)
+        {
+            // Không cần đổi màu menu vì vẫn đang ở mục "Bài tập" (hoặc có thể tắt hết màu nếu muốn)
+
+            var detailView = new ucProblemDetail();
+            detailView.SetProblemTitle(problemName); // Truyền tên bài tập vào
+
+            // Lắng nghe sự kiện: Khi bấm "Quay lại" -> Quay về danh sách bài tập
+            detailView.BackButtonClicked += (s, args) =>
+            {
+                btnDanhSachBaiTap.PerformClick(); // Giả lập bấm nút menu để load lại danh sách
+            };
+
+            LoadUserControl(detailView);
         }
 
     }
