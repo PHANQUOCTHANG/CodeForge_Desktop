@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BCrypt.Net-Core, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d63bfbfdfd3c6e4, processorArchitecture=MSIL">
+      <HintPath>packages\BCrypt.Net-Core.1.6.0\lib\net452\BCrypt.Net-Core.dll</HintPath>
+    </Reference>
     <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
       <HintPath>packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
     </Reference>
@@ -52,6 +55,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\Helpers\PasswordHasher.cs" />
+    <Compile Include="Business\Interfaces\IAuthService.cs" />
+    <Compile Include="Business\Interfaces\IUserService.cs" />
+    <Compile Include="Business\Models\Response.cs" />
+    <Compile Include="Business\Services\AuthSerivce.cs" />
+    <Compile Include="Business\Services\UserService.cs" />
+    <Compile Include="Config\DbContext.cs" />
+    <Compile Include="DataAccess\Entities\UserEnitty.cs" />
+    <Compile Include="DataAccess\Interfaces\IUserRepository.cs" />
+    <Compile Include="DataAccess\Repositories\UserRepository.cs" />
     <Compile Include="Presentation\Forms\Admin\MainFormAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +194,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include=".env" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -209,13 +223,7 @@
     <None Include="Resources\home.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Business\Interfaces\" />
-    <Folder Include="Business\Models\" />
-    <Folder Include="Business\Services\" />
     <Folder Include="Common\" />
-    <Folder Include="DataAccess\Entities\" />
-    <Folder Include="DataAccess\Interfaces\" />
-    <Folder Include="DataAccess\Repositories\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

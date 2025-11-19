@@ -35,9 +35,6 @@
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.lblRole = new System.Windows.Forms.Label();
-            this.rdoStudent = new System.Windows.Forms.RadioButton();
-            this.rdoAdmin = new System.Windows.Forms.RadioButton();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnLogin = new System.Windows.Forms.Button();
             this.lblRegisterLink = new System.Windows.Forms.Label();
@@ -112,47 +109,13 @@
             this.txtPassword.Size = new System.Drawing.Size(320, 27);
             this.txtPassword.TabIndex = 6;
             // 
-            // lblRole
-            // 
-            this.lblRole.AutoSize = true;
-            this.lblRole.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRole.Location = new System.Drawing.Point(40, 290);
-            this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(49, 17);
-            this.lblRole.TabIndex = 7;
-            this.lblRole.Text = "Vai trò:";
-            // 
-            // rdoStudent
-            // 
-            this.rdoStudent.AutoSize = true;
-            this.rdoStudent.Checked = true;
-            this.rdoStudent.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdoStudent.Location = new System.Drawing.Point(40, 320);
-            this.rdoStudent.Name = "rdoStudent";
-            this.rdoStudent.Size = new System.Drawing.Size(132, 21);
-            this.rdoStudent.TabIndex = 8;
-            this.rdoStudent.TabStop = true;
-            this.rdoStudent.Text = "Học sinh (Student)";
-            this.rdoStudent.UseVisualStyleBackColor = true;
-            // 
-            // rdoAdmin
-            // 
-            this.rdoAdmin.AutoSize = true;
-            this.rdoAdmin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdoAdmin.Location = new System.Drawing.Point(185, 320);
-            this.rdoAdmin.Name = "rdoAdmin";
-            this.rdoAdmin.Size = new System.Drawing.Size(122, 21);
-            this.rdoAdmin.TabIndex = 9;
-            this.rdoAdmin.Text = "Quản trị (Admin)";
-            this.rdoAdmin.UseVisualStyleBackColor = true;
-            // 
             // btnCancel
             // 
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(160, 370);
+            this.btnCancel.Location = new System.Drawing.Point(138, 314);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(90, 30);
+            this.btnCancel.Size = new System.Drawing.Size(100, 30);
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Hủy";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -164,22 +127,23 @@
             this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLogin.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLogin.ForeColor = System.Drawing.Color.White;
-            this.btnLogin.Location = new System.Drawing.Point(260, 370);
+            this.btnLogin.Location = new System.Drawing.Point(249, 314);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(100, 30);
             this.btnLogin.TabIndex = 11;
             this.btnLogin.Text = "Đăng nhập";
             this.btnLogin.UseVisualStyleBackColor = false;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // lblRegisterLink
             // 
             this.lblRegisterLink.AutoSize = true;
             this.lblRegisterLink.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblRegisterLink.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRegisterLink.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRegisterLink.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(141)))), ((int)(((byte)(215)))));
-            this.lblRegisterLink.Location = new System.Drawing.Point(177, 421);
+            this.lblRegisterLink.Location = new System.Drawing.Point(158, 371);
             this.lblRegisterLink.Name = "lblRegisterLink";
-            this.lblRegisterLink.Size = new System.Drawing.Size(55, 17);
+            this.lblRegisterLink.Size = new System.Drawing.Size(67, 21);
             this.lblRegisterLink.TabIndex = 12;
             this.lblRegisterLink.Text = "Đăng ký";
             this.lblRegisterLink.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -189,13 +153,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(400, 460);
+            this.ClientSize = new System.Drawing.Size(400, 400);
             this.Controls.Add(this.lblRegisterLink);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.rdoAdmin);
-            this.Controls.Add(this.rdoStudent);
-            this.Controls.Add(this.lblRole);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.txtUsername);
@@ -208,6 +169,7 @@
             this.Name = "Login";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CodePractice Desktop - Đăng nhập";
+            this.Load += new System.EventHandler(this.Login_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -224,9 +186,6 @@
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.Label lblRole;
-        private System.Windows.Forms.RadioButton rdoStudent;
-        private System.Windows.Forms.RadioButton rdoAdmin;
         private System.Windows.Forms.Button btnCancel; // Khôi phục khai báo nút Hủy
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Label lblRegisterLink; // Khai báo liên kết Đăng ký

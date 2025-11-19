@@ -175,16 +175,17 @@
             this.btnRegister.TabIndex = 12;
             this.btnRegister.Text = "Đăng ký";
             this.btnRegister.UseVisualStyleBackColor = false;
+            this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
             // 
             // lblBackToLogin
             // 
             this.lblBackToLogin.AutoSize = true;
             this.lblBackToLogin.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblBackToLogin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBackToLogin.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBackToLogin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(141)))), ((int)(((byte)(215)))));
-            this.lblBackToLogin.Location = new System.Drawing.Point(177, 484);
+            this.lblBackToLogin.Location = new System.Drawing.Point(156, 490);
             this.lblBackToLogin.Name = "lblBackToLogin";
-            this.lblBackToLogin.Size = new System.Drawing.Size(72, 17);
+            this.lblBackToLogin.Size = new System.Drawing.Size(86, 21);
             this.lblBackToLogin.TabIndex = 13;
             this.lblBackToLogin.Text = "Đăng nhập";
             this.lblBackToLogin.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

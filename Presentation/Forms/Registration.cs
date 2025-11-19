@@ -1,26 +1,30 @@
-﻿using System;
+﻿using CodeForge_Desktop.Business.Interfaces;
+using CodeForge_Desktop.DataAccess.Entities;
+using System;
 using System.Windows.Forms;
 
 namespace CodeForge_Desktop.Presentation.Forms
 {
     public partial class Registration : Form
     {
-       
-        public Registration()
+        private readonly IAuthService _authService;
+
+        // Cập nhật Constructor để nhận IAuthService qua Dependency Injection
+        public Registration(IAuthService authService)
         {
             InitializeComponent();
+            _authService = authService;
         }
 
-      
         /// Xử lý sự kiện khi người dùng nhấn nút liên kết Đăng nhập.
-       
         private void lblBackToLogin_Click(object sender, EventArgs e)
         {
-            Login login = new Login();
+            // Khi quay lại Login, cần truyền IAuthService
+            Login login = new Login(_authService);
             login.Show();
             this.Close();
         }
-      
+
         /// Xử lý sự kiện khi người dùng nhấn nút Đăng ký.
         private void btnRegister_Click(object sender, EventArgs e)
         {
@@ -35,66 +39,80 @@ namespace CodeForge_Desktop.Presentation.Forms
                 string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
             {
                 MessageBox.Show("Vui lòng điền đầy đủ tất cả các trường bắt buộc.",
-                                "Lỗi Xác thực",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
+                                 "Lỗi Xác thực",
+                                 MessageBoxButtons.OK,
+                                 MessageBoxIcon.Warning);
                 return;
             }
 
             if (password != confirmPassword)
             {
                 MessageBox.Show("Mật khẩu và Xác nhận mật khẩu không khớp.",
-                                "Lỗi Mật khẩu",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
+                                 "Lỗi Mật khẩu",
+                                 MessageBoxButtons.OK,
+                                 MessageBoxIcon.Warning);
                 txtPassword.Clear();
                 txtConfirmPassword.Clear();
                 txtPassword.Focus();
                 return;
             }
 
-            // Kiểm tra định dạng email cơ bản (ví dụ: chỉ cần chứa '@')
+            // Kiểm tra định dạng email cơ bản
             if (!email.Contains("@") || !email.Contains("."))
             {
                 MessageBox.Show("Địa chỉ Email không hợp lệ.",
-                                "Lỗi Email",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
+                                 "Lỗi Email",
+                                 MessageBoxButtons.OK,
+                                 MessageBoxIcon.Warning);
                 txtEmail.Focus();
                 return;
             }
 
-            // --- 3. Thực hiện Đăng ký (Logic Mock) ---
-
-            // Trong ứng dụng thực tế:
-            // - Bạn sẽ tạo PasswordHash (ví dụ: bằng BCrypt)
-            // - Gọi lớp Service/Repository để thêm người dùng vào SQL Server (UserID, JoinDate, Role, Status, IsDeleted sẽ được set tự động hoặc mặc định)
-            // - Xử lý trường hợp Username/Email đã tồn tại (UNIQUE constraint)
-
+            // --- 3. Thực hiện Đăng ký bằng AuthService ---
             try
             {
-                // Giả định đăng ký thành công sau khi xác thực hợp lệ
-                string registrationInfo = $"Đăng ký thành công tài khoản:\n" +
-                                          $"- Tên đăng nhập: {username}\n" +
-                                          $"- Email: {email}\n" +
-                                          $"- Vai trò mặc định: student";
+                // Khởi tạo đối tượng User mới
+                // Các giá trị mặc định (UserID, Role, JoinDate, Status) sẽ được set trong Constructor của User Entity.
+                User newUser = new User {Username = username , Email = email , Role = "student" };
 
-                MessageBox.Show(registrationInfo,
-                                "Đăng ký Thành công",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
+                // Gọi AuthService để đăng ký người dùng
+                User registeredUser = _authService.Register(newUser, password).Data;
 
-                // 4. Điều hướng: Đóng form đăng ký và quay lại form đăng nhập
-                this.lblBackToLogin_Click(sender, e);
+                if (registeredUser != null)
+                {
+                    // Đăng ký thành công
+                    string registrationInfo = $"Đăng ký thành công tài khoản:\n" +
+                                              $"- Tên đăng nhập: {username}\n" +
+                                              $"- Email: {email}\n" +
+                                              $"- Vai trò: {registeredUser.Role}";
+
+                    MessageBox.Show(registrationInfo,
+                                     "Đăng ký Thành công",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Information);
+
+                    // 4. Điều hướng: Đóng form đăng ký và quay lại form đăng nhập
+                    lblBackToLogin_Click(sender, e);
+                }
+                else
+                {
+                    // Đăng ký thất bại (thường là do Username/Email đã tồn tại, được kiểm tra trong AuthService)
+                    MessageBox.Show("Đăng ký thất bại. Tên đăng nhập hoặc Email này đã được sử dụng.",
+                                     "Lỗi Đăng ký",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
-                // Xử lý các lỗi có thể xảy ra trong môi trường thực (ví dụ: lỗi kết nối DB, lỗi Unique Constraint)
+                // Xử lý lỗi hệ thống hoặc lỗi DB khác
                 MessageBox.Show($"Đã xảy ra lỗi trong quá trình đăng ký: {ex.Message}",
-                                "Lỗi Hệ thống",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
+                                 "Lỗi Hệ thống",
+                                 MessageBoxButtons.OK,
+                                 MessageBoxIcon.Error);
             }
         }
+
+        
     }
 }

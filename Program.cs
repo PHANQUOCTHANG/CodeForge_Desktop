@@ -1,28 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using CodeForge_Desktop.Business.Interfaces;
+using CodeForge_Desktop.Business.Services;
+using CodeForge_Desktop.DataAccess.Interfaces;
+using CodeForge_Desktop.DataAccess.Repositories;
 using CodeForge_Desktop.Presentation.Forms;
-using CodeForge_Desktop.Presentation.Forms.Admin;
-using CodeForge_Desktop.Presentation.Forms.Student;
+using System;
+using System.Windows.Forms;
 
 namespace CodeForge_Desktop
 {
     internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MainFormStudent());
-            //Application.Run(new MainFormAdmin());
-            Application.Run(new Login());
 
+            // --- Thiết lập Dependency Injection thủ công ---
+
+            // 1. Đăng ký Repository
+            IUserRepository userRepository = new UserRepository();
+
+            // 2. Đăng ký Service, truyền Repository vào
+            IAuthService authService = new AuthService(userRepository);
+
+            // 3. Khởi chạy Form Login, truyền AuthService vào Constructor
+            Login loginForm = new Login(authService);
+
+            Application.Run(loginForm);
         }
     }
 }
