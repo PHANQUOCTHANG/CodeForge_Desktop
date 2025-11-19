@@ -117,4 +117,44 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="button3.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFZSURBVFhHzZZL
+        TsMwFEU9YgcIdSsI5rCADpCCS1fTsLd2AkJiXFS2cSs7Seu8+xxbli04kicn931UNZGN+RescWNe8W4s
+        fo0Fqp4NDuYFd3LkHIueCmueDb6Wl7A4+WCHe/nowtQsRZjb4tZYfKaXyGmek3HI3LDEx+i/TYfVLO+R
+        RRo5GYeWSy6hFUlyMo5YbnGJWFFITsaxlAv/Exb764OloomcjCOVG5YQGRIKFj+XXPocZfkMmkdCweI5
+        c4mjecOTLJ9B80g0huaRaAzNI9EYmkeiMTSPRGNoHonG0DwSjaF5JBpD80hUuyW5e0bve4XQPBLe1bwl
+        9aL34OPCu/QtKYXFw9j7JHzWAuxK0PqQIxFxJWh9yJGIuBK0PuRIRFwJWh9yJCKuBK0PORIRV4LWh9z0
+        yrnXJhoqRPbp8Di64NWs+9HJPbvrAu5TOSwx/RItj/55/ivObxgoZ1+9otIAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="button1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFZSURBVFhHzZZL
+        TsMwFEU9YgcIdSsI5rCADpCCS1fTsLd2AkJiXFS2cSs7Seu8+xxbli04kicn931UNZGN+RescWNe8W4s
+        fo0Fqp4NDuYFd3LkHIueCmueDb6Wl7A4+WCHe/nowtQsRZjb4tZYfKaXyGmek3HI3LDEx+i/TYfVLO+R
+        RRo5GYeWSy6hFUlyMo5YbnGJWFFITsaxlAv/Exb764OloomcjCOVG5YQGRIKFj+XXPocZfkMmkdCweI5
+        c4mjecOTLJ9B80g0huaRaAzNI9EYmkeiMTSPRGNoHonG0DwSjaF5JBpD80hUuyW5e0bve4XQPBLe1bwl
+        9aL34OPCu/QtKYXFw9j7JHzWAuxK0PqQIxFxJWh9yJGIuBK0PuRIRFwJWh9yJCKuBK0PORIRV4LWh9z0
+        yrnXJhoqRPbp8Di64NWs+9HJPbvrAu5TOSwx/RItj/55/ivObxgoZ1+9otIAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="btnLuu.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFZSURBVFhHzZZL
+        TsMwFEU9YgcIdSsI5rCADpCCS1fTsLd2AkJiXFS2cSs7Seu8+xxbli04kicn931UNZGN+RescWNe8W4s
+        fo0Fqp4NDuYFd3LkHIueCmueDb6Wl7A4+WCHe/nowtQsRZjb4tZYfKaXyGmek3HI3LDEx+i/TYfVLO+R
+        RRo5GYeWSy6hFUlyMo5YbnGJWFFITsaxlAv/Exb764OloomcjCOVG5YQGRIKFj+XXPocZfkMmkdCweI5
+        c4mjecOTLJ9B80g0huaRaAzNI9EYmkeiMTSPRGNoHonG0DwSjaF5JBpD80hUuyW5e0bve4XQPBLe1bwl
+        9aL34OPCu/QtKYXFw9j7JHzWAuxK0PqQIxFxJWh9yJGIuBK0PuRIRFwJWh9yJCKuBK0PORIRV4LWh9z0
+        yrnXJhoqRPbp8Di64NWs+9HJPbvrAu5TOSwx/RItj/55/ivObxgoZ1+9otIAAAAASUVORK5CYII=
+</value>
+  </data>
+  <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>
