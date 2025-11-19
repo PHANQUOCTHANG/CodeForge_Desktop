@@ -52,5 +52,21 @@ namespace CodeForge_Desktop.Business.Services
         {
             return _userRepository.Delete(id) > 0;
         }
+
+        public bool SoftDeleteListUsers(List<Guid> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+
+            bool isSuccess = true;
+            foreach (var id in ids)
+            {
+                // Gọi hàm xóa từng user (hàm Delete này bạn đã có trong Repository)
+                if (_userRepository.Delete(id) <= 0)
+                {
+                    isSuccess = false; // Đánh dấu nếu có ít nhất 1 trường hợp lỗi
+                }
+            }
+            return isSuccess;
+        }
     }
 }

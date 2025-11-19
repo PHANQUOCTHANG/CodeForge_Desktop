@@ -22,6 +22,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private string _currentLanguage = "JavaScript";
         private CodingProblem _currentProblem;
         private Panel pnlResultContainer;
+        private Panel _loadingPanel;
+        private Label _loadingLabel;
+        private int _loadingDotCount = 0;
+        private Timer _loadingTimer;
+        private string _loadingMessage = "";
 
         public ucProblemDetail()
         {
@@ -38,7 +43,73 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             btnSave.Click += (s, e) => SaveCode();
             btnSubmit.Click += (s, e) => SubmitCode();
 
-           
+            // Khởi tạo loading timer
+            InitializeLoadingTimer();
+        }
+
+        /// <summary>
+        /// Khởi tạo timer cho hiệu ứng loading
+        /// </summary>
+        private void InitializeLoadingTimer()
+        {
+            _loadingTimer = new Timer();
+            _loadingTimer.Interval = 300; // Cập nhật mỗi 300ms
+            _loadingTimer.Tick += (s, e) => UpdateLoadingAnimation();
+        }
+
+        /// <summary>
+        /// Cập nhật animation loading (chấm chấm)
+        /// </summary>
+        private void UpdateLoadingAnimation()
+        {
+            _loadingDotCount = (_loadingDotCount + 1) % 4;
+            string dots = new string('.', _loadingDotCount);
+            _loadingLabel.Text = $"⏳ {_loadingMessage}{dots}";
+        }
+
+        /// <summary>
+        /// Hiển thị loading panel với message tùy chỉnh
+        /// </summary>
+        private void ShowLoadingPanel(string message = "Đang xử lý")
+        {
+            if (_loadingPanel != null)
+                _loadingPanel.Dispose();
+
+            _loadingMessage = message;
+            _loadingPanel = new Panel();
+            _loadingPanel.BackColor = Color.FromArgb(245, 245, 245);
+            _loadingPanel.Dock = DockStyle.Fill;
+            _loadingPanel.BorderStyle = BorderStyle.FixedSingle;
+
+            _loadingLabel = new Label();
+            _loadingLabel.Text = $"⏳ {message}...";
+            _loadingLabel.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            _loadingLabel.ForeColor = Color.FromArgb(0, 120, 215);
+            _loadingLabel.AutoSize = false;
+            _loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
+            _loadingLabel.Dock = DockStyle.Fill;
+
+            _loadingPanel.Controls.Add(_loadingLabel);
+
+            // Clear txtConsole và thêm loading panel
+            txtConsole.Controls.Clear();
+            txtConsole.Controls.Add(_loadingPanel);
+
+            _loadingDotCount = 0;
+            _loadingTimer.Start();
+        }
+
+        /// <summary>
+        /// Ẩn loading panel
+        /// </summary>
+        private void HideLoadingPanel()
+        {
+            _loadingTimer.Stop();
+            if (_loadingPanel != null)
+            {
+                _loadingPanel.Dispose();
+                _loadingPanel = null;
+            }
         }
 
         /// <summary>
@@ -131,7 +202,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             try
             {
                 btnRun.Enabled = false;
-                txtConsole.Text = "⏳ Đang chạy code...";
+                ShowLoadingPanel("Đang chạy code");
 
                 // Lấy các visible test cases
                 var testCases = _testCaseService.GetVisibleByProblemId(_problemId);
@@ -156,10 +227,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 var result = await _runnerService.RunProblemAsync(runRequest);
 
                 // Hiển thị kết quả
+                HideLoadingPanel();
                 DisplayRunResult(result);
             }
             catch (Exception ex)
             {
+                HideLoadingPanel();
                 txtConsole.Text = $"❌ Lỗi: {ex.Message}";
                 MessageBox.Show($"Lỗi khi chạy code: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -317,7 +390,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             try
             {
                 btnSubmit.Enabled = false;
-                txtConsole.Text = "⏳ Đang submit code...";
+                ShowLoadingPanel("Đang submit code");
 
                 // Lấy tất cả test cases (không chỉ visible)
                 var testCases = _testCaseService.GetByProblemId(_problemId);
@@ -342,10 +415,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 var result = await _runnerService.SubmitProblemAsync(submitRequest);
 
                 // Hiển thị kết quả
+                HideLoadingPanel();
                 DisplaySubmitResult(result);
             }
             catch (Exception ex)
             {
+                HideLoadingPanel();
                 txtConsole.Text = $"❌ Lỗi: {ex.Message}";
                 MessageBox.Show($"Lỗi khi submit code: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

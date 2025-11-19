@@ -1,265 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3F54BD2E-E000-4DBB-A096-4611CC3C8377}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>CodeForge_Desktop</RootNamespace>
-    <AssemblyName>CodeForge_Desktop</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="BCrypt.Net-Core, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d63bfbfdfd3c6e4, processorArchitecture=MSIL">
-      <HintPath>packages\BCrypt.Net-Core.1.6.0\lib\net452\BCrypt.Net-Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
-      <HintPath>packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Design" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Business\Helpers\CodeEditorHelper.cs" />
-    <Compile Include="Business\Helpers\JsonConverter.cs" />
-    <Compile Include="Business\Helpers\LanguageConverter.cs" />
-    <Compile Include="Business\Helpers\PasswordHasher.cs" />
-    <Compile Include="Business\Interfaces\IAuthService.cs" />
-    <Compile Include="Business\Interfaces\ICodingProblemService.cs" />
-    <Compile Include="Business\Interfaces\ITestCaseService.cs" />
-    <Compile Include="Business\Interfaces\IUserService.cs" />
-    <Compile Include="Business\Models\Response.cs" />
-    <Compile Include="Business\Models\RunProblem.cs" />
-    <Compile Include="Business\Services\AuthSerivce.cs" />
-    <Compile Include="Business\Services\CodingProblemService.cs" />
-    <Compile Include="Business\Services\ProblemRunnerService.cs" />
-    <Compile Include="Business\Services\TestCaseService.cs" />
-    <Compile Include="Business\Services\UserService.cs" />
-    <Compile Include="Config\DbContext.cs" />
-    <Compile Include="DataAccess\Entities\CodingProblem.cs" />
-    <Compile Include="DataAccess\Entities\TestCase.cs" />
-    <Compile Include="DataAccess\Entities\User.cs" />
-    <Compile Include="DataAccess\Interfaces\ICodingProblemRepository.cs" />
-    <Compile Include="DataAccess\Interfaces\ITestCaseRepository.cs" />
-    <Compile Include="DataAccess\Interfaces\IUserRepository.cs" />
-    <Compile Include="DataAccess\Repositories\CodingProblemRepository.cs" />
-    <Compile Include="DataAccess\Repositories\TestCaseRepository.cs" />
-    <Compile Include="DataAccess\Repositories\UserRepository.cs" />
-    <Compile Include="Presentation\Controls\TestResultPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\MainFormAdmin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\MainFormAdmin.Designer.cs">
-      <DependentUpon>MainFormAdmin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucAdminDashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucAdminDashboard.Designer.cs">
-      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucAdminSettings.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucAdminSettings.Designer.cs">
-      <DependentUpon>ucAdminSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucProblemManagement.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucProblemManagement.Designer.cs">
-      <DependentUpon>ucProblemManagement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucSystemLogs.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucSystemLogs.Designer.cs">
-      <DependentUpon>ucSystemLogs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucUserManagement.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Admin\ucUserManagement.Designer.cs">
-      <DependentUpon>ucUserManagement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Login.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Login.Designer.cs">
-      <DependentUpon>Login.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Registration.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Registration.Designer.cs">
-      <DependentUpon>Registration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\MainFormStudent.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\MainFormStudent.Designer.cs">
-      <DependentUpon>MainFormStudent.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucProblemDetail.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucProblemDetail.Designer.cs">
-      <DependentUpon>ucProblemDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucProblemList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucProblemList.Designer.cs">
-      <DependentUpon>ucProblemList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucStudentDashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucStudentDashboard.Designer.cs">
-      <DependentUpon>ucStudentDashboard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucStudentSettings.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucStudentSettings.Designer.cs">
-      <DependentUpon>ucStudentSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucSubmissions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Presentation\Forms\Student\ucSubmissions.Designer.cs">
-      <DependentUpon>ucSubmissions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Presentation\Forms\Admin\MainFormAdmin.resx">
-      <DependentUpon>MainFormAdmin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Admin\ucAdminDashboard.resx">
-      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Admin\ucAdminSettings.resx">
-      <DependentUpon>ucAdminSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Admin\ucProblemManagement.resx">
-      <DependentUpon>ucProblemManagement.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Admin\ucSystemLogs.resx">
-      <DependentUpon>ucSystemLogs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Admin\ucUserManagement.resx">
-      <DependentUpon>ucUserManagement.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Login.resx">
-      <DependentUpon>Login.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Registration.resx">
-      <DependentUpon>Registration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Student\MainFormStudent.resx">
-      <DependentUpon>MainFormStudent.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Student\ucProblemDetail.resx">
-      <DependentUpon>ucProblemDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Student\ucProblemList.resx">
-      <DependentUpon>ucProblemList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Student\ucStudentDashboard.resx">
-      <DependentUpon>ucStudentDashboard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Student\ucStudentSettings.resx">
-      <DependentUpon>ucStudentSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Student\ucSubmissions.resx">
-      <DependentUpon>ucSubmissions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include=".env" />
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include=".gitignore" />
-    <None Include="Resources\export.png" />
-    <None Include="Resources\user-interface.png" />
-    <None Include="Resources\delete %283%29.png" />
-    <None Include="Resources\magnifying-glass.png" />
-    <None Include="Resources\chart.png" />
-    <None Include="Resources\wall-clock %281%29.png" />
-    <None Include="Resources\check-mark %281%29.png" />
-    <None Include="Resources\setting.png" />
-    <None Include="Resources\trend %282%29.png" />
-    <None Include="Resources\paper.png" />
-    <None Include="Resources\group.png" />
-    <None Include="Resources\logout %281%29.png" />
-    <None Include="Resources\home.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3F54BD2E-E000-4DBB-A096-4611CC3C8377}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>CodeForge_Desktop</RootNamespace>
+    <AssemblyName>CodeForge_Desktop</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BCrypt.Net-Core, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d63bfbfdfd3c6e4, processorArchitecture=MSIL">
+      <HintPath>packages\BCrypt.Net-Core.1.6.0\lib\net452\BCrypt.Net-Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
+      <HintPath>packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Business\Helpers\CodeEditorHelper.cs" />
+    <Compile Include="Business\Helpers\JsonConverter.cs" />
+    <Compile Include="Business\Helpers\LanguageConverter.cs" />
+    <Compile Include="Business\Helpers\PasswordHasher.cs" />
+    <Compile Include="Business\Interfaces\IAuthService.cs" />
+    <Compile Include="Business\Interfaces\ICodingProblemService.cs" />
+    <Compile Include="Business\Interfaces\ITestCaseService.cs" />
+    <Compile Include="Business\Interfaces\IUserService.cs" />
+    <Compile Include="Business\Models\Response.cs" />
+    <Compile Include="Business\Models\RunProblem.cs" />
+    <Compile Include="Business\Services\AuthSerivce.cs" />
+    <Compile Include="Business\Services\CodingProblemService.cs" />
+    <Compile Include="Business\Services\ProblemRunnerService.cs" />
+    <Compile Include="Business\Services\TestCaseService.cs" />
+    <Compile Include="Business\Services\UserService.cs" />
+    <Compile Include="Config\DbContext.cs" />
+    <Compile Include="DataAccess\Entities\CodingProblem.cs" />
+    <Compile Include="DataAccess\Entities\TestCase.cs" />
+    <Compile Include="DataAccess\Entities\User.cs" />
+    <Compile Include="DataAccess\Interfaces\ICodingProblemRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\ITestCaseRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\IUserRepository.cs" />
+    <Compile Include="DataAccess\Repositories\CodingProblemRepository.cs" />
+    <Compile Include="DataAccess\Repositories\TestCaseRepository.cs" />
+    <Compile Include="DataAccess\Repositories\UserRepository.cs" />
+    <Compile Include="Presentation\Controls\TestResultPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>     <Compile Include="Presentation\Forms\Admin\AddEditProblemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\AddEditProblemForm.Designer.cs">
+      <DependentUpon>AddEditProblemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\AddEditUserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\AddEditUserForm.Designer.cs">
+      <DependentUpon>AddEditUserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\MainFormAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\MainFormAdmin.Designer.cs">
+      <DependentUpon>MainFormAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminDashboard.Designer.cs">
+      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminSettings.Designer.cs">
+      <DependentUpon>ucAdminSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucProblemManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucProblemManagement.Designer.cs">
+      <DependentUpon>ucProblemManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucSystemLogs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucSystemLogs.Designer.cs">
+      <DependentUpon>ucSystemLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucUserManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucUserManagement.Designer.cs">
+      <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Registration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Registration.Designer.cs">
+      <DependentUpon>Registration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\MainFormStudent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\MainFormStudent.Designer.cs">
+      <DependentUpon>MainFormStudent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemDetail.Designer.cs">
+      <DependentUpon>ucProblemDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemList.Designer.cs">
+      <DependentUpon>ucProblemList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentDashboard.Designer.cs">
+      <DependentUpon>ucStudentDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucStudentSettings.Designer.cs">
+      <DependentUpon>ucStudentSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucSubmissions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucSubmissions.Designer.cs">
+      <DependentUpon>ucSubmissions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Presentation\Forms\Admin\AddEditUserForm.resx">
+      <DependentUpon>AddEditUserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\MainFormAdmin.resx">
+      <DependentUpon>MainFormAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucAdminDashboard.resx">
+      <DependentUpon>ucAdminDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucAdminSettings.resx">
+      <DependentUpon>ucAdminSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucProblemManagement.resx">
+      <DependentUpon>ucProblemManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucSystemLogs.resx">
+      <DependentUpon>ucSystemLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Admin\ucUserManagement.resx">
+      <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Registration.resx">
+      <DependentUpon>Registration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\MainFormStudent.resx">
+      <DependentUpon>MainFormStudent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucProblemDetail.resx">
+      <DependentUpon>ucProblemDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucProblemList.resx">
+      <DependentUpon>ucProblemList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucStudentDashboard.resx">
+      <DependentUpon>ucStudentDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucStudentSettings.resx">
+      <DependentUpon>ucStudentSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Student\ucSubmissions.resx">
+      <DependentUpon>ucSubmissions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include=".env" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <None Include="Resources\export.png" />
+    <None Include="Resources\user-interface.png" />
+    <None Include="Resources\delete %283%29.png" />
+    <None Include="Resources\magnifying-glass.png" />
+    <None Include="Resources\chart.png" />
+    <None Include="Resources\wall-clock %281%29.png" />
+    <None Include="Resources\check-mark %281%29.png" />
+    <None Include="Resources\setting.png" />
+    <None Include="Resources\trend %282%29.png" />
+    <None Include="Resources\paper.png" />
+    <None Include="Resources\group.png" />
+    <None Include="Resources\logout %281%29.png" />
+    <None Include="Resources\home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
