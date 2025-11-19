@@ -29,6 +29,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -80,6 +82,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.btnBack.BackColor = System.Drawing.Color.Gainsboro;
             this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBack.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.btnBack.Location = new System.Drawing.Point(3, 3);
+            this.btnBack.Margin = new System.Windows.Forms.Padding(4);
             this.btnBack.Location = new System.Drawing.Point(2, 2);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(84, 28);
@@ -119,6 +123,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.colDifficulty,
             this.TagProblem,
             this.colStatus});
+            this.dgvProblemList.Location = new System.Drawing.Point(12, 130);
             this.dgvProblemList.Location = new System.Drawing.Point(9, 106);
             this.dgvProblemList.Name = "dgvProblemList";
             this.dgvProblemList.ReadOnly = true;
@@ -127,7 +132,46 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.dgvProblemList.RowTemplate.Height = 35;
             this.dgvProblemList.Size = new System.Drawing.Size(819, 325);
             this.dgvProblemList.TabIndex = 2;
-            this.dgvProblemList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProblemList_CellContentClick);
+            this.dgvProblemList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvProblemList_CellClick);
+            // 
+            // colHash
+            // 
+            this.colHash.FillWeight = 5F;
+            this.colHash.HeaderText = "#";
+            this.colHash.MinimumWidth = 6;
+            this.colHash.Name = "colHash";
+            this.colHash.ReadOnly = true;
+            // 
+            // colProblemName
+            // 
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.colProblemName.DefaultCellStyle = dataGridViewCellStyle5;
+            this.colProblemName.FillWeight = 35F;
+            this.colProblemName.HeaderText = "Tên bài tập";
+            this.colProblemName.MinimumWidth = 6;
+            this.colProblemName.Name = "colProblemName";
+            this.colProblemName.ReadOnly = true;
+            this.colProblemName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colProblemName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // colDifficulty
+            // 
+            this.colDifficulty.FillWeight = 15F;
+            this.colDifficulty.HeaderText = "Độ khó";
+            this.colDifficulty.MinimumWidth = 6;
+            this.colDifficulty.Name = "colDifficulty";
+            this.colDifficulty.ReadOnly = true;
+            // 
+            // colStatus
+            // 
+            this.colStatus.FillWeight = 15F;
+            this.colStatus.HeaderText = "Trạng thái";
+            this.colStatus.MinimumWidth = 6;
+            this.colStatus.Name = "colStatus";
+            this.colStatus.ReadOnly = true;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+           
+            this.dgvProblemList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvProblemList_CellClick);
             // 
             // pnlFilters
             // 
@@ -135,6 +179,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlFilters.Controls.Add(this.pnlSearchContainer);
             this.pnlFilters.Controls.Add(this.btnFilter);
+            this.pnlFilters.Location = new System.Drawing.Point(0, 52);
+            this.pnlFilters.Margin = new System.Windows.Forms.Padding(4);
             this.pnlFilters.Location = new System.Drawing.Point(0, 42);
             this.pnlFilters.Name = "pnlFilters";
             this.pnlFilters.Padding = new System.Windows.Forms.Padding(10, 10, 10, 10);
@@ -149,6 +195,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.pnlSearchContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlSearchContainer.Controls.Add(this.txtSearch);
             this.pnlSearchContainer.Controls.Add(this.picSearchIcon);
+            this.pnlSearchContainer.Location = new System.Drawing.Point(12, 13);
+            this.pnlSearchContainer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlSearchContainer.Location = new System.Drawing.Point(9, 11);
             this.pnlSearchContainer.Name = "pnlSearchContainer";
             this.pnlSearchContainer.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
@@ -159,6 +207,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             // 
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 11.25F);
+            this.txtSearch.Location = new System.Drawing.Point(36, 3);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(4);
             this.txtSearch.Location = new System.Drawing.Point(27, 2);
             this.txtSearch.Multiline = true;
             this.txtSearch.Name = "txtSearch";
@@ -169,6 +219,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             // 
             this.picSearchIcon.Dock = System.Windows.Forms.DockStyle.Left;
             this.picSearchIcon.Image = global::CodeForge_Desktop.Properties.Resources.magnifying_glass;
+            this.picSearchIcon.Location = new System.Drawing.Point(7, 0);
+            this.picSearchIcon.Margin = new System.Windows.Forms.Padding(4);
             this.picSearchIcon.Location = new System.Drawing.Point(5, 0);
             this.picSearchIcon.Name = "picSearchIcon";
             this.picSearchIcon.Size = new System.Drawing.Size(20, 25);

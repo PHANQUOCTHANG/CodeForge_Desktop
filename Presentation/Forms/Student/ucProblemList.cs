@@ -9,7 +9,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
     public partial class ucProblemList : UserControl
     {
         private const string PlaceholderText = "Tìm kiếm bài tập...";
+        public event EventHandler<Guid> ProblemClicked;  // Thay đổi: gửi Guid thay vì string
         private ICodingProblemService _problemService;
+
         public ucProblemList()
         {
             _problemService = new CodingProblemService();
@@ -20,8 +22,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             SetupDataGridViewStyles();
             LoadDataFromDatabase();
 
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgvProblemList, new object[] { true });
+
             // Đăng ký sự kiện CellPainting để tô màu
             dgvProblemList.CellPainting += DgvProblemList_CellPainting;
+
+            // Đăng ký sự kiện Click vào Cell
+            dgvProblemList.CellClick += DgvProblemList_CellClick;
         }
 
         /// <summary>
@@ -37,13 +46,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
                 foreach (var problem in problems)
                 {
-                    int stt = 1;
                     dgvProblemList.Rows.Add(
-                        stt++ ,
+                        problem.ProblemID.ToString(),
                         problem.Title,
                         problem.Difficulty,
                         problem.Tags,
-                        "WAIT",
+                        problem.Status,
                         "-"
                     );
                 }
@@ -75,8 +83,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                         problem.ProblemID.ToString(),
                         problem.Title,
                         problem.Difficulty,
-                        problem.CreatedAt.ToString("yyyy-MM-dd"),
-                        problem.Status,
+                        problem.Tags,
+                        "WAIT",
                         "-"
                     );
                 }
@@ -179,7 +187,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 txtSearch.Padding = new Padding(0, paddingTop, 0, 0);
             }
 
-            // Sự kiện tìm kiếm khi nhập text
             txtSearch.TextChanged += (s, e) =>
             {
                 string searchText = txtSearch.Text.Trim();
@@ -221,8 +228,24 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             }
         }
 
-        private void dgvProblemList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvProblemList_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Kiểm tra nếu click vào hàng hợp lệ (không phải header)
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                // Lấy ProblemID từ cột đầu tiên (colProblemID)
+                string problemIdStr = dgvProblemList.Rows[e.RowIndex].Cells["colHash"].Value?.ToString();
+                
+                if (Guid.TryParse(problemIdStr, out Guid problemId))
+                {
+                    // Kích hoạt sự kiện với ProblemID
+                    ProblemClicked?.Invoke(this, problemId);
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi: Không tìm thấy ID bài tập", "Lỗi");
+                }
+            }
         }
     }
 }
