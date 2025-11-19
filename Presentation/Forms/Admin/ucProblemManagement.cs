@@ -24,7 +24,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             // --- SỬA LỖI KHỞI TẠO SERVICE ---
             // Vì Service của bạn cần Repository, ta phải tạo Repository trước
             var repo = new CodingProblemRepository();
-            _problemService = new CodingProblemService(repo);
+            _problemService = new CodingProblemService();
 
             SetupDataGridView();
             LoadData();

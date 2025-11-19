@@ -19,10 +19,10 @@
         {
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblDeadline = new System.Windows.Forms.Label();
-            this.lblProblemTitle = new System.Windows.Forms.Label();
             this.btnBack = new System.Windows.Forms.Button();
             this.pnlToolbar = new System.Windows.Forms.Panel();
-            this.lblLanguage = new System.Windows.Forms.Label();
+            this.cmbLanguage = new System.Windows.Forms.ComboBox();
+            this.lblLanguageLabel = new System.Windows.Forms.Label();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnRun = new System.Windows.Forms.Button();
@@ -35,7 +35,7 @@
             this.lblTabOutput = new System.Windows.Forms.Label();
             this.lblTabConsole = new System.Windows.Forms.Label();
             this.pnlCodeArea = new System.Windows.Forms.Panel();
-            this.rtbCodeEditor = new System.Windows.Forms.RichTextBox();
+            this.scintillaEditor = new ScintillaNET.Scintilla();
             this.pnlEditorHeader = new System.Windows.Forms.Panel();
             this.lblFileName = new System.Windows.Forms.Label();
             this.lblEditorTitle = new System.Windows.Forms.Label();
@@ -57,7 +57,6 @@
             this.pnlHeader.BackColor = System.Drawing.Color.White;
             this.pnlHeader.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlHeader.Controls.Add(this.lblDeadline);
-            this.pnlHeader.Controls.Add(this.lblProblemTitle);
             this.pnlHeader.Controls.Add(this.btnBack);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
@@ -78,16 +77,6 @@
             this.lblDeadline.Text = "Deadline: 2025-11-20";
             this.lblDeadline.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblProblemTitle
-            // 
-            this.lblProblemTitle.AutoSize = true;
-            this.lblProblemTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProblemTitle.Location = new System.Drawing.Point(130, 14);
-            this.lblProblemTitle.Name = "lblProblemTitle";
-            this.lblProblemTitle.Size = new System.Drawing.Size(151, 21);
-            this.lblProblemTitle.TabIndex = 1;
-            this.lblProblemTitle.Text = "Bài 1: Hello World";
-            // 
             // btnBack
             // 
             this.btnBack.Dock = System.Windows.Forms.DockStyle.Left;
@@ -103,7 +92,8 @@
             // pnlToolbar
             // 
             this.pnlToolbar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.pnlToolbar.Controls.Add(this.lblLanguage);
+            this.pnlToolbar.Controls.Add(this.cmbLanguage);
+            this.pnlToolbar.Controls.Add(this.lblLanguageLabel);
             this.pnlToolbar.Controls.Add(this.btnSubmit);
             this.pnlToolbar.Controls.Add(this.btnSave);
             this.pnlToolbar.Controls.Add(this.btnRun);
@@ -114,16 +104,35 @@
             this.pnlToolbar.Size = new System.Drawing.Size(1200, 45);
             this.pnlToolbar.TabIndex = 1;
             // 
-            // lblLanguage
+            // cmbLanguage
             // 
-            this.lblLanguage.AutoSize = true;
-            this.lblLanguage.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblLanguage.ForeColor = System.Drawing.Color.Gray;
-            this.lblLanguage.Location = new System.Drawing.Point(320, 15);
-            this.lblLanguage.Name = "lblLanguage";
-            this.lblLanguage.Size = new System.Drawing.Size(112, 15);
-            this.lblLanguage.TabIndex = 3;
-            this.lblLanguage.Text = "Language: JavaScript";
+            this.cmbLanguage.BackColor = System.Drawing.Color.White;
+            this.cmbLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLanguage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbLanguage.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbLanguage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.cmbLanguage.FormattingEnabled = true;
+            this.cmbLanguage.Items.AddRange(new object[] {
+            "C++",
+            "Python",
+            "JavaScript"});
+            this.cmbLanguage.Location = new System.Drawing.Point(400, 10);
+            this.cmbLanguage.Name = "cmbLanguage";
+            this.cmbLanguage.Size = new System.Drawing.Size(120, 23);
+            this.cmbLanguage.TabIndex = 4;
+            this.cmbLanguage.SelectedIndex = 2;
+            this.cmbLanguage.SelectedIndexChanged += new System.EventHandler(this.cmbLanguage_SelectedIndexChanged);
+            // 
+            // lblLanguageLabel
+            // 
+            this.lblLanguageLabel.AutoSize = true;
+            this.lblLanguageLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblLanguageLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.lblLanguageLabel.Location = new System.Drawing.Point(320, 15);
+            this.lblLanguageLabel.Name = "lblLanguageLabel";
+            this.lblLanguageLabel.Size = new System.Drawing.Size(74, 15);
+            this.lblLanguageLabel.TabIndex = 3;
+            this.lblLanguageLabel.Text = "Ngôn ngữ:";
             // 
             // btnSubmit
             // 
@@ -270,7 +279,7 @@
             // 
             // pnlCodeArea
             // 
-            this.pnlCodeArea.Controls.Add(this.rtbCodeEditor);
+            this.pnlCodeArea.Controls.Add(this.scintillaEditor);
             this.pnlCodeArea.Controls.Add(this.pnlEditorHeader);
             this.pnlCodeArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCodeArea.Location = new System.Drawing.Point(0, 0);
@@ -278,18 +287,14 @@
             this.pnlCodeArea.Size = new System.Drawing.Size(796, 700);
             this.pnlCodeArea.TabIndex = 0;
             // 
-            // rtbCodeEditor
+            // scintillaEditor
             // 
-            this.rtbCodeEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.rtbCodeEditor.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbCodeEditor.Font = new System.Drawing.Font("Consolas", 11F);
-            this.rtbCodeEditor.ForeColor = System.Drawing.Color.White;
-            this.rtbCodeEditor.Location = new System.Drawing.Point(0, 30);
-            this.rtbCodeEditor.Name = "rtbCodeEditor";
-            this.rtbCodeEditor.Size = new System.Drawing.Size(796, 670);
-            this.rtbCodeEditor.TabIndex = 1;
-            this.rtbCodeEditor.Text = "// Viết code của bạn ở đây\n\nfunction solution() {\n    // TODO: Implement your solution\n}\n\nsolution();";
+            this.scintillaEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.scintillaEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scintillaEditor.Location = new System.Drawing.Point(0, 30);
+            this.scintillaEditor.Name = "scintillaEditor";
+            this.scintillaEditor.Size = new System.Drawing.Size(796, 670);
+            this.scintillaEditor.TabIndex = 1;
             // 
             // pnlEditorHeader
             // 
@@ -322,7 +327,7 @@
             this.lblEditorTitle.ForeColor = System.Drawing.Color.Silver;
             this.lblEditorTitle.Location = new System.Drawing.Point(10, 8);
             this.lblEditorTitle.Name = "lblEditorTitle";
-            this.lblEditorTitle.Size = new System.Drawing.Size(39, 15);
+            this.lblEditorTitle.Size = new System.Drawing.Size(40, 15);
             this.lblEditorTitle.TabIndex = 0;
             this.lblEditorTitle.Text = "Editor";
             // 
@@ -336,7 +341,6 @@
             this.Name = "ucProblemDetail";
             this.Size = new System.Drawing.Size(1200, 800);
             this.pnlHeader.ResumeLayout(false);
-            this.pnlHeader.PerformLayout();
             this.pnlToolbar.ResumeLayout(false);
             this.pnlToolbar.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -358,13 +362,13 @@
 
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Button btnBack;
-        private System.Windows.Forms.Label lblProblemTitle;
         private System.Windows.Forms.Label lblDeadline;
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnSubmit;
-        private System.Windows.Forms.Label lblLanguage;
+        private System.Windows.Forms.ComboBox cmbLanguage;
+        private System.Windows.Forms.Label lblLanguageLabel;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.FlowLayoutPanel flowDescription;
         private System.Windows.Forms.Panel pnlEditorContainer;
@@ -372,7 +376,7 @@
         private System.Windows.Forms.Panel pnlEditorHeader;
         private System.Windows.Forms.Label lblEditorTitle;
         private System.Windows.Forms.Label lblFileName;
-        private System.Windows.Forms.RichTextBox rtbCodeEditor;
+        private ScintillaNET.Scintilla scintillaEditor;
         private System.Windows.Forms.Panel pnlOutput;
         private System.Windows.Forms.Panel panelTabs;
         private System.Windows.Forms.Label lblTabOutput;

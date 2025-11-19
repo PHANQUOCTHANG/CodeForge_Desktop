@@ -1,6 +1,7 @@
 using CodeForge_Desktop.Business.Interfaces;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
+using CodeForge_Desktop.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 
@@ -8,11 +9,11 @@ namespace CodeForge_Desktop.Business.Services
 {
     public class CodingProblemService : ICodingProblemService
     {
-        private readonly ICodingProblemRepository _repo;
+        private ICodingProblemRepository _repo;
 
-        public CodingProblemService(ICodingProblemRepository repo)
+        public CodingProblemService()
         {
-            _repo = repo;
+            _repo = new CodingProblemRepository();
         }
 
         public CodingProblem GetById(Guid id)

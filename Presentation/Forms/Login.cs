@@ -51,13 +51,11 @@ namespace CodeForge_Desktop.Presentation.Forms
                 {
                     MainFormAdmin mainFormAdmin = new MainFormAdmin();
                     mainFormAdmin.Show();
-                   
                 }
                 else
                 {
                     MainFormStudent mainFormStudent = new MainFormStudent();
-                    mainFormStudent.Show();
-                   
+                    mainFormStudent.Show();  
                 }
 
                 //this.Close();
