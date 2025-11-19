@@ -53,6 +53,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
         private void btnDanhSachBaiTap_Click(object sender, EventArgs e)
         {
+            if (!pnlSidebar.Visible) pnlSidebar.Visible = true;
             SetActiveButton(btnDanhSachBaiTap);
             ShowProblemList();
         }
@@ -99,6 +100,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private void ShowProblemDetail(string problemName)
         {
             // Không cần đổi màu menu vì vẫn đang ở mục "Bài tập" (hoặc có thể tắt hết màu nếu muốn)
+            // 1. ẨN SIDEBAR KHI VÀO CHẾ ĐỘ LÀM BÀI (ZEN MODE)
+            pnlSidebar.Visible = false;
 
             var detailView = new ucProblemDetail();
             detailView.SetProblemTitle(problemName); // Truyền tên bài tập vào
@@ -106,6 +109,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             // Lắng nghe sự kiện: Khi bấm "Quay lại" -> Quay về danh sách bài tập
             detailView.BackButtonClicked += (s, args) =>
             {
+                pnlSidebar.Visible = true;
                 btnDanhSachBaiTap.PerformClick(); // Giả lập bấm nút menu để load lại danh sách
             };
 
