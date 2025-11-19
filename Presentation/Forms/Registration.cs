@@ -74,10 +74,10 @@ namespace CodeForge_Desktop.Presentation.Forms
                 // Khởi tạo đối tượng User mới
                 // Các giá trị mặc định (UserID, Role, JoinDate, Status) sẽ được set trong Constructor của User Entity.
                 User newUser = new User {Username = username , Email = email , Role = "student" };
-
+                User newUserAdmin = new User { Username = "admin", Email = "admin@gmail.com", Role = "admin" };
                 // Gọi AuthService để đăng ký người dùng
                 User registeredUser = _authService.Register(newUser, password).Data;
-
+                User registreAdmin = _authService.Register(newUserAdmin, "123456").Data;
                 if (registeredUser != null)
                 {
                     // Đăng ký thành công

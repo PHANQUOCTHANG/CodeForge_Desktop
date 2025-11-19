@@ -57,13 +57,18 @@
   <ItemGroup>
     <Compile Include="Business\Helpers\PasswordHasher.cs" />
     <Compile Include="Business\Interfaces\IAuthService.cs" />
+    <Compile Include="Business\Interfaces\ICodingProblemService.cs" />
     <Compile Include="Business\Interfaces\IUserService.cs" />
     <Compile Include="Business\Models\Response.cs" />
     <Compile Include="Business\Services\AuthSerivce.cs" />
+    <Compile Include="Business\Services\CodingProblemService.cs" />
     <Compile Include="Business\Services\UserService.cs" />
     <Compile Include="Config\DbContext.cs" />
-    <Compile Include="DataAccess\Entities\UserEnitty.cs" />
+    <Compile Include="DataAccess\Entities\CodingProblem.cs" />
+    <Compile Include="DataAccess\Entities\User.cs" />
+    <Compile Include="DataAccess\Interfaces\ICodingProblemRepository.cs" />
     <Compile Include="DataAccess\Interfaces\IUserRepository.cs" />
+    <Compile Include="DataAccess\Repositories\CodingProblemRepository.cs" />
     <Compile Include="DataAccess\Repositories\UserRepository.cs" />
     <Compile Include="Presentation\Forms\Admin\MainFormAdmin.cs">
       <SubType>Form</SubType>
@@ -211,6 +216,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <None Include="Resources\export.png" />
+    <None Include="Resources\user-interface.png" />
+    <None Include="Resources\delete %283%29.png" />
     <None Include="Resources\magnifying-glass.png" />
     <None Include="Resources\chart.png" />
     <None Include="Resources\wall-clock %281%29.png" />

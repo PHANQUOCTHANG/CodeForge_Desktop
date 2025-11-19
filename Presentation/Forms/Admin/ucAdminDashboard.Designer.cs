@@ -66,7 +66,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.lblUserNumber = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.pnlContent.SuspendLayout();
             this.panel11.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -90,7 +89,6 @@
             this.pnlContent.Controls.Add(this.panel11);
             this.pnlContent.Controls.Add(this.panel3);
             this.pnlContent.Controls.Add(this.panel1);
-            this.pnlContent.Controls.Add(this.label1);
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContent.Location = new System.Drawing.Point(0, 0);
             this.pnlContent.Name = "pnlContent";
@@ -103,7 +101,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel11.Controls.Add(this.tableLayoutPanel3);
-            this.panel11.Location = new System.Drawing.Point(17, 601);
+            this.panel11.Location = new System.Drawing.Point(17, 624);
             this.panel11.Name = "panel11";
             this.panel11.Size = new System.Drawing.Size(1318, 179);
             this.panel11.TabIndex = 5;
@@ -207,16 +205,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.tableLayoutPanel2);
-            this.panel3.Location = new System.Drawing.Point(17, 270);
+            this.panel3.Location = new System.Drawing.Point(18, 232);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1319, 314);
+            this.panel3.Size = new System.Drawing.Size(1203, 314);
             this.panel3.TabIndex = 4;
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.BackColor = System.Drawing.Color.White;
             this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.dataGridView1, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.label11, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -225,7 +223,7 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 254F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1317, 312);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1203, 314);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
             // dataGridView1
@@ -250,8 +248,8 @@
             this.Column4,
             this.Column5});
             this.dataGridView1.EnableHeadersVisualStyles = false;
-            this.dataGridView1.Location = new System.Drawing.Point(15, 58);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(15, 0, 15, 0);
+            this.dataGridView1.Location = new System.Drawing.Point(15, 60);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.dataGridView1.Name = "dataGridView1";
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
@@ -263,7 +261,7 @@
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1287, 239);
+            this.dataGridView1.Size = new System.Drawing.Size(1173, 239);
             this.dataGridView1.TabIndex = 2;
             // 
             // Column1
@@ -299,13 +297,13 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Dock = System.Windows.Forms.DockStyle.Left;
+            this.label11.Dock = System.Windows.Forms.DockStyle.Top;
             this.label11.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.label11.Location = new System.Drawing.Point(3, 0);
             this.label11.Name = "label11";
             this.label11.Padding = new System.Windows.Forms.Padding(0, 15, 0, 0);
-            this.label11.Size = new System.Drawing.Size(158, 58);
+            this.label11.Size = new System.Drawing.Size(158, 60);
             this.label11.TabIndex = 0;
             this.label11.Text = "Hoạt động gần đây";
             // 
@@ -315,7 +313,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.tableLayoutPanel1);
-            this.panel1.Location = new System.Drawing.Point(17, 41);
+            this.panel1.Location = new System.Drawing.Point(16, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1320, 212);
             this.panel1.TabIndex = 2;
@@ -541,13 +539,14 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(13, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(218, 28);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "TRANG CHỦ (ADMIN)";
+            //this.label1.AutoSize = true;
+            //this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            //this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            //this.label1.Location = new System.Drawing.Point(0, 0);
+            //this.label1.Name = "label1";
+            //this.label1.Size = new System.Drawing.Size(218, 28);
+            //this.label1.TabIndex = 1;
+            //this.label1.Text = "TRANG CHỦ (ADMIN)";
             // 
             // ucAdminDashboard
             // 
@@ -557,7 +556,6 @@
             this.Name = "ucAdminDashboard";
             this.Size = new System.Drawing.Size(1354, 803);
             this.pnlContent.ResumeLayout(false);
-            this.pnlContent.PerformLayout();
             this.panel11.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
@@ -587,7 +585,6 @@
         #endregion
 
         private System.Windows.Forms.Panel pnlContent;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label2;

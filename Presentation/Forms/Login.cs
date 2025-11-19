@@ -60,7 +60,7 @@ namespace CodeForge_Desktop.Presentation.Forms
                    
                 }
 
-                this.Close();
+                //this.Close();
 
                 MessageBox.Show(response.Message,
                                        "Đăng ký Thành công",
