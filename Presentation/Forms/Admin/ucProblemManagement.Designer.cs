@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlTop = new System.Windows.Forms.Panel();
             this.pnlSearchContainer = new System.Windows.Forms.Panel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchIcon = new System.Windows.Forms.Label();
             this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.btnDuplicate = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
@@ -44,11 +45,9 @@
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDifficulty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDeadline = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSubmissions = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colActions = new System.Windows.Forms.DataGridViewImageColumn();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.colActions = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlTop.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.pnlButtons.SuspendLayout();
@@ -116,6 +115,24 @@
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(390, 40);
             this.pnlButtons.TabIndex = 0;
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackColor = System.Drawing.Color.White;
+            this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDelete.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnDelete.Image = global::CodeForge_Desktop.Properties.Resources.user_interface;
+            this.btnDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDelete.Location = new System.Drawing.Point(278, 3);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(106, 34);
+            this.btnDelete.TabIndex = 3;
+            this.btnDelete.Text = " Delete";
+            this.btnDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDelete.UseVisualStyleBackColor = false;
             // 
             // btnDuplicate
             // 
@@ -192,14 +209,14 @@
             this.dgvAssignments.BackgroundColor = System.Drawing.Color.White;
             this.dgvAssignments.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvAssignments.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvAssignments.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvAssignments.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvAssignments.ColumnHeadersHeight = 40;
             this.dgvAssignments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvAssignments.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -207,7 +224,6 @@
             this.colName,
             this.colDifficulty,
             this.colCategory,
-            this.colDeadline,
             this.colSubmissions,
             this.colStatus,
             this.colActions});
@@ -253,13 +269,6 @@
             this.colCategory.Name = "colCategory";
             this.colCategory.ReadOnly = true;
             // 
-            // colDeadline
-            // 
-            this.colDeadline.HeaderText = "Deadline";
-            this.colDeadline.MinimumWidth = 6;
-            this.colDeadline.Name = "colDeadline";
-            this.colDeadline.ReadOnly = true;
-            // 
             // colSubmissions
             // 
             this.colSubmissions.FillWeight = 80F;
@@ -283,24 +292,6 @@
             this.colActions.MinimumWidth = 6;
             this.colActions.Name = "colActions";
             this.colActions.ReadOnly = true;
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackColor = System.Drawing.Color.White;
-            this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDelete.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
-            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
-            this.btnDelete.Image = global::CodeForge_Desktop.Properties.Resources.user_interface;
-            this.btnDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDelete.Location = new System.Drawing.Point(278, 3);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(106, 34);
-            this.btnDelete.TabIndex = 3;
-            this.btnDelete.Text = " Delete";
-            this.btnDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnDelete.UseVisualStyleBackColor = false;
             // 
             // ucProblemManagement
             // 
@@ -340,9 +331,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDifficulty;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCategory;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDeadline;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSubmissions;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
-        private System.Windows.Forms.DataGridViewImageColumn colActions;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colActions;
     }
 }
