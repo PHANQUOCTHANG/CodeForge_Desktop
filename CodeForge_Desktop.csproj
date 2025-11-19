@@ -70,6 +70,18 @@
     <Compile Include="DataAccess\Interfaces\IUserRepository.cs" />
     <Compile Include="DataAccess\Repositories\CodingProblemRepository.cs" />
     <Compile Include="DataAccess\Repositories\UserRepository.cs" />
+    <Compile Include="Presentation\Forms\Admin\AddEditProblemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\AddEditProblemForm.Designer.cs">
+      <DependentUpon>AddEditProblemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\AddEditUserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\AddEditUserForm.Designer.cs">
+      <DependentUpon>AddEditUserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Forms\Admin\MainFormAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,6 +168,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Presentation\Forms\Admin\AddEditUserForm.resx">
+      <DependentUpon>AddEditUserForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Admin\MainFormAdmin.resx">
       <DependentUpon>MainFormAdmin.cs</DependentUpon>
     </EmbeddedResource>

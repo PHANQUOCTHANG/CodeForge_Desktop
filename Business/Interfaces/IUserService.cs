@@ -15,5 +15,6 @@ namespace CodeForge_Desktop.Business.Interfaces
         bool CreateUser(User user);
         bool UpdateUser(User user);
         bool SoftDeleteUser(Guid id);
+        bool SoftDeleteListUsers(List<Guid> ids);
     }
 }

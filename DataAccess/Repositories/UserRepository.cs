@@ -16,10 +16,19 @@ namespace CodeForge_Desktop.DataAccess.Repositories
         {
             return new User
             {
+                // QUAN TRỌNG: Phải map ID từ DB vào, nếu không nó sẽ tự tạo Guid mới!
+                UserID = (Guid)row["UserID"],
+
                 Username = row["Username"].ToString(),
                 Email = row["Email"].ToString(),
                 PasswordHash = row["PasswordHash"].ToString(),
-                Role = row["Role"].ToString()
+                Role = row["Role"].ToString(),
+
+                // Map thêm các trường khác cho đầy đủ
+                Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : "Active",
+                JoinDate = row["JoinDate"] != DBNull.Value ? (DateTime)row["JoinDate"] : DateTime.Now,
+
+                IsDeleted = row["IsDeleted"] != DBNull.Value ? (bool)row["IsDeleted"] : false
             };
         }
 
