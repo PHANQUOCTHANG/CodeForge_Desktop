@@ -124,6 +124,12 @@
     <Compile Include="Presentation\Forms\Student\MainFormStudent.Designer.cs">
       <DependentUpon>MainFormStudent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucProblemDetail.Designer.cs">
+      <DependentUpon>ucProblemDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Forms\Student\ucProblemList.cs">
       <SubType>UserControl</SubType>
     </Compile>
