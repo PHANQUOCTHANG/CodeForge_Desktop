@@ -30,7 +30,7 @@ namespace CodeForge_Desktop
             Login loginForm = new Login(authService);
 
             //Application.Run(loginForm);
-            Application.Run(new MainFormStudent());
+            Application.Run(new  Login(authService));
 
         }
     }
