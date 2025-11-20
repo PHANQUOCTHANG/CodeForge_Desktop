@@ -113,6 +113,9 @@ namespace CodeForge_Desktop.Presentation.Forms
             }
         }
 
-        
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

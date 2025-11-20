@@ -22,15 +22,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
         private void MainFormStudent_Load(object sender, EventArgs e)
         {
-            // Mặc định load Dashboard
             btnTrangChu.PerformClick();
         }   
 
         private void LoadUserControl(UserControl userControl)
         {
-            // Xóa control cũ (nếu muốn tiết kiệm bộ nhớ, hoặc giữ lại nếu muốn cache)
             pnlContent.Controls.Clear();
-
             userControl.Dock = DockStyle.Fill;
             pnlContent.Controls.Add(userControl);
             userControl.BringToFront();
@@ -70,7 +67,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         // Hàm helper để đổi màu nút đang chọn
         private void SetActiveButton(Button activeButton)
         {
-            // Reset màu các nút khác
             foreach (Control ctrl in pnlMenu.Controls)
             {
                 if (ctrl is Button btn)
@@ -80,8 +76,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 }
             }
 
-            // Set màu nút active
-            activeButton.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh nổi bật
+            activeButton.BackColor = Color.FromArgb(0, 120, 215);
             activeButton.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         }
 
@@ -93,8 +88,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
         private void btnDanhSachBaiTap_Click(object sender, EventArgs e)
         {
+            if (!pnlSidebar.Visible) pnlSidebar.Visible = true;
             SetActiveButton(btnDanhSachBaiTap);
-            LoadUserControl(new ucProblemList());
+            ShowProblemList();
         }
 
         private void btnLichSuNopBai_Click(object sender, EventArgs e)
@@ -112,7 +108,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private void btnCaiDat_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnCaiDat);
-            // Giả sử có ucStudentSettings
             LoadUserControl(new ucStudentSettings());
         }
 
@@ -128,5 +123,35 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             LoadUserControl(dashboard);
         }
 
+        private void ShowProblemList()
+        {
+            var problemList = new ucProblemList();
+
+            // Lắng nghe sự kiện: Khi chọn bài tập -> Chuyển sang màn hình chi tiết (gửi ProblemID)
+            problemList.ProblemClicked += (s, problemId) =>
+            {
+                ShowProblemDetail(problemId);
+            };
+
+            LoadUserControl(problemList);
+        }
+
+        private void ShowProblemDetail(Guid problemId)
+        {
+            pnlSidebar.Visible = false;
+
+            var detailView = new ucProblemDetail();
+            
+            // Tải dữ liệu bài tập theo ID
+            detailView.LoadProblemById(problemId);
+
+            detailView.BackButtonClicked += (s, args) =>
+            {
+                pnlSidebar.Visible = true;
+                btnDanhSachBaiTap.PerformClick();
+            };
+
+            LoadUserControl(detailView);
+        }
     }
 }

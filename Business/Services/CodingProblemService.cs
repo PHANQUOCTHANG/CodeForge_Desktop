@@ -1,18 +1,19 @@
 using CodeForge_Desktop.Business.Interfaces;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
+using CodeForge_Desktop.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 
 namespace CodeForge_Desktop.Business.Services
 {
-    internal class CodingProblemService : ICodingProblemService
+    public class CodingProblemService : ICodingProblemService
     {
-        private readonly ICodingProblemRepository _repo;
+        private ICodingProblemRepository _repo;
 
-        public CodingProblemService(ICodingProblemRepository repo)
+        public CodingProblemService()
         {
-            _repo = repo;
+            _repo = new CodingProblemRepository();
         }
 
         public CodingProblem GetById(Guid id)
@@ -52,5 +53,31 @@ namespace CodeForge_Desktop.Business.Services
             int rows = _repo.Delete(id);
             return rows > 0;
         }
+
+        public bool DeleteProblem(Guid id)
+        {
+            return _repo.Delete(id) > 0;
+        }
+
+        // --- THÊM PH??NG TH?C NÀY ---
+        public bool DeleteListProblems(List<Guid> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+
+            bool success = true;
+            foreach (var id in ids)
+            {
+                // G?i hàm xóa t?ng bài t?p ?ã có
+                // N?u có b?t k? bài nào xóa th?t b?i, ?ánh d?u success = false
+                // (Tùy nghi?p v?, b?n có th? mu?n d?ng ngay ho?c ti?p t?c xóa các bài khác)
+                if (!DeleteProblem(id))
+                {
+                    success = false;
+                }
+            }
+            return success;
+        }
+
+
     }
 }

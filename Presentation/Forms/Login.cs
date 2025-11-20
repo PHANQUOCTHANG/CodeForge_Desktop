@@ -6,6 +6,7 @@ using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.Presentation.Forms.Admin;
 using CodeForge_Desktop.Presentation.Forms.Student;
 using CodeForge_Desktop.Business.Models;
+using CodeForge_Desktop.Business.Helpers;
 
 namespace CodeForge_Desktop.Presentation.Forms
 {
@@ -47,17 +48,16 @@ namespace CodeForge_Desktop.Presentation.Forms
             if (response.Code == 1)
             {
                 User user = response.Data;
+                GlobalStore.user = user;
                 if (user.Role == "admin")
                 {
                     MainFormAdmin mainFormAdmin = new MainFormAdmin();
                     mainFormAdmin.Show();
-                   
                 }
                 else
                 {
                     MainFormStudent mainFormStudent = new MainFormStudent();
-                    mainFormStudent.Show();
-                   
+                    mainFormStudent.Show();  
                 }
 
                 //this.Close();
@@ -67,6 +67,11 @@ namespace CodeForge_Desktop.Presentation.Forms
                                        MessageBoxButtons.OK,
                                        MessageBoxIcon.Information);
             }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         // ... các phương thức khác ...
