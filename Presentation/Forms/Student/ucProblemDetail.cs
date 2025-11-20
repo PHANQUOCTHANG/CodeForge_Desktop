@@ -551,7 +551,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         /// </summary>
         private Guid GetCurrentUserId()
         {
-            return UserStore.user.UserID;
+            return GlobalStore.user.UserID;
         }
 
         /// <summary>

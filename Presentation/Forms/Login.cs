@@ -48,7 +48,7 @@ namespace CodeForge_Desktop.Presentation.Forms
             if (response.Code == 1)
             {
                 User user = response.Data;
-                UserStore.user = user;
+                GlobalStore.user = user;
                 if (user.Role == "admin")
                 {
                     MainFormAdmin mainFormAdmin = new MainFormAdmin();
