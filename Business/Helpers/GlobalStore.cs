@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.Business.Helpers
 {
-    public class UserStore
+    public class GlobalStore
     {
         public static User user;
     }
