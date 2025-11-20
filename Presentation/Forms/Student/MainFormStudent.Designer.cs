@@ -39,6 +39,8 @@
             this.lblAppName = new System.Windows.Forms.Label();
             this.lblLogo = new System.Windows.Forms.Label();
             this.pnlContent = new System.Windows.Forms.Panel();
+            this.btnDanhSachKhoaHoc = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.pnlSidebar.SuspendLayout();
             this.pnlMenu.SuspendLayout();
             this.pnlLogo.SuspendLayout();
@@ -76,6 +78,8 @@
             // 
             // pnlMenu
             // 
+            this.pnlMenu.Controls.Add(this.button2);
+            this.pnlMenu.Controls.Add(this.btnDanhSachKhoaHoc);
             this.pnlMenu.Controls.Add(this.btnCaiDat);
             this.pnlMenu.Controls.Add(this.btnLichSuNopBai);
             this.pnlMenu.Controls.Add(this.btnDanhSachBaiTap);
@@ -90,13 +94,12 @@
             // btnCaiDat
             // 
             this.btnCaiDat.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnCaiDat.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnCaiDat.FlatAppearance.BorderSize = 0;
             this.btnCaiDat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.btnCaiDat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnCaiDat.ForeColor = System.Drawing.Color.White;
-            this.btnCaiDat.Location = new System.Drawing.Point(0, 145);
+            this.btnCaiDat.Location = new System.Drawing.Point(0, 241);
             this.btnCaiDat.Name = "btnCaiDat";
             this.btnCaiDat.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.btnCaiDat.Size = new System.Drawing.Size(240, 45);
@@ -206,6 +209,43 @@
             this.pnlContent.Size = new System.Drawing.Size(1542, 803);
             this.pnlContent.TabIndex = 1;
             // 
+            // btnDanhSachKhoaHoc
+            // 
+            this.btnDanhSachKhoaHoc.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDanhSachKhoaHoc.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDanhSachKhoaHoc.FlatAppearance.BorderSize = 0;
+            this.btnDanhSachKhoaHoc.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnDanhSachKhoaHoc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDanhSachKhoaHoc.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.btnDanhSachKhoaHoc.ForeColor = System.Drawing.Color.White;
+            this.btnDanhSachKhoaHoc.Location = new System.Drawing.Point(0, 145);
+            this.btnDanhSachKhoaHoc.Name = "btnDanhSachKhoaHoc";
+            this.btnDanhSachKhoaHoc.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.btnDanhSachKhoaHoc.Size = new System.Drawing.Size(240, 45);
+            this.btnDanhSachKhoaHoc.TabIndex = 5;
+            this.btnDanhSachKhoaHoc.Text = "📋  Khóa học";
+            this.btnDanhSachKhoaHoc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDanhSachKhoaHoc.UseVisualStyleBackColor = true;
+            this.btnDanhSachKhoaHoc.Click += new System.EventHandler(this.btnDanhSachKhoaHoc_Click);
+            // 
+            // button2
+            // 
+            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.button2.ForeColor = System.Drawing.Color.White;
+            this.button2.Location = new System.Drawing.Point(0, 190);
+            this.button2.Name = "button2";
+            this.button2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.button2.Size = new System.Drawing.Size(240, 45);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "📋  Khóa học của tôi";
+            this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // MainFormStudent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -238,5 +278,7 @@
         private System.Windows.Forms.Button btnCaiDat;
         private System.Windows.Forms.Button btnDangXuat;
         private System.Windows.Forms.Panel pnlContent;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnDanhSachKhoaHoc;
     }
 }

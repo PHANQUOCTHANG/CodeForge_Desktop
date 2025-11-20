@@ -26,11 +26,12 @@ namespace CodeForge_Desktop
             // 2. Đăng ký Service, truyền Repository vào
             IAuthService authService = new AuthService(userRepository);
 
-               // 3. Khởi chạy Form Login, truyền AuthService vào Constructor
-            //Login loginForm = new Login(authService);
+            // 3. Khởi chạy Form Login, truyền AuthService vào Constructor
+            Login loginForm = new Login(authService);
 
-            Application.Run(new Login(authService));
-            
+            //Application.Run(loginForm);
+            Application.Run(new  Login(authService));
+
         }
     }
 }
