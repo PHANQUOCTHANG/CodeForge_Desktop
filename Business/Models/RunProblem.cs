@@ -13,6 +13,6 @@ namespace CodeForge_Desktop.Business.Models
         public string Code { get; set; } = string.Empty;
         public string Language { get; set; }
         public string FunctionName { get; set; }
-        public List<Guid> TestCases { get; set; }
+        public List<Guid>? TestCases { get; set; }
     }
 }

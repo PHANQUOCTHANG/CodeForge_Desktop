@@ -120,7 +120,7 @@
             this.cmbLanguage.Name = "cmbLanguage";
             this.cmbLanguage.Size = new System.Drawing.Size(120, 23);
             this.cmbLanguage.TabIndex = 4;
-            this.cmbLanguage.SelectedIndex = 2;
+            this.cmbLanguage.SelectedIndex = 0;
             this.cmbLanguage.SelectedIndexChanged += new System.EventHandler(this.cmbLanguage_SelectedIndexChanged);
             // 
             // lblLanguageLabel
