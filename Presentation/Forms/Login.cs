@@ -6,6 +6,7 @@ using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.Presentation.Forms.Admin;
 using CodeForge_Desktop.Presentation.Forms.Student;
 using CodeForge_Desktop.Business.Models;
+using CodeForge_Desktop.Business.Helpers;
 
 namespace CodeForge_Desktop.Presentation.Forms
 {
@@ -47,6 +48,7 @@ namespace CodeForge_Desktop.Presentation.Forms
             if (response.Code == 1)
             {
                 User user = response.Data;
+                UserStore.user = user;
                 if (user.Role == "admin")
                 {
                     MainFormAdmin mainFormAdmin = new MainFormAdmin();

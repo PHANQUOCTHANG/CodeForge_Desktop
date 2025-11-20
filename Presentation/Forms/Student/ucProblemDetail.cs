@@ -19,7 +19,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private ProblemRunnerService _runnerService;
         public event EventHandler BackButtonClicked;
         private Guid _problemId;
-        private string _currentLanguage = "JavaScript";
+        private string _currentLanguage = "C++";
         private CodingProblem _currentProblem;
         private Panel pnlResultContainer;
         private Panel _loadingPanel;
@@ -27,6 +27,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private int _loadingDotCount = 0;
         private Timer _loadingTimer;
         private string _loadingMessage = "";
+        
 
         public ucProblemDetail()
         {
@@ -393,12 +394,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 ShowLoadingPanel("Đang submit code");
 
                 // Lấy tất cả test cases (không chỉ visible)
-                var testCases = _testCaseService.GetByProblemId(_problemId);
-                var testCaseIds = new List<Guid>();
-                foreach (var tc in testCases)
-                {
-                    testCaseIds.Add(tc.TestCaseID);
-                }
+                //var testCases = _testCaseService.GetByProblemId(_problemId);
+                //var testCaseIds = new List<Guid>();
+                //foreach (var tc in testCases)
+                //{
+                //    testCaseIds.Add(tc.TestCaseID);
+                //}
 
                 // Tạo request
                 var submitRequest = new RunProblem
@@ -407,8 +408,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     ProblemId = _problemId,
                     Code = scintillaEditor.Text,
                     Language = _currentLanguage.ToLower(),
-                    FunctionName = _currentProblem.FunctionName,
-                    TestCases = testCaseIds
+                    FunctionName = _currentProblem.FunctionName   
                 };
 
                 // Gửi request
@@ -551,7 +551,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         /// </summary>
         private Guid GetCurrentUserId()
         {
-            return Guid.Empty;
+            return UserStore.user.UserID;
         }
 
         /// <summary>
