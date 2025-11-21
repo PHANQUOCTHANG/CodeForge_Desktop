@@ -236,14 +236,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.pnlCoursePreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCoursePreview.Location = new System.Drawing.Point(12, 12);
             this.pnlCoursePreview.Name = "pnlCoursePreview";
-            this.pnlCoursePreview.Padding = new System.Windows.Forms.Padding(18);
+            this.pnlCoursePreview.Padding = new System.Windows.Forms.Padding(0);  // ✅ XÓA padding
             this.pnlCoursePreview.Size = new System.Drawing.Size(320, 500);
             this.pnlCoursePreview.TabIndex = 0;
+            this.pnlCoursePreview.AutoScroll = true;  // ✅ THÊM: Cho phép scroll
             // 
             // pbThumbnail
             // 
             this.pbThumbnail.BackColor = System.Drawing.Color.Transparent;
-            this.pbThumbnail.Location = new System.Drawing.Point(21, 38);
+            this.pbThumbnail.Location = new System.Drawing.Point(10, 10);  // ✅ Tính từ 0,0 của panel
             this.pbThumbnail.Name = "pbThumbnail";
             this.pbThumbnail.Size = new System.Drawing.Size(81, 73);
             this.pbThumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -254,7 +255,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.Location = new System.Drawing.Point(114, 38);
+            this.lblTitle.Location = new System.Drawing.Point(103, 10);  // ✅ Cạnh thumbnail
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(196, 28);
             this.lblTitle.TabIndex = 1;
@@ -265,7 +266,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.lblMeta.AutoSize = true;
             this.lblMeta.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblMeta.ForeColor = System.Drawing.Color.Gray;
-            this.lblMeta.Location = new System.Drawing.Point(115, 77);
+            this.lblMeta.Location = new System.Drawing.Point(103, 45);  // ✅ Dưới lblTitle
             this.lblMeta.Name = "lblMeta";
             this.lblMeta.Size = new System.Drawing.Size(194, 20);
             this.lblMeta.TabIndex = 2;
@@ -276,12 +277,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.txtShortOverview.BackColor = System.Drawing.Color.WhiteSmoke;
             this.txtShortOverview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtShortOverview.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtShortOverview.Location = new System.Drawing.Point(20, 150);
+            this.txtShortOverview.Location = new System.Drawing.Point(10, 100);  // ✅ Y=100
             this.txtShortOverview.Multiline = true;
             this.txtShortOverview.Name = "txtShortOverview";
             this.txtShortOverview.ReadOnly = true;
             this.txtShortOverview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtShortOverview.Size = new System.Drawing.Size(290, 110);
+            this.txtShortOverview.Size = new System.Drawing.Size(290, 100);  // ✅ Width=290
             this.txtShortOverview.TabIndex = 3;
             // 
             // pnlInfoStudents
@@ -290,7 +291,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.pnlInfoStudents.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlInfoStudents.Controls.Add(this.lblInfoStudentsTitle);
             this.pnlInfoStudents.Controls.Add(this.lblStudents);
-            this.pnlInfoStudents.Location = new System.Drawing.Point(20, 276);
+            this.pnlInfoStudents.Location = new System.Drawing.Point(10, 210);  // ✅ Y=210 (100+100)
             this.pnlInfoStudents.Name = "pnlInfoStudents";
             this.pnlInfoStudents.Padding = new System.Windows.Forms.Padding(8);
             this.pnlInfoStudents.Size = new System.Drawing.Size(130, 60);
@@ -323,7 +324,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.pnlInfoDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlInfoDuration.Controls.Add(this.lblInfoDurationTitle);
             this.pnlInfoDuration.Controls.Add(this.lblDuration);
-            this.pnlInfoDuration.Location = new System.Drawing.Point(164, 276);
+            this.pnlInfoDuration.Location = new System.Drawing.Point(150, 210);  // ✅ Y=210, X=150 (cạnh Students)
             this.pnlInfoDuration.Name = "pnlInfoDuration";
             this.pnlInfoDuration.Padding = new System.Windows.Forms.Padding(8);
             this.pnlInfoDuration.Size = new System.Drawing.Size(130, 60);
@@ -350,6 +351,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.lblDuration.TabIndex = 1;
             this.lblDuration.Text = "0 giờ";
             // 
+            // pbCourseProgress
+            // 
+            this.pbCourseProgress.Location = new System.Drawing.Point(10, 282);  // ✅ Y=282 (210+60+12)
+            this.pbCourseProgress.Name = "pbCourseProgress";
+            this.pbCourseProgress.Size = new System.Drawing.Size(290, 12);
+            this.pbCourseProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbCourseProgress.Value = 0;
+            this.pbCourseProgress.Visible = false;
+            // 
             // btnViewDetails
             // 
             this.btnViewDetails.BackColor = System.Drawing.Color.White;
@@ -357,9 +367,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.btnViewDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnViewDetails.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnViewDetails.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.btnViewDetails.Location = new System.Drawing.Point(20, 356);
+            this.btnViewDetails.Location = new System.Drawing.Point(10, 306);  // ✅ Y=306 (282+12+12)
             this.btnViewDetails.Name = "btnViewDetails";
-            this.btnViewDetails.Size = new System.Drawing.Size(274, 40);
+            this.btnViewDetails.Size = new System.Drawing.Size(290, 36);
             this.btnViewDetails.TabIndex = 6;
             this.btnViewDetails.Text = "Xem chi tiết";
             this.btnViewDetails.UseVisualStyleBackColor = false;
@@ -372,21 +382,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.btnEnrollContinue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEnrollContinue.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnEnrollContinue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(177)))), ((int)(((byte)(64)))));
-            this.btnEnrollContinue.Location = new System.Drawing.Point(20, 408);
+            this.btnEnrollContinue.Location = new System.Drawing.Point(10, 350);  // ✅ Y=350 (306+36+8)
             this.btnEnrollContinue.Name = "btnEnrollContinue";
-            this.btnEnrollContinue.Size = new System.Drawing.Size(274, 56);
+            this.btnEnrollContinue.Size = new System.Drawing.Size(290, 48);
             this.btnEnrollContinue.TabIndex = 7;
             this.btnEnrollContinue.Text = "Đăng ký / Tiếp tục";
             this.btnEnrollContinue.UseVisualStyleBackColor = false;
-            // 
-            // pbCourseProgress
-            // 
-            this.pbCourseProgress.Location = new System.Drawing.Point(20, 384);
-            this.pbCourseProgress.Name = "pbCourseProgress";
-            this.pbCourseProgress.Size = new System.Drawing.Size(274, 12);
-            this.pbCourseProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pbCourseProgress.Value = 0;
-            this.pbCourseProgress.Visible = false;
             // 
             // ucCourseList
             // 

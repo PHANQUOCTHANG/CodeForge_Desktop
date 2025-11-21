@@ -1,8 +1,11 @@
 ﻿using CodeForge_Desktop.Business.Interfaces;
+using CodeForge_Desktop.Config;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,6 +70,21 @@ namespace CodeForge_Desktop.Business.Services
                 }
             }
             return isSuccess;
+        }
+
+        public User GetByUsername(string username)
+        {
+            return _userRepository.GetByUsername(username);
+        }
+
+        public User GetByEmail(string email)
+        {
+            return _userRepository.GetByEmail(email);
+        }
+
+        public bool IsUsernameOrEmailExist(string username, string email)
+        {
+           return _userRepository.IsUsernameOrEmailExist(username, email);
         }
     }
 }

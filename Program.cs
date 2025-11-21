@@ -27,8 +27,6 @@ namespace CodeForge_Desktop
             ICourseReviewRepository courseReviewRepository = new CourseReviewRepository();
             ICourseRepository courseRepository = new CourseRepository();
 
-            // 2. Đăng ký Services, truyền Repository vào
-            IAuthService authService = new AuthService(userRepository);
             
             // NEW: Enrollment Service (for checking enrollment & enrolling user)
             EnrollmentService enrollmentService = new EnrollmentService(enrollmentRepository, progressRepository);
@@ -39,11 +37,8 @@ namespace CodeForge_Desktop
             // NEW: Course Review Service (for submitting & retrieving reviews)
             CourseReviewService courseReviewService = new CourseReviewService(courseReviewRepository, enrollmentRepository);
 
-            // 3. Khởi chạy Form Login, truyền AuthService vào Constructor
-            // (Services khác sẽ được truyền vào các UserControl sau khi user đăng nhập)
-            Login loginForm = new Login(authService);
-
-            Application.Run(loginForm);
+            Application.Run(new Login());
+            //Application.Run(new MainFormAdmin());
         }
     }
 }

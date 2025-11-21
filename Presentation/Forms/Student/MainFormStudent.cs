@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeForge_Desktop.Presentation.Forms;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student
 {
@@ -152,6 +153,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             };
 
             LoadUserControl(detailView);
+        }
+
+        private void btnDangXuat_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Login login = new Login();
+            login.Show();
+
+            
         }
     }
 }

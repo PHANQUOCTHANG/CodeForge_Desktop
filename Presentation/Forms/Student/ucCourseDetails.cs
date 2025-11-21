@@ -238,8 +238,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 var hours = _course.Duration > 0 ? Math.Max(1, _course.Duration / 60) : 0;
                 lblMetaSmall.Text = $"⭐ {_course.Rating:F1}   •   {_course.TotalStudents:N0} học viên   •   {hours} giờ";
 
-                // set overview
-                rtbOverview.Text = string.IsNullOrWhiteSpace(_course.Overview) ? (_course.Description ?? "Không có mô tả") : _course.Overview;
+                // ✅ Render HTML overview using helper
+                string overview = string.IsNullOrWhiteSpace(_course.Overview) ? (_course.Description ?? "Không có mô tả") : _course.Overview;
+                HtmlRenderHelper.RenderHtmlOverviewToRtb(rtbOverview, overview);
 
                 // load thumbnail (file path or online URL)
                 await LoadThumbnailAsync(_course.Thumbnail);

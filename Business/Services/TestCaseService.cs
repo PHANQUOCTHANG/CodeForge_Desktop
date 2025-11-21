@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CodeForge_Desktop.Business.Services
 {
-    internal class TestCaseService : ITestCaseService
+    public class TestCaseService : ITestCaseService
     {
         private ITestCaseRepository _repo;
 

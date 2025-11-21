@@ -66,10 +66,7 @@ namespace CodeForge_Desktop.Business.Services
 
             bool success = true;
             foreach (var id in ids)
-            {
-                // G?i hàm xóa t?ng bài t?p ?ã có
-                // N?u có b?t k? bài nào xóa th?t b?i, ?ánh d?u success = false
-                // (Tùy nghi?p v?, b?n có th? mu?n d?ng ngay ho?c ti?p t?c xóa các bài khác)
+            { 
                 if (!DeleteProblem(id))
                 {
                     success = false;

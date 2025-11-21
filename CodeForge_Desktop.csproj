@@ -103,34 +103,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\Helpers\AppLogger.cs" />
+    <Compile Include="Business\Helpers\HtmlRenderHelper.cs" />
     <Compile Include="Business\Helpers\ProgressNotifier.cs" />
-    <Compile Include="Business\Interfaces\ICourseReviewService.cs" />
-    <Compile Include="Business\Interfaces\IEnrollmentService.cs" />
-    <Compile Include="Business\Interfaces\IProgressService.cs" />
-    <Compile Include="Business\Services\CourseReviewService.cs" />
-    <Compile Include="Business\Services\EnrollmentService.cs" />
-    <Compile Include="Business\Services\ProgressService.cs" />
-    <Compile Include="Config\DbContext.cs" />
     <Compile Include="Business\Helpers\CodeEditorHelper.cs" />
+    <Compile Include="Business\Helpers\InputParser.cs" />
     <Compile Include="Business\Helpers\GlobalStore.cs" />
     <Compile Include="Business\Helpers\JsonConverter.cs" />
     <Compile Include="Business\Helpers\LanguageConverter.cs" />
     <Compile Include="Business\Helpers\PasswordHasher.cs" />
     <Compile Include="Business\Interfaces\IAuthService.cs" />
     <Compile Include="Business\Interfaces\ICodingProblemService.cs" />
-    <Compile Include="Business\Interfaces\ICourseService.cs" />
+    <Compile Include="Business\Interfaces\ICourseReviewService.cs" />
+    <Compile Include="Business\Interfaces\IEnrollmentService.cs" />
+    <Compile Include="Business\Interfaces\IProgressService.cs" />
+    <Compile Include="Business\Interfaces\ISubmissionService.cs" />
     <Compile Include="Business\Interfaces\ITestCaseService.cs" />
     <Compile Include="Business\Interfaces\IUserService.cs" />
+    <Compile Include="Business\Interfaces\ICourseService.cs" />
     <Compile Include="Business\Models\Response.cs" />
     <Compile Include="Business\Models\RunProblem.cs" />
     <Compile Include="Business\Services\AuthSerivce.cs" />
     <Compile Include="Business\Services\CodingProblemService.cs" />
+    <Compile Include="Business\Services\CourseReviewService.cs" />
     <Compile Include="Business\Services\CourseService.cs" />
-    <Compile Include="Business\Services\ISubmissionService.cs" />
+    <Compile Include="Business\Services\EnrollmentService.cs" />
     <Compile Include="Business\Services\ProblemRunnerService.cs" />
+    <Compile Include="Business\Services\ProgressService.cs" />
     <Compile Include="Business\Services\SubmissionService.cs" />
     <Compile Include="Business\Services\TestCaseService.cs" />
     <Compile Include="Business\Services\UserService.cs" />
+    <Compile Include="Config\DbContext.cs" />
     <Compile Include="DataAccess\Entities\ActivityLog.cs" />
     <Compile Include="DataAccess\Entities\Badge.cs" />
     <Compile Include="DataAccess\Entities\CodingProblem.cs" />
@@ -312,6 +314,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Presentation\Forms\Admin\AddEditProblemForm.resx">
+      <DependentUpon>AddEditProblemForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Admin\AddEditUserForm.resx">
       <DependentUpon>AddEditUserForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -404,7 +409,7 @@
   <Import Project="packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
     <Error Condition="!Exists('packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets'))" />

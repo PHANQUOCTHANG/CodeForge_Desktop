@@ -4,7 +4,7 @@ using CodeForge_Desktop.DataAccess.Entities;
 
 namespace CodeForge_Desktop.Business.Interfaces
 {
-    internal interface ITestCaseService
+    public interface ITestCaseService
     {
         TestCase GetById(Guid id);
         List<TestCase> GetByProblemId(Guid problemId);

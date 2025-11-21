@@ -1,6 +1,8 @@
 ﻿using CodeForge_Desktop.Business.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using CodeForge_Desktop.Business.Services;
 
@@ -9,12 +11,17 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
     public partial class ucProblemList : UserControl
     {
         private const string PlaceholderText = "Tìm kiếm bài tập...";
-        public event EventHandler<Guid> ProblemClicked;  // Thay đổi: gửi Guid thay vì string
+        public event EventHandler<Guid> ProblemClicked;
         private ICodingProblemService _problemService;
+        private List<CodeForge_Desktop.DataAccess.Entities.CodingProblem> _allProblems;
+        private List<CodeForge_Desktop.DataAccess.Entities.CodingProblem> _displayedProblems;
+        private string _currentSearchText = "";
+        private string _currentDifficultyFilter = "Tất cả";
 
         public ucProblemList()
         {
             _problemService = new CodingProblemService();
+            _displayedProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>();
 
             InitializeComponent();
             SetupPlaceholder();
@@ -26,11 +33,111 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
                 null, dgvProblemList, new object[] { true });
 
-            // Đăng ký sự kiện CellPainting để tô màu
             dgvProblemList.CellPainting += DgvProblemList_CellPainting;
-
-            // Đăng ký sự kiện Click vào Cell
             dgvProblemList.CellClick += DgvProblemList_CellClick;
+            dgvProblemList.MouseMove += DgvProblemList_MouseMove;
+            cmbDifficulty.SelectedIndexChanged += CmbDifficulty_SelectedIndexChanged;
+        }
+
+        private int _lastHoveredRow = -1;
+
+        /// <summary>
+        /// Xử lý hover effect cho rows
+        /// </summary>
+        private void DgvProblemList_MouseMove(object sender, MouseEventArgs e)
+        {
+            DataGridView.HitTestInfo hit = dgvProblemList.HitTest(e.X, e.Y);
+            if (hit.RowIndex != _lastHoveredRow)
+            {
+                if (_lastHoveredRow >= 0 && _lastHoveredRow < dgvProblemList.Rows.Count)
+                {
+                    dgvProblemList.Rows[_lastHoveredRow].DefaultCellStyle.BackColor = 
+                        _lastHoveredRow % 2 == 0 ? Color.White : Color.FromArgb(247, 249, 252);
+                }
+
+                _lastHoveredRow = hit.RowIndex;
+
+                if (hit.RowIndex >= 0 && hit.RowIndex < dgvProblemList.Rows.Count)
+                {
+                    dgvProblemList.Rows[hit.RowIndex].DefaultCellStyle.BackColor = Color.FromArgb(230, 242, 255);
+                    dgvProblemList.Cursor = Cursors.Hand;
+                }
+                else
+                {
+                    dgvProblemList.Cursor = Cursors.Default;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Xử lý thay đổi filter độ khó
+        /// </summary>
+        private void CmbDifficulty_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selectedDifficulty = cmbDifficulty.SelectedItem?.ToString();
+            
+            _currentDifficultyFilter = selectedDifficulty ?? "Tất cả";
+            
+            // Áp dụng cả search và filter
+            ApplyCombinedFilters();
+        }
+
+        /// <summary>
+        /// Áp dụng kết hợp cả tìm kiếm và filter độ khó
+        /// </summary>
+        private void ApplyCombinedFilters()
+        {
+            try
+            {
+                dgvProblemList.Rows.Clear();
+
+                var filteredProblems = _allProblems.Where(p =>
+                {
+                    // Filter độ khó
+                    if (_currentDifficultyFilter != "Tất cả" && p.Difficulty != _currentDifficultyFilter)
+                        return false;
+
+                    // Filter tìm kiếm - chỉ cần xuất hiện trong tên (case-insensitive)
+                    if (!string.IsNullOrWhiteSpace(_currentSearchText))
+                    {
+                        return p.Title.IndexOf(_currentSearchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    }
+
+                    return true;
+                }).ToList();
+
+                _displayedProblems = filteredProblems;
+
+                foreach (var problem in filteredProblems)
+                {
+                    dgvProblemList.Rows.Add(
+                        problem.ProblemID.ToString(),
+                        problem.Title,
+                        problem.Difficulty,
+                        problem.Tags,
+                        "WAIT"
+                    );
+                }
+
+                // Cập nhật summary text
+                string summary = $"📊 Hiển thị {filteredProblems.Count} bài tập";
+                
+                if (!string.IsNullOrWhiteSpace(_currentSearchText))
+                {
+                    summary += $" (Tìm: '{_currentSearchText}')";
+                }
+                
+                if (_currentDifficultyFilter != "Tất cả")
+                {
+                    summary += $" (Độ khó: {_currentDifficultyFilter})";
+                }
+
+                lblSummary.Text = summary;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi áp dụng filter: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -41,57 +148,28 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             try
             {
                 dgvProblemList.Rows.Clear();
+                _allProblems = _problemService.GetAll();
+                _displayedProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>(_allProblems);
 
-                var problems = _problemService.GetAll();
-
-                foreach (var problem in problems)
+                foreach (var problem in _allProblems)
                 {
                     dgvProblemList.Rows.Add(
                         problem.ProblemID.ToString(),
                         problem.Title,
                         problem.Difficulty,
                         problem.Tags,
-                        problem.Status,
-                        "-"
+                        "WAIT"
                     );
                 }
+
+                lblSummary.Text = $"📊 Tổng cộng {_allProblems.Count} bài tập";
+                cmbDifficulty.SelectedIndex = 0;
+                _currentDifficultyFilter = "Tất cả";
+                _currentSearchText = "";
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Hàm tìm kiếm bài tập
-        /// </summary>
-        private void SearchProblems(string searchText)
-        {
-            try
-            {
-                dgvProblemList.Rows.Clear();
-
-                var allProblems = _problemService.GetAll();
-                var filteredProblems = allProblems.FindAll(p => 
-                    p.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    p.Description.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
-                );
-
-                foreach (var problem in filteredProblems)
-                {
-                    dgvProblemList.Rows.Add(
-                        problem.ProblemID.ToString(),
-                        problem.Title,
-                        problem.Difficulty,
-                        problem.Tags,
-                        "WAIT",
-                        "-"
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi tìm kiếm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -101,25 +179,28 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private void SetupDataGridViewStyles()
         {
             dgvProblemList.EnableHeadersVisualStyles = false;
-
-            dgvProblemList.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
-            dgvProblemList.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvProblemList.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(52, 73, 94);
+            dgvProblemList.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvProblemList.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvProblemList.ColumnHeadersDefaultCellStyle.Padding = new Padding(0, 5, 0, 5);
+            dgvProblemList.ColumnHeadersDefaultCellStyle.Padding = new Padding(0, 8, 0, 8);
+            dgvProblemList.ColumnHeadersHeight = 40;
 
             dgvProblemList.BorderStyle = BorderStyle.None;
             dgvProblemList.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvProblemList.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+            dgvProblemList.GridColor = Color.FromArgb(220, 220, 220);
+            dgvProblemList.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
             dgvProblemList.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
+            dgvProblemList.DefaultCellStyle.Padding = new Padding(5, 3, 5, 3);
 
             dgvProblemList.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvProblemList.MultiSelect = false;
 
-            dgvProblemList.DefaultCellStyle.SelectionBackColor = Color.FromArgb(230, 230, 230);
-            dgvProblemList.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvProblemList.DefaultCellStyle.SelectionBackColor = Color.White;
+            dgvProblemList.DefaultCellStyle.SelectionForeColor = Color.FromArgb(64, 64, 64);
 
             dgvProblemList.RowsDefaultCellStyle.BackColor = Color.White;
             dgvProblemList.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(247, 249, 252);
+            dgvProblemList.RowTemplate.Height = 40;
         }
 
         /// <summary>
@@ -129,54 +210,49 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         {
             if (e.RowIndex < 0) return;
 
-            // Tô màu cột "Độ khó"
             if (e.ColumnIndex == dgvProblemList.Columns["colDifficulty"].Index && e.Value != null)
             {
                 string difficulty = e.Value.ToString();
-                Color textColor = Color.Black;
-
-                switch (difficulty)
-                {
-                    case "Dễ":
-                        textColor = Color.Green;
-                        break;
-                    case "Trung bình":
-                        textColor = Color.Orange;
-                        break;
-                    case "Khó":
-                        textColor = Color.Red;
-                        break;
-                }
-                PaintCell(e, textColor);
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
+                TextRenderer.DrawText(e.Graphics, difficulty, new Font("Segoe UI", 10), e.CellBounds, Color.FromArgb(64, 64, 64), TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.NoPadding);
+                e.Handled = true;
             }
 
-            // Tô màu cột "Trạng thái"
+            if (e.ColumnIndex == dgvProblemList.Columns["colProblemName"].Index && e.Value != null)
+            {
+                string problemName = e.Value.ToString();
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
+                var textFont = new Font("Segoe UI", 10, FontStyle.Regular);
+                TextRenderer.DrawText(e.Graphics, problemName, textFont, e.CellBounds, Color.FromArgb(41, 128, 185), TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.NoPadding);
+                e.Handled = true;
+            }
+
             if (e.ColumnIndex == dgvProblemList.Columns["colStatus"].Index && e.Value != null)
             {
                 string status = e.Value.ToString();
-                Color textColor = Color.Black;
+                Color textColor = Color.FromArgb(155, 89, 182);
+                string icon = "⏳ ";
 
                 switch (status)
                 {
                     case "SOLVED":
-                        textColor = Color.Green;
+                        textColor = Color.FromArgb(46, 204, 113);
+                        icon = "✓ ";
                         break;
                     case "ATTEMPTED":
-                        textColor = Color.Orange;
+                        textColor = Color.FromArgb(241, 196, 15);
+                        icon = "◐ ";
                         break;
-                    case "NOT_STARTED":
-                        textColor = Color.OrangeRed;
+                    case "WAIT":
+                    default:
+                        textColor = Color.FromArgb(149, 165, 166);
                         break;
                 }
-                PaintCell(e, textColor);
-            }
-        }
 
-        private void PaintCell(DataGridViewCellPaintingEventArgs e, Color foreColor)
-        {
-            e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
-            TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, foreColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
-            e.Handled = true;
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
+                TextRenderer.DrawText(e.Graphics, icon + status, new Font("Segoe UI", 9), e.CellBounds, textColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+                e.Handled = true;
+            }
         }
 
         private void SetupSearchBox()
@@ -190,14 +266,19 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             txtSearch.TextChanged += (s, e) =>
             {
                 string searchText = txtSearch.Text.Trim();
-                if (searchText != PlaceholderText && !string.IsNullOrWhiteSpace(searchText))
+                
+                // Nếu text là placeholder hoặc rỗng
+                if (searchText == PlaceholderText || string.IsNullOrWhiteSpace(searchText))
                 {
-                    SearchProblems(searchText);
+                    _currentSearchText = "";
                 }
-                else if (string.IsNullOrWhiteSpace(searchText))
+                else
                 {
-                    LoadDataFromDatabase();
+                    _currentSearchText = searchText;
                 }
+
+                // Áp dụng kết hợp search + filter
+                ApplyCombinedFilters();
             };
         }
 
@@ -230,15 +311,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
         private void DgvProblemList_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Kiểm tra nếu click vào hàng hợp lệ (không phải header)
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
-                // Lấy ProblemID từ cột đầu tiên (colProblemID)
                 string problemIdStr = dgvProblemList.Rows[e.RowIndex].Cells["colHash"].Value?.ToString();
                 
                 if (Guid.TryParse(problemIdStr, out Guid problemId))
                 {
-                    // Kích hoạt sự kiện với ProblemID
                     ProblemClicked?.Invoke(this, problemId);
                 }
                 else

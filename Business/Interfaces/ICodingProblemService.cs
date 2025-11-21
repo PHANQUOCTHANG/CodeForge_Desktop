@@ -4,7 +4,7 @@ using CodeForge_Desktop.DataAccess.Entities;
 
 namespace CodeForge_Desktop.Business.Interfaces
 {
-    internal interface ICodingProblemService
+    public interface ICodingProblemService
     {
         CodingProblem GetById(Guid id);
         List<CodingProblem> GetAll();

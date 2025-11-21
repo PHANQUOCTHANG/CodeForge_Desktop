@@ -87,7 +87,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(92, 23);
             this.btnBack.TabIndex = 0;
-            this.btnBack.Text = "← btnBack";
+            this.btnBack.Text = "← Quay lại ";
             // 
             // btnPrev
             // 
@@ -95,7 +95,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.btnPrev.Name = "btnPrev";
             this.btnPrev.Size = new System.Drawing.Size(92, 23);
             this.btnPrev.TabIndex = 1;
-            this.btnPrev.Text = "◀ btnPrev";
+            this.btnPrev.Text = "◀ Trước";
             // 
             // btnNext
             // 
@@ -103,7 +103,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(92, 23);
             this.btnNext.TabIndex = 2;
-            this.btnNext.Text = "btnNext ▶";
+            this.btnNext.Text = "Sau ▶";
             // 
             // btnMarkCompleted
             // 
@@ -122,7 +122,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.lblCourseLessonInfo.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblCourseLessonInfo.Location = new System.Drawing.Point(480, 14);
             this.lblCourseLessonInfo.Name = "lblCourseLessonInfo";
-            this.lblCourseLessonInfo.Size = new System.Drawing.Size(0, 20);
+            this.lblCourseLessonInfo.Size = new System.Drawing.Size(0, 15);
             this.lblCourseLessonInfo.TabIndex = 4;
             // 
             // splitMain
@@ -173,7 +173,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.lblLessonTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblLessonTitle.Location = new System.Drawing.Point(8, 8);
             this.lblLessonTitle.Name = "lblLessonTitle";
-            this.lblLessonTitle.Size = new System.Drawing.Size(120, 28);
+            this.lblLessonTitle.Size = new System.Drawing.Size(96, 21);
             this.lblLessonTitle.TabIndex = 0;
             this.lblLessonTitle.Text = "Lesson title";
             // 
@@ -198,7 +198,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.flpQuizQuestions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpQuizQuestions.Location = new System.Drawing.Point(0, 0);
             this.flpQuizQuestions.Name = "flpQuizQuestions";
-            this.flpQuizQuestions.Size = new System.Drawing.Size(500, 400);
+            this.flpQuizQuestions.Size = new System.Drawing.Size(447, 400);
             this.flpQuizQuestions.TabIndex = 0;
             this.flpQuizQuestions.WrapContents = false;
             // 

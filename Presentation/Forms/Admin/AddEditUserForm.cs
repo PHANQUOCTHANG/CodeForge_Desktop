@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using CodeForge_Desktop.Business.Helpers;
 using CodeForge_Desktop.Business.Services;
 using CodeForge_Desktop.DataAccess.Entities;
 
@@ -73,8 +74,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
                     {
                         Username = txtUsername.Text.Trim(),
                         Email = txtEmail.Text.Trim(),
-                        PasswordHash = txtPassword.Text, // TODO: Cần Hash password trước khi lưu (thêm logic hash ở Service hoặc Helper)
-                        Role = cboRole.SelectedItem.ToString(),
+                        PasswordHash = PasswordHasher.Hash(txtPassword.Text.Trim()), // TODO: Cần Hash password trước khi lưu (thêm logic hash ở Service hoặc Helper)
+                        Role = cboRole.SelectedItem.ToString().ToLower(),
                         Status = cboStatus.SelectedItem.ToString(),
                         JoinDate = DateTime.Now
                     };
@@ -89,13 +90,13 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
                     if (userToUpdate != null)
                     {
                         userToUpdate.Email = txtEmail.Text.Trim();
-                        userToUpdate.Role = cboRole.SelectedItem.ToString();
+                        userToUpdate.Role = cboRole.SelectedItem.ToString().ToLower();
                         userToUpdate.Status = cboStatus.SelectedItem.ToString();
 
                         // Chỉ cập nhật password nếu người dùng có nhập mới
                         if (!string.IsNullOrWhiteSpace(txtPassword.Text))
                         {
-                            userToUpdate.PasswordHash = txtPassword.Text; // Nhớ Hash!
+                            userToUpdate.PasswordHash = PasswordHasher.Hash(txtPassword.Text.Trim()); // Nhớ Hash!
                         }
 
                         success = _userService.UpdateUser(userToUpdate);
@@ -133,6 +134,49 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             {
                 MessageBox.Show("Vui lòng nhập Mật khẩu.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
+
+            // Kiểm tra username và email đã tồn tại chưa
+            if (_userId == null) // ADD MODE
+            {
+                // Thêm mới: kiểm tra username hoặc email tồn tại
+                if (_userService.IsUsernameOrEmailExist(txtUsername.Text.Trim(), txtEmail.Text.Trim()))
+                {
+                    MessageBox.Show("Username hoặc Email đã tồn tại. Vui lòng sử dụng thông tin khác.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+            else // EDIT MODE
+            {
+                // Cập nhật: kiểm tra username hoặc email tồn tại, nhưng loại trừ chính user hiện tại
+                var existingUser = _userService.GetUserById(_userId.Value);
+                if (existingUser != null)
+                {
+                    string newUsername = txtUsername.Text.Trim();
+                    string newEmail = txtEmail.Text.Trim();
+
+                    // Nếu username thay đổi, kiểm tra username mới có tồn tại không
+                    if (!newUsername.Equals(existingUser.Username, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var usernameCheck = _userService.GetByUsername(newUsername);
+                        if (usernameCheck != null)
+                        {
+                            MessageBox.Show("Username này đã được sử dụng bởi người dùng khác.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return false;
+                        }
+                    }
+
+                    // Nếu email thay đổi, kiểm tra email mới có tồn tại không
+                    if (!newEmail.Equals(existingUser.Email, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var emailCheck = _userService.GetByEmail(newEmail);
+                        if (emailCheck != null)
+                        {
+                            MessageBox.Show("Email này đã được sử dụng bởi người dùng khác.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return false;
+                        }
+                    }
+                }
             }
 
             return true;

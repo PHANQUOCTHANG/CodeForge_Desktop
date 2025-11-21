@@ -455,7 +455,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 (row.DataGridView.Columns.Contains("Rating") ? row.Cells["Rating"]?.Value?.ToString() : "0"),
                 out rating);
 
+            // ✅ Lấy HTML overview từ ShortOverview column
             var overview = row.DataGridView.Columns.Contains("ShortOverview") ? row.Cells["ShortOverview"].Value?.ToString() ?? "" : "";
+            
             var students = 0;
             int.TryParse(row.DataGridView.Columns.Contains("TotalStudents") ? row.Cells["TotalStudents"].Value?.ToString() ?? "0" : "0", out students);
             var duration = 0;
@@ -465,11 +467,32 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 : (row.DataGridView.Columns.Contains("ThumbnailImage") ? row.Cells["ThumbnailImage"]?.Value as Image : null);
 
             if (cellImg != null) pbThumbnail.Image = cellImg;
-            else pbThumbnail.Image = GetRoundedRectIcon(Color.FromArgb(255,165,0),150,15);
+            else pbThumbnail.Image = GetRoundedRectIcon(Color.FromArgb(255, 165, 0), 150, 15);
 
             lblTitle.Text = title;
             lblMeta.Text = $"{level} | {language} | ⭐️ {rating:N1}";
-            txtShortOverview.Text = overview;
+            
+            // ✅ Render HTML overview - hỗ trợ cả RichTextBox và TextBox
+            try
+            {
+                // Nếu txtShortOverview là RichTextBox
+                if (txtShortOverview?.GetType().Name == "RichTextBox")
+                {
+                    dynamic rtb = txtShortOverview;
+                    HtmlRenderHelper.RenderHtmlOverviewToRtb(rtb, overview);
+                }
+                else
+                {
+                    // Nếu là TextBox - strip HTML tags
+                    txtShortOverview.Text = HtmlRenderHelper.StripHtmlTags(overview);
+                }
+            }
+            catch
+            {
+                // Fallback: hiển thị plain text
+                txtShortOverview.Text = HtmlRenderHelper.StripHtmlTags(overview);
+            }
+            
             lblStudents.Text = $"{students:N0} người";
             lblDuration.Text = $"{duration / 60} giờ";
 
@@ -492,14 +515,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             if (isEnrolled)
             {
                 btnEnrollContinue.Text = "▶️ Tiếp tục học";
-                btnEnrollContinue.BackColor = Color.FromArgb(0, 177, 64);
+                //btnEnrollContinue.BackColor = Color.FromArgb(0, 177, 64);
                 pbCourseProgress.Value = Math.Max(0, Math.Min(100, progress));
                 pbCourseProgress.Visible = true;
             }
             else
             {
                 btnEnrollContinue.Text = "💰 Đăng ký";
-                btnEnrollContinue.BackColor = Color.FromArgb(0, 120, 215);
+                //btnEnrollContinue.BackColor = Color.FromArgb(0, 120, 215);
                 pbCourseProgress.Visible = false;
             }
         }
@@ -509,12 +532,30 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             _selectedCourseId = Guid.Empty;
             lblTitle.Text = "Chọn một khóa học";
             lblMeta.Text = "";
-            txtShortOverview.Text = "";
+            
+            // ✅ Clear cả RichTextBox và TextBox
+            try
+            {
+                if (txtShortOverview?.GetType().Name == "RichTextBox")
+                {
+                    dynamic rtb = txtShortOverview;
+                    rtb.Clear();
+                }
+                else
+                {
+                    txtShortOverview.Text = "";
+                }
+            }
+            catch
+            {
+                txtShortOverview.Text = "";
+            }
+            
             lblStudents.Text = "";
             lblDuration.Text = "";
             pbThumbnail.Image = null;
             btnEnrollContinue.Text = "Đăng ký";
-            btnEnrollContinue.BackColor = Color.Gray;
+            //btnEnrollContinue.BackColor = Color.Gray;
         }
 
         #endregion
