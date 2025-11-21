@@ -35,6 +35,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
         private Label lblDuration;
         private Button btnViewDetails;
         private Button btnEnrollContinue;
+        private ProgressBar pbCourseProgress; // NEW: small progress bar in preview panel
 
         protected override void Dispose(bool disposing)
         {
@@ -73,6 +74,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.lblDuration = new System.Windows.Forms.Label();
             this.btnViewDetails = new System.Windows.Forms.Button();
             this.btnEnrollContinue = new System.Windows.Forms.Button();
+            this.pbCourseProgress = new System.Windows.Forms.ProgressBar();
             this.pnlHeader.SuspendLayout();
             this.pnlSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbSearchIcon)).BeginInit();
@@ -230,6 +232,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.pnlCoursePreview.Controls.Add(this.pnlInfoDuration);
             this.pnlCoursePreview.Controls.Add(this.btnViewDetails);
             this.pnlCoursePreview.Controls.Add(this.btnEnrollContinue);
+            this.pnlCoursePreview.Controls.Add(this.pbCourseProgress);
             this.pnlCoursePreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCoursePreview.Location = new System.Drawing.Point(12, 12);
             this.pnlCoursePreview.Name = "pnlCoursePreview";
@@ -375,6 +378,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.btnEnrollContinue.TabIndex = 7;
             this.btnEnrollContinue.Text = "Đăng ký / Tiếp tục";
             this.btnEnrollContinue.UseVisualStyleBackColor = false;
+            // 
+            // pbCourseProgress
+            // 
+            this.pbCourseProgress.Location = new System.Drawing.Point(20, 384);
+            this.pbCourseProgress.Name = "pbCourseProgress";
+            this.pbCourseProgress.Size = new System.Drawing.Size(274, 12);
+            this.pbCourseProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbCourseProgress.Value = 0;
+            this.pbCourseProgress.Visible = false;
             // 
             // ucCourseList
             // 

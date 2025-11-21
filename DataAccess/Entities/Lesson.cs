@@ -11,5 +11,8 @@ namespace CodeForge_Desktop.DataAccess.Entities
         public int OrderIndex { get; set; }
         public int Duration { get; set; } // seconds
         public bool IsDeleted { get; set; } = false;
+
+        // derived property (not stored in DB) — indicates whether the current user completed the lesson
+        public bool IsCompleted { get; set; } = false;
     }
 }

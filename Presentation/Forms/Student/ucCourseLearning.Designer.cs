@@ -50,10 +50,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.tvModulesLessons = new System.Windows.Forms.TreeView();
             this.pnlLessonContent = new System.Windows.Forms.Panel();
             this.lblLessonTitle = new System.Windows.Forms.Label();
-            this.rtbLessonText = new System.Windows.Forms.RichTextBox();
-            this.wbVideo = new System.Windows.Forms.WebBrowser();
             this.pnlQuiz = new System.Windows.Forms.Panel();
             this.flpQuizQuestions = new System.Windows.Forms.FlowLayoutPanel();
+            this.wbVideo = new System.Windows.Forms.WebBrowser();
+            this.rtbLessonText = new System.Windows.Forms.RichTextBox();
             this.btnSubmitQuiz = new System.Windows.Forms.Button();
             this.lvCodingProblems = new System.Windows.Forms.ListView();
             this.pnlTop.SuspendLayout();
@@ -63,6 +63,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.splitMain.SuspendLayout();
             this.pnlLessonContent.SuspendLayout();
             this.pnlQuiz.SuspendLayout();
+            this.flpQuizQuestions.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlTop
@@ -142,6 +143,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.splitMain.Size = new System.Drawing.Size(980, 572);
             this.splitMain.SplitterDistance = 497;
             this.splitMain.TabIndex = 0;
+            this.splitMain.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitMain_SplitterMoved);
             // 
             // tvModulesLessons
             // 
@@ -157,8 +159,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             // 
             this.pnlLessonContent.BackColor = System.Drawing.Color.White;
             this.pnlLessonContent.Controls.Add(this.lblLessonTitle);
-            this.pnlLessonContent.Controls.Add(this.rtbLessonText);
-            this.pnlLessonContent.Controls.Add(this.wbVideo);
             this.pnlLessonContent.Controls.Add(this.pnlQuiz);
             this.pnlLessonContent.Controls.Add(this.lvCodingProblems);
             this.pnlLessonContent.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -177,31 +177,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.lblLessonTitle.TabIndex = 0;
             this.lblLessonTitle.Text = "Lesson title";
             // 
-            // rtbLessonText
-            // 
-            this.rtbLessonText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbLessonText.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.rtbLessonText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbLessonText.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.rtbLessonText.Location = new System.Drawing.Point(8, 44);
-            this.rtbLessonText.Name = "rtbLessonText";
-            this.rtbLessonText.ReadOnly = true;
-            this.rtbLessonText.Size = new System.Drawing.Size(875, 868);
-            this.rtbLessonText.TabIndex = 1;
-            this.rtbLessonText.Text = "";
-            // 
-            // wbVideo
-            // 
-            this.wbVideo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.wbVideo.Location = new System.Drawing.Point(8, 44);
-            this.wbVideo.Name = "wbVideo";
-            this.wbVideo.Size = new System.Drawing.Size(875, 420);
-            this.wbVideo.TabIndex = 2;
-            this.wbVideo.Visible = false;
-            // 
             // pnlQuiz
             // 
             this.pnlQuiz.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -211,23 +186,50 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.pnlQuiz.Controls.Add(this.btnSubmitQuiz);
             this.pnlQuiz.Location = new System.Drawing.Point(8, 44);
             this.pnlQuiz.Name = "pnlQuiz";
-            this.pnlQuiz.Size = new System.Drawing.Size(875, 868);
+            this.pnlQuiz.Size = new System.Drawing.Size(447, 868);
             this.pnlQuiz.TabIndex = 3;
             // 
             // flpQuizQuestions
             // 
             this.flpQuizQuestions.AutoScroll = true;
+            this.flpQuizQuestions.Controls.Add(this.wbVideo);
+            this.flpQuizQuestions.Controls.Add(this.rtbLessonText);
             this.flpQuizQuestions.Dock = System.Windows.Forms.DockStyle.Top;
             this.flpQuizQuestions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpQuizQuestions.Location = new System.Drawing.Point(0, 0);
             this.flpQuizQuestions.Name = "flpQuizQuestions";
-            this.flpQuizQuestions.Size = new System.Drawing.Size(875, 360);
+            this.flpQuizQuestions.Size = new System.Drawing.Size(500, 400);
             this.flpQuizQuestions.TabIndex = 0;
             this.flpQuizQuestions.WrapContents = false;
             // 
+            // wbVideo
+            // 
+            this.wbVideo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.wbVideo.Location = new System.Drawing.Point(3, 3);
+            this.wbVideo.Name = "wbVideo";
+            this.wbVideo.Size = new System.Drawing.Size(0, 420);
+            this.wbVideo.TabIndex = 2;
+            this.wbVideo.Visible = false;
+            // 
+            // rtbLessonText
+            // 
+            this.rtbLessonText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbLessonText.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.rtbLessonText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbLessonText.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.rtbLessonText.Location = new System.Drawing.Point(3, 429);
+            this.rtbLessonText.Name = "rtbLessonText";
+            this.rtbLessonText.ReadOnly = true;
+            this.rtbLessonText.Size = new System.Drawing.Size(0, 868);
+            this.rtbLessonText.TabIndex = 1;
+            this.rtbLessonText.Text = "";
+            // 
             // btnSubmitQuiz
             // 
-            this.btnSubmitQuiz.Location = new System.Drawing.Point(8, 374);
+            this.btnSubmitQuiz.Location = new System.Drawing.Point(164, 429);
             this.btnSubmitQuiz.Name = "btnSubmitQuiz";
             this.btnSubmitQuiz.Size = new System.Drawing.Size(120, 36);
             this.btnSubmitQuiz.TabIndex = 1;
@@ -263,6 +265,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.pnlLessonContent.ResumeLayout(false);
             this.pnlLessonContent.PerformLayout();
             this.pnlQuiz.ResumeLayout(false);
+            this.flpQuizQuestions.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

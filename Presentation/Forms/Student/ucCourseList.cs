@@ -11,6 +11,8 @@ using System.Net.Http;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
 using CodeForge_Desktop.DataAccess.Repositories;
+using CodeForge_Desktop.Business.Helpers;
+using CodeForge_Desktop.Business.Services;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 {
@@ -48,6 +50,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
         private async void ucCourseList_Load(object sender, EventArgs e)
         {
             SetupCourseGrid();
+            // subscribe to progress updates so the list refreshes when user completes lessons
+            ProgressNotifier.ProgressUpdated += OnProgressUpdated;
+
             await LoadCoursesAsync();
 
             // Gán lại các sự kiện
@@ -68,9 +73,38 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 UpdateCoursePreview(dgvCourses.Rows[0]);
             }
         }
-            
+
+        // ensure we unsubscribe when control destroyed
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            try { ProgressNotifier.ProgressUpdated -= OnProgressUpdated; } catch { }
+            base.OnHandleDestroyed(e);
+        }
+
+        // handler: refresh list (or update single row) when progress changes for current user
+        private void OnProgressUpdated(object sender, ProgressUpdatedEventArgs e)
+        {
+            // only refresh if the notification is for current user (avoid unnecessary reloads)
+            Guid current = Guid.Empty;
+            try { current = GlobalStore.user?.UserID ?? Guid.Empty; } catch { current = Guid.Empty; }
+            if (e == null || current == Guid.Empty || e.UserId != current) return;
+
+            // call LoadCoursesAsync on UI thread (fire-and-forget)
+            if (this.IsHandleCreated)
+            {
+                this.BeginInvoke((Action)(async () =>
+                {
+                    try
+                    {
+                        await LoadCoursesAsync();
+                    }
+                    catch { /* ignore UI refresh failures */ }
+                }));
+            }
+        }
+
         #region Helpers for UI Rendering (Rounded Rectangles)
-                    
+
         // Hàm vẽ path hình vuông bo góc
         public GraphicsPath GetRoundedRect(Rectangle bounds, int radius)
         {
@@ -163,6 +197,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             dgvCourses.Columns.Add(new DataGridViewTextBoxColumn { Name = "TotalStudents", DataPropertyName = "TotalStudents", Visible = false });
             dgvCourses.Columns.Add(new DataGridViewTextBoxColumn { Name = "Duration", DataPropertyName = "Duration", Visible = false });
 
+            // Hidden column that maps the enrollment flag so row.Cells["IsEnrolled"] is available
+            dgvCourses.Columns.Add(new DataGridViewTextBoxColumn { Name = "IsEnrolled", DataPropertyName = "IsEnrolled", Visible = false });
+
             // Định dạng Level và Rating
             dgvCourses.Columns["colLevel"].DefaultCellStyle.ForeColor = Color.OrangeRed;
             dgvCourses.CellFormatting += (s, ev) =>
@@ -192,6 +229,13 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             _courseData.Columns.Add("ShortOverview", typeof(string));
             _courseData.Columns.Add("TotalStudents", typeof(int));
             _courseData.Columns.Add("Duration", typeof(int)); // phút
+
+            // new column to mark whether the current logged-in user is enrolled in this course
+            _courseData.Columns.Add("IsEnrolled", typeof(bool));
+
+            // Add progress column — PopulateTableFromCoursesAsync adds progress value, so the DataTable must have this column
+            _courseData.Columns.Add("ProgressPercentage", typeof(int));
+
             _courseData.Columns.Add("ThumbnailImage", typeof(Image));
         }
 
@@ -202,7 +246,21 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 EnsureCourseDataTable();
                 _courseData.Rows.Clear();
 
-                List<Course> courses = await _courseRepository.GetAllAsync();
+                Guid currentUserId = Guid.Empty;
+                try { currentUserId = GlobalStore.user?.UserID ?? Guid.Empty; } catch { currentUserId = Guid.Empty; }
+
+                List<Course> courses;
+                // use repository method that includes IsEnrolled and ProgressPercentage
+                if (currentUserId != Guid.Empty && _courseRepository is CourseRepository repoConcrete)
+                {
+                    courses = await repoConcrete.GetListHasEnrollAsync(currentUserId);
+                }
+                else
+                {
+                    // fallback to plain list when no user
+                    courses = await _courseRepository.GetAllAsync();
+                }
+
                 await PopulateTableFromCoursesAsync(courses);
 
                 dgvCourses.DataSource = _courseData;
@@ -227,7 +285,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                     int totalStudents = c.TotalStudents;
                     Image thumb = null;
 
-                    // Prefer online URL if provided
+                    // thumbnail download/generation (unchanged)
                     if (!string.IsNullOrEmpty(c.Thumbnail))
                     {
                         try
@@ -242,33 +300,19 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                                         thumb = Image.FromStream(ms);
                                     }
                                 }
-                                catch
-                                {
-                                    thumb = null;
-                                }
+                                catch { thumb = null; }
                             }
                             else if (File.Exists(c.Thumbnail))
                             {
-                                try
-                                {
-                                    thumb = Image.FromFile(c.Thumbnail);
-                                }
-                                catch
-                                {
-                                    thumb = null;
-                                }
+                                try { thumb = Image.FromFile(c.Thumbnail); } catch { thumb = null; }
                             }
                         }
-                        catch
-                        {
-                            thumb = null;
-                        }
+                        catch { thumb = null; }
                     }
 
-                    // If still null, generate color icon based on language
                     if (thumb == null)
                     {
-                        Color iconColor = Color.FromArgb(255, 165, 0); // default
+                        Color iconColor = Color.FromArgb(255, 165, 0);
                         if (string.Equals(c.Language, "Python", StringComparison.OrdinalIgnoreCase)) iconColor = Color.FromArgb(50, 205, 50);
                         else if (c.Language != null && c.Language.IndexOf("c++", StringComparison.OrdinalIgnoreCase) >= 0) iconColor = Color.FromArgb(255, 69, 0);
                         else if (string.Equals(c.Language, "Java", StringComparison.OrdinalIgnoreCase)) iconColor = Color.FromArgb(128, 0, 128);
@@ -276,6 +320,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                         thumb = GetRoundedRectIcon(iconColor);
                     }
 
+                    bool isEnrolled = c.IsEnrolled;
+                    int progress = Math.Max(0, Math.Min(100, c.ProgressPercentage));
+
+                    // NOTE: column order must match EnsureCourseDataTable
                     _courseData.Rows.Add(
                         c.CourseId,
                         c.Title,
@@ -286,6 +334,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                         string.IsNullOrEmpty(c.Overview) ? "" : c.Overview,
                         totalStudents,
                         c.Duration,
+                        isEnrolled,
+                        progress,
                         thumb
                     );
                 }
@@ -299,7 +349,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 string keyword = string.Empty;
                 string selectedLevel = null;
 
-                // Read UI values on UI thread
                 if (this.InvokeRequired)
                 {
                     this.Invoke(new Action(() =>
@@ -314,7 +363,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                     selectedLevel = cmbFilterLevel.SelectedItem?.ToString();
                 }
 
-                // Map "Tất cả level" to null (adjust depending on exact ComboBox item text)
                 if (!string.IsNullOrEmpty(selectedLevel) &&
                     (selectedLevel.Equals("Tất cả level", StringComparison.OrdinalIgnoreCase) ||
                      selectedLevel.Equals("All", StringComparison.OrdinalIgnoreCase)))
@@ -322,16 +370,30 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                     selectedLevel = null;
                 }
 
-                // Call repository search with level -> SQL will handle filtering
-                List<Course> courses = await _courseRepository.SearchAsync(keyword ?? "", selectedLevel);
+                Guid currentUserId = Guid.Empty;
+                try { currentUserId = GlobalStore.user?.UserID ?? Guid.Empty; } catch { currentUserId = Guid.Empty; }
+
+                List<Course> courses;
+                if (currentUserId != Guid.Empty && _courseRepository is CourseRepository repoConcrete)
+                {
+                    courses = await repoConcrete.GetListHasEnrollAsync(currentUserId);
+                }
+                else
+                {
+                    courses = await _courseRepository.GetAllAsync();
+                }
+
+                // client-side filter (keeps IsEnrolled/Progress info)
+                var filtered = courses.Where(c =>
+                    (string.IsNullOrEmpty(keyword) || (c.Title ?? "").IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0) &&
+                    (string.IsNullOrEmpty(selectedLevel) || string.Equals(c.Level, selectedLevel, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
 
                 EnsureCourseDataTable();
-                await PopulateTableFromCoursesAsync(courses);
+                await PopulateTableFromCoursesAsync(filtered);
 
-                // Rebind datasource (keep selection handling)
                 dgvCourses.DataSource = _courseData;
 
-                // Select first row if available
                 if (dgvCourses.Rows.Count > 0)
                 {
                     dgvCourses.Rows[0].Selected = true;
@@ -344,7 +406,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             }
             catch (Exception ex)
             {
-                // Fail quietly but notify
                 MessageBox.Show("Lỗi khi tìm kiếm/lọc: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -367,60 +428,79 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 
         private void UpdateCoursePreview(DataGridViewRow row)
         {
-            if (row.Cells["CourseID"].Value == DBNull.Value) return;
+            // guard: ensure CourseID column exists and is not null
+            if (!row.DataGridView.Columns.Contains("CourseID") || row.Cells["CourseID"].Value == DBNull.Value) return;
 
-            // Lấy dữ liệu
             _selectedCourseId = (Guid)row.Cells["CourseID"].Value;
-            var title = row.Cells["colTitle"].Value?.ToString() ?? "";
-            var level = row.Cells["colLevel"].Value?.ToString() ?? "";
-            var language = row.Cells["colLanguage"].Value?.ToString() ?? "";
+
+            // Title column in the grid is named "colTitle" (DataPropertyName = "Title").
+            // Prefer the grid column name first, then fall back to a data column named "Title".
+            string title = "";
+            if (row.DataGridView.Columns.Contains("colTitle"))
+                title = row.Cells["colTitle"].Value?.ToString() ?? "";
+            else if (row.DataGridView.Columns.Contains("Title"))
+                title = row.Cells["Title"].Value?.ToString() ?? "";
+
+            var level = row.DataGridView.Columns.Contains("colLevel")
+                ? row.Cells["colLevel"]?.Value?.ToString() ?? ""
+                : (row.DataGridView.Columns.Contains("Level") ? row.Cells["Level"]?.Value?.ToString() ?? "" : "");
+
+            var language = row.DataGridView.Columns.Contains("colLanguage")
+                ? row.Cells["colLanguage"]?.Value?.ToString() ?? ""
+                : (row.DataGridView.Columns.Contains("Language") ? row.Cells["Language"]?.Value?.ToString() ?? "" : "");
+
             var rating = 0.0;
-            double.TryParse(row.Cells["colRating"].Value?.ToString() ?? "0", out rating);
-            var overview = row.Cells["ShortOverview"].Value?.ToString() ?? "";
+            double.TryParse(
+                (row.DataGridView.Columns.Contains("colRating") ? row.Cells["colRating"]?.Value?.ToString() : null) ??
+                (row.DataGridView.Columns.Contains("Rating") ? row.Cells["Rating"]?.Value?.ToString() : "0"),
+                out rating);
+
+            var overview = row.DataGridView.Columns.Contains("ShortOverview") ? row.Cells["ShortOverview"].Value?.ToString() ?? "" : "";
             var students = 0;
-            int.TryParse(row.Cells["TotalStudents"].Value?.ToString() ?? "0", out students);
+            int.TryParse(row.DataGridView.Columns.Contains("TotalStudents") ? row.Cells["TotalStudents"].Value?.ToString() ?? "0" : "0", out students);
             var duration = 0;
-            int.TryParse(row.Cells["Duration"].Value?.ToString() ?? "0", out duration);
+            int.TryParse(row.DataGridView.Columns.Contains("Duration") ? row.Cells["Duration"].Value?.ToString() ?? "0" : "0", out duration);
 
-            // Use the image from the grid (downloaded online or generated)
-            var cellImg = row.Cells["colThumbnail"].Value as Image;
-            if (cellImg != null)
-            {
-                pbThumbnail.Image = cellImg;
-            }
-            else
-            {
-                // Xác định màu icon lớn (dựa trên Level/Language như dữ liệu mẫu)
-                Color iconColor = Color.FromArgb(255, 165, 0); // Default: Cam
-                if (language != null && language.IndexOf("Python", StringComparison.OrdinalIgnoreCase) >= 0) iconColor = Color.FromArgb(50, 205, 50);
-                else if (language != null && language.IndexOf("C++", StringComparison.OrdinalIgnoreCase) >= 0) iconColor = Color.FromArgb(255, 69, 0);
-                else if (language != null && language.IndexOf("Java", StringComparison.OrdinalIgnoreCase) >= 0) iconColor = Color.FromArgb(128, 0, 128);
+            var cellImg = row.DataGridView.Columns.Contains("colThumbnail") ? row.Cells["colThumbnail"]?.Value as Image
+                : (row.DataGridView.Columns.Contains("ThumbnailImage") ? row.Cells["ThumbnailImage"]?.Value as Image : null);
 
-                pbThumbnail.Image = GetRoundedRectIcon(iconColor, 150, 15); // Kích thước lớn hơn và bo góc
-            }
+            if (cellImg != null) pbThumbnail.Image = cellImg;
+            else pbThumbnail.Image = GetRoundedRectIcon(Color.FromArgb(255,165,0),150,15);
 
             lblTitle.Text = title;
             lblMeta.Text = $"{level} | {language} | ⭐️ {rating:N1}";
             txtShortOverview.Text = overview;
-
             lblStudents.Text = $"{students:N0} người";
             lblDuration.Text = $"{duration / 60} giờ";
 
-            // Logic nút Đăng ký/Tiếp tục (Mô phỏng)
-            bool isEnrolled = title != "C++ Algorithms";
+            bool isEnrolled = false;
+            int progress = 0;
+            try
+            {
+                if (row.DataGridView.Columns.Contains("IsEnrolled") && row.Cells["IsEnrolled"].Value != DBNull.Value)
+                    isEnrolled = Convert.ToBoolean(row.Cells["IsEnrolled"].Value);
+
+                if (row.DataGridView.Columns.Contains("ProgressPercentage"))
+                {
+                    var cellValue = row.Cells["ProgressPercentage"].Value;
+                    if (cellValue != null && cellValue != DBNull.Value)
+                        progress = Convert.ToInt32(cellValue);
+                }
+            }
+            catch { isEnrolled = false; progress = 0; }
+
             if (isEnrolled)
             {
                 btnEnrollContinue.Text = "▶️ Tiếp tục học";
-                btnEnrollContinue.BackColor = Color.FromArgb(0, 177, 64); // Xanh lá cây cho Tiếp tục
-                btnViewDetails.FlatAppearance.BorderColor = Color.FromArgb(0, 120, 215); // Xanh dương
-                btnViewDetails.ForeColor = Color.FromArgb(0, 120, 215);
+                btnEnrollContinue.BackColor = Color.FromArgb(0, 177, 64);
+                pbCourseProgress.Value = Math.Max(0, Math.Min(100, progress));
+                pbCourseProgress.Visible = true;
             }
             else
             {
-                btnEnrollContinue.Text = $"💰 Đăng ký / Tiếp tục";
-                btnEnrollContinue.BackColor = Color.FromArgb(0, 120, 215); // Xanh dương cho Đăng ký
-                btnViewDetails.FlatAppearance.BorderColor = Color.FromArgb(0, 120, 215);
-                btnViewDetails.ForeColor = Color.FromArgb(0, 120, 215);
+                btnEnrollContinue.Text = "💰 Đăng ký";
+                btnEnrollContinue.BackColor = Color.FromArgb(0, 120, 215);
+                pbCourseProgress.Visible = false;
             }
         }
 
@@ -459,13 +539,106 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             }
         }
 
-        private void btnEnrollContinue_Click(object sender, EventArgs e)
+        private async void btnEnrollContinue_Click(object sender, EventArgs e)
         {
-            if (_selectedCourseId != Guid.Empty)
+            if (_selectedCourseId == Guid.Empty) return;
+
+            var currentUser = GlobalStore.user;
+            if (currentUser == null || currentUser.UserID == Guid.Empty)
             {
-                // Ensure _courseRepository is a CourseRepository instance
-                var repo = _courseRepository as CourseRepository ?? new CourseRepository();
-                MainFormStudent.Instance?.NavigateTo(new ucCourseLearning(_selectedCourseId, repo));
+                MessageBox.Show("Bạn phải đăng nhập để đăng ký hoặc tiếp tục học.", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // UI lock + feedback
+            btnEnrollContinue.Enabled = false;
+            var originalText = btnEnrollContinue.Text;
+            btnEnrollContinue.Text = "Đang xử lý...";
+            var prevCursor = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
+
+            // create services/repositories locally (or replace with DI if available)
+            var enrollmentService = new EnrollmentService(new EnrollmentRepository(), new ProgressRepository());
+            var courseRepo = _courseRepository as CourseRepository ?? new CourseRepository();
+
+            try
+            {
+                AppLogger.LogInfo($"Enroll button clicked. User={currentUser.UserID}, Course={_selectedCourseId}", nameof(btnEnrollContinue_Click));
+
+                bool isEnrolled = false;
+                try
+                {
+                    isEnrolled = enrollmentService.IsUserEnrolled(currentUser.UserID, _selectedCourseId);
+                    AppLogger.LogInfo($"IsUserEnrolled returned {isEnrolled} for User={currentUser.UserID}, Course={_selectedCourseId}", nameof(btnEnrollContinue_Click));
+                }
+                catch (Exception checkEx)
+                {
+                    AppLogger.LogException(checkEx, "IsUserEnrolled check");
+                    // proceed to attempt enrollment (it may still succeed)
+                }
+
+                if (!isEnrolled)
+                {
+                    var confirm = MessageBox.Show("Bạn có muốn đăng ký khóa học này?", "Xác nhận đăng ký", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (confirm != DialogResult.Yes) return;
+
+                    bool enrolled = false;
+                    int attempts = 0, maxAttempts = 2;
+                    while (attempts < maxAttempts && !enrolled)
+                    {
+                        attempts++;
+                        try
+                        {
+                            AppLogger.LogInfo($"Attempting enrollment (attempt {attempts}) User={currentUser.UserID}, Course={_selectedCourseId}", nameof(btnEnrollContinue_Click));
+                            enrolled = enrollmentService.EnrollUserToCourse(currentUser.UserID, _selectedCourseId);
+                            AppLogger.LogInfo($"Enroll result: {enrolled} (attempt {attempts}) User={currentUser.UserID}, Course={_selectedCourseId}", nameof(btnEnrollContinue_Click));
+                        }
+                        catch (System.Data.SqlClient.SqlException sqlEx)
+                        {
+                            AppLogger.LogException(sqlEx, $"SQL error on enroll attempt {attempts}");
+                            if (attempts >= maxAttempts) throw;
+                            await Task.Delay(300);
+                        }
+                        catch (Exception ex)
+                        {
+                            AppLogger.LogException(ex, $"Unexpected error on enroll attempt {attempts}");
+                            throw;
+                        }
+                    }
+
+                    if (!enrolled)
+                    {
+                        AppLogger.LogError($"Enrollment failed after {maxAttempts} attempts for User={currentUser.UserID}, Course={_selectedCourseId}", nameof(btnEnrollContinue_Click));
+                        MessageBox.Show("Đăng ký khóa học thất bại. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // refresh UI and navigate to learning
+                    try { await LoadCoursesAsync(); } catch (Exception refreshEx) { AppLogger.LogException(refreshEx, "LoadCoursesAsync after enroll"); }
+                    MainFormStudent.Instance?.NavigateTo(new ucCourseLearning(_selectedCourseId, courseRepo));
+                }
+                else
+                {
+                    AppLogger.LogInfo($"User already enrolled. Navigating to learning. User={currentUser.UserID}, Course={_selectedCourseId}", nameof(btnEnrollContinue_Click));
+                    MainFormStudent.Instance?.NavigateTo(new ucCourseLearning(_selectedCourseId, courseRepo));
+                }
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                AppLogger.LogException(sqlEx, "Database error during enrollment");
+                MessageBox.Show("Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogException(ex, "Enrollment error");
+                MessageBox.Show("Đã xảy ra lỗi. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // restore UI
+                btnEnrollContinue.Enabled = true;
+                btnEnrollContinue.Text = originalText;
+                Cursor.Current = prevCursor;
             }
         }
 

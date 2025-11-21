@@ -1,17 +1,13 @@
-﻿using CodeForge_Desktop.DataAccess.Entities;
+﻿using CodeForge_Desktop.Business.Interfaces;
+using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
-using CodeForge_Desktop.DataAccess.Repositories;
 using System;
-using System.Windows.Forms;
-using CodeForge_Desktop.Business; // <-- Adjust namespace as needed
-using CodeForge_Desktop.Business.Helpers; // <-- Correct namespace for GlobalStore
-using System.Drawing;
-using CodeForge_Desktop.Presentation.Forms.Student;
-using CodeForge_Desktop.Presentation.Forms.Student.UserControls; // <-- Add this using directive
+using CodeForge_Desktop.DataAccess.Repositories;
+using CodeForge_Desktop.Business.Helpers;
 
 namespace CodeForge_Desktop.Business.Services
 {
-    public class CourseReviewService
+    public class CourseReviewService : ICourseReviewService
     {
         private readonly ICourseReviewRepository _reviewRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
@@ -43,6 +39,7 @@ namespace CodeForge_Desktop.Business.Services
                 // Cập nhật đánh giá cũ
                 existingReview.Rating = rating;
                 existingReview.Comment = comment;
+                existingReview.UpdatedAt = DateTime.UtcNow;
                 return _reviewRepository.Update(existingReview) > 0;
             }
             else
@@ -50,10 +47,13 @@ namespace CodeForge_Desktop.Business.Services
                 // Tạo đánh giá mới
                 var review = new CourseReview
                 {
+                    ReviewID = Guid.NewGuid(),
                     UserID = userId,
                     CourseID = courseId,
                     Rating = rating,
-                    Comment = comment
+                    Comment = comment,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
                 };
                 return _reviewRepository.Add(review) > 0;
             }
@@ -73,70 +73,12 @@ namespace CodeForge_Desktop.Business.Services
     // ====================
     // MOVE METHOD TO CLASS
     // ====================
-
-    public class ucCourseList : UserControl
-    {
-        // ... other members ...
-
-        private Guid _selectedCourseId; // <-- Add this field
-        private Button btnEnrollContinue; // <-- Add this field
-        private DataGridView dgvCourses; // <-- Add this field
-
-        private void UpdateCoursePreview(DataGridViewRow row)
-        {
-            if (row.Cells["CourseID"].Value == DBNull.Value) return;
-
-            _selectedCourseId = (Guid)row.Cells["CourseID"].Value;
-            // ... các dòng khác ...
-
-            var enrollmentService = new EnrollmentService(
-                new EnrollmentRepository(),
-                new ProgressRepository());
-
-            bool isEnrolled = enrollmentService.IsUserEnrolled(GlobalStore.user.UserID, _selectedCourseId);
-
-            if (isEnrolled)
-            {
-                double progress = enrollmentService.GetEnrollmentProgress(
-                    GlobalStore.user.UserID, _selectedCourseId);
-
-                btnEnrollContinue.Text = $"▶️ Tiếp tục học ({progress:F0}%)";
-                btnEnrollContinue.BackColor = Color.FromArgb(0, 177, 64);
-                // Render progress bar ở đây
-            }
-            else
-            {
-                btnEnrollContinue.Text = "💰 Đăng ký";
-                btnEnrollContinue.BackColor = Color.FromArgb(0, 120, 215);
-            }
-        }
-
-        private void btnEnrollContinue_Click(object sender, EventArgs e)
-        {
-            if (_selectedCourseId == Guid.Empty) return;
-
-            var enrollmentService = new EnrollmentService(
-                new EnrollmentRepository(),
-                new ProgressRepository());
-
-            bool isEnrolled = enrollmentService.IsUserEnrolled(
-                GlobalStore.user.UserID, _selectedCourseId);
-
-            if (!isEnrolled)
-            {
-                bool success = enrollmentService.EnrollUserToCourse(
-                    GlobalStore.user.UserID, _selectedCourseId);
-
-                if (success)
-                {
-                    MessageBox.Show("Đăng ký khóa học thành công!", "Thành công",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    UpdateCoursePreview(dgvCourses.SelectedRows[0]);
-                }
-            }
-
-            MainFormStudent.Instance?.NavigateTo(
-                new ucCourseLearning(_selectedCourseId, new CourseRepository()));
-        }
-    }
+    //
+    // NOTE: UI classes (WinForms UserControl like ucCourseList) and code that references
+    // System.Windows.Forms / System.Drawing were accidentally placed in this business
+    // service file. That produces numerous CS0246 / CS0103 errors because the business
+    // layer file isn't expected to reference UI types. The UI code has been removed from
+    // this file — move it into Presentation/Forms/Student/ucCourseList.cs (WinForms file)
+    // and add the appropriate using directives there: System.Windows.Forms, System.Drawing.
+    //
 }

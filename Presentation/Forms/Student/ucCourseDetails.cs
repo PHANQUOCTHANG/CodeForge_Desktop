@@ -2,7 +2,8 @@
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
 using CodeForge_Desktop.DataAccess.Repositories;
-using CodeForge_Desktop.Presentation.Forms.Student.UserControls;
+using CodeForge_Desktop.Business.Interfaces;
+using System.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +13,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using CodeForge_Desktop.Business.Helpers;
+using CodeForge_Desktop.Business.Services;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 {
@@ -22,18 +24,32 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
         private readonly ICourseRepository _courseRepository;
         private Course _course;
 
+        private readonly ICourseReviewService _reviewService; // <-- interface field
+
+        // Enrollment service (used to check/create enrollment)
+        private readonly IEnrollmentService _enrollmentService;
+
         private const string NO_INSTRUCTOR = "Giảng viên: Chưa cập nhật";
         private const string NO_REVIEWS = "Chưa có đánh giá cho khóa học này.";
         private const string NO_CURRICULUM = "Chưa có nội dung cho khóa học này.";
 
-        public ucCourseDetails(Guid courseId) : this(courseId, new CourseRepository())
+        // default ctor used by caller that only supplies courseId
+        public ucCourseDetails(Guid courseId) : this(
+            courseId,
+            new CourseRepository(),
+            new CourseReviewService(new CourseReviewRepository(), new EnrollmentRepository()))
         {
         }
 
-        public ucCourseDetails(Guid courseId, ICourseRepository courseRepository)
+        // DI-friendly ctor
+        public ucCourseDetails(Guid courseId, ICourseRepository courseRepository, ICourseReviewService reviewService)
         {
             _courseId = courseId;
             _courseRepository = courseRepository ?? new CourseRepository();
+            _reviewService = reviewService ?? throw new ArgumentNullException(nameof(reviewService));
+            // create enrollment service here (repository-level objects match your DB schema)
+            _enrollmentService = new EnrollmentService(new EnrollmentRepository(), new ProgressRepository());
+
             InitializeComponent();
 
             WireEvents();
@@ -45,6 +61,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             this.Load += ucCourseDetails_Load;
             btnBack.Click += (s, e) => MainFormStudent.Instance?.GoBack();
             btnEnrollStart.Click += btnEnrollStart_Click;
+
+            // wire review submit button if present
+            if (btnSubmitReview != null)
+                btnSubmitReview.Click += btnSubmitReview_Click;
         }
 
         private void ConfigureControls()
@@ -99,7 +119,19 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 il.Images.Add("text", SystemIcons.Information.ToBitmap());
                 il.Images.Add("quiz", SystemIcons.Question.ToBitmap());
                 il.Images.Add("code", SystemIcons.Shield.ToBitmap());
+                // completed icon
+                il.Images.Add("completed", GetCheckIcon(16, Color.FromArgb(76, 175, 80)));
                 tvCurriculum.ImageList = il;
+            }
+
+            // Review inputs: default state
+            if (cbRating != null)
+            {
+                cbRating.SelectedIndex = 0; // default to 5 (first item)
+            }
+            if (lblReviewHint != null)
+            {
+                lblReviewHint.Visible = false;
             }
         }
 
@@ -179,6 +211,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 await LoadCourseAsync();
                 await LoadCurriculumAsync();
                 await LoadReviewsAsync();
+
+                // initialize review UI access and current user review
+                UpdateReviewTabAccess();
+                await LoadUserReviewAsync();
             }
             catch (Exception ex)
             {
@@ -207,10 +243,95 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 
                 // load thumbnail (file path or online URL)
                 await LoadThumbnailAsync(_course.Thumbnail);
+
+                // update enroll button state (based on DB)
+                await UpdateEnrollButtonStateAsync();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi load chi tiết khóa học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task UpdateEnrollButtonStateAsync()
+        {
+            try
+            {
+                bool enrolled = false;
+                int progress = 0;
+                var currentUser = GlobalStore.user;
+                if (currentUser != null && currentUser.UserID != Guid.Empty)
+                {
+                    enrolled = await Task.Run(() => _enrollmentService.IsUserEnrolled(currentUser.UserID, _courseId));
+                    if (enrolled)
+                    {
+                        try
+                        {
+                            // get progress percentage
+                            var progressSvc = new ProgressService(new ProgressRepository());
+                            double pct = await Task.Run(() => progressSvc.GetProgressPercentage(currentUser.UserID, _courseId));
+                            progress = (int)Math.Round(Math.Max(0.0, Math.Min(100.0, pct)));
+                        }
+                        catch (Exception ex)
+                        {
+                            AppLogger.LogException(ex, nameof(UpdateEnrollButtonStateAsync));
+                            progress = 0;
+                        }
+                    }
+                }
+
+                if (btnEnrollStart.InvokeRequired)
+                {
+                    btnEnrollStart.Invoke(new Action(() =>
+                    {
+                        if (enrolled)
+                        {
+                            btnEnrollStart.Text = "▶️ Tiếp tục học";
+                            btnEnrollStart.BackColor = Color.FromArgb(0, 177, 64);
+                            // show progress
+                            try
+                            {
+                                pbCourseProgress.Value = Math.Max(0, Math.Min(100, progress));
+                                pbCourseProgress.Visible = true;
+                            }
+                            catch { pbCourseProgress.Visible = true; }
+                        }
+                        else
+                        {
+                            btnEnrollStart.Text = "💰 Đăng ký";
+                            btnEnrollStart.BackColor = Color.FromArgb(0, 120, 215);
+                            pbCourseProgress.Visible = false;
+                        }
+                        btnEnrollStart.Enabled = true;
+                    }));
+                }
+                else
+                {
+                    if (enrolled)
+                    {
+                        btnEnrollStart.Text = "▶️ Tiếp tục học";
+                        btnEnrollStart.BackColor = Color.FromArgb(0, 177, 64);
+                        try
+                        {
+                            pbCourseProgress.Value = Math.Max(0, Math.Min(100, progress));
+                            pbCourseProgress.Visible = true;
+                        }
+                        catch { pbCourseProgress.Visible = true; }
+                    }
+                    else
+                    {
+                        btnEnrollStart.Text = "💰 Đăng ký";
+                        btnEnrollStart.BackColor = Color.FromArgb(0, 120, 215);
+                        pbCourseProgress.Visible = false;
+                    }
+                    btnEnrollStart.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogException(ex, nameof(UpdateEnrollButtonStateAsync));
+                // leave button default (disabled until user interacts)
+                try { btnEnrollStart.Enabled = true; } catch { }
             }
         }
 
@@ -264,6 +385,27 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 
             var modules = await Task.Run(() => FetchCurriculumStructuredSafe());
 
+            // apply completed flags for current user
+            var currentUser = GlobalStore.user;
+            if (currentUser != null && currentUser.UserID != Guid.Empty)
+            {
+                try
+                {
+                    var progressRepo = new ProgressRepository();
+                    var completedIds = await Task.Run(() => progressRepo.GetCompletedLessonIds(currentUser.UserID, _courseId));
+                    if (completedIds != null && completedIds.Count > 0)
+                    {
+                        foreach (var m in modules)
+                            foreach (var l in m.Lessons)
+                                l.IsCompleted = completedIds.Contains(l.LessonId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Apply completed flags failed: " + ex.Message);
+                }
+            }
+
             if (modules == null || modules.Count == 0)
             {
                 tvCurriculum.Nodes.Add(new TreeNode(NO_CURRICULUM));
@@ -291,11 +433,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                         case "coding": iconKey = "code"; break;
                     }
 
+                    // if the lesson is completed use the completed icon
+                    var nodeKey = lesson.IsCompleted ? "completed" : iconKey;
+
                     var lessonNode = new TreeNode(lesson.Title)
                     {
                         Tag = lesson,
-                        ImageKey = iconKey,
-                        SelectedImageKey = iconKey
+                        ImageKey = nodeKey,
+                        SelectedImageKey = nodeKey
                     };
 
                     moduleNode.Nodes.Add(lessonNode);
@@ -317,7 +462,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 string sqlModules = @"
                     SELECT ModuleID, Title, OrderIndex
                     FROM Modules
-                    WHERE CourseID = @CourseId AND IsDeleted = 0
+                    WHERE CourseID = @CourseId
+                      AND (
+                            NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Modules' AND COLUMN_NAME = 'IsDeleted')
+                            OR ISNULL(IsDeleted,0) = 0
+                          )
                     ORDER BY OrderIndex";
                 var dtModules = DbContext.Query(sqlModules, new SqlParameter("@CourseId", _courseId));
                 if (dtModules == null || dtModules.Rows.Count == 0) return modules;
@@ -330,7 +479,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                     string sqlLessons = @"
                         SELECT LessonID, Title, LessonType, Duration, OrderIndex
                         FROM Lessons
-                        WHERE ModuleID = @ModuleId AND IsDeleted = 0
+                        WHERE ModuleID = @ModuleId
+                          AND (
+                                NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Lessons' AND COLUMN_NAME = 'IsDeleted')
+                                OR ISNULL(IsDeleted,0) = 0
+                              )
                         ORDER BY OrderIndex";
                     var dtLessons = DbContext.Query(sqlLessons, new SqlParameter("@ModuleId", module.ModuleId));
                     if (dtLessons == null) { modules.Add(module); continue; }
@@ -346,22 +499,21 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                             Duration = lr.Table.Columns.Contains("Duration") && lr["Duration"] != DBNull.Value ? Convert.ToInt32(lr["Duration"]) : 0
                         };
 
-                        // enrich per-type safely (try/catch)
                         try
                         {
                             if (string.Equals(lesson.LessonType, "video", StringComparison.OrdinalIgnoreCase))
                             {
-                                var dtV = DbContext.Query("SELECT TOP 1 VideoUrl FROM LessonVideo WHERE LessonID = @L", new SqlParameter("@L", lesson.LessonId));
+                                var dtV = DbContext.Query("SELECT TOP 1 VideoUrl FROM LessonVideos WHERE LessonID = @L", new SqlParameter("@L", lesson.LessonId));
                                 if (dtV?.Rows.Count > 0 && dtV.Rows[0]["VideoUrl"] != DBNull.Value) lesson.ExtraInfo = dtV.Rows[0]["VideoUrl"].ToString();
                             }
                             else if (string.Equals(lesson.LessonType, "text", StringComparison.OrdinalIgnoreCase))
                             {
-                                var dtT = DbContext.Query("SELECT TOP 1 Content FROM LessonText WHERE LessonID = @L", new SqlParameter("@L", lesson.LessonId));
+                                var dtT = DbContext.Query("SELECT TOP 1 Content FROM LessonTexts WHERE LessonID = @L", new SqlParameter("@L", lesson.LessonId));
                                 if (dtT?.Rows.Count > 0) lesson.ExtraInfo = dtT.Rows[0]["Content"]?.ToString();
                             }
                             else if (string.Equals(lesson.LessonType, "quiz", StringComparison.OrdinalIgnoreCase))
                             {
-                                var dtQ = DbContext.Query("SELECT TOP 1 Title FROM LessonQuiz WHERE LessonID = @L", new SqlParameter("@L", lesson.LessonId));
+                                var dtQ = DbContext.Query("SELECT TOP 1 Title FROM LessonQuizzes WHERE LessonID = @L", new SqlParameter("@L", lesson.LessonId));
                                 if (dtQ?.Rows.Count > 0) lesson.ExtraInfo = dtQ.Rows[0]["Title"]?.ToString();
                             }
                             else if (string.Equals(lesson.LessonType, "coding", StringComparison.OrdinalIgnoreCase))
@@ -370,8 +522,17 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                                     SELECT cp.ProblemID, cp.Title, cp.Difficulty
                                     FROM CodingProblemLessons cpl
                                     INNER JOIN CodingProblems cp ON cpl.ProblemID = cp.ProblemID
-                                    WHERE cpl.LessonID = @LessonId AND cpl.IsDeleted = 0 AND (cp.IsDeleted = 0 OR cp.IsDeleted IS NULL)
-                                    ORDER BY cpl.OrderIndex", new SqlParameter("@LessonId", lesson.LessonId));
+                                    WHERE cpl.LessonID = @LessonId
+                                      AND (
+                                            NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'CodingProblemLessons' AND COLUMN_NAME = 'IsDeleted')
+                                            OR ISNULL(cpl.IsDeleted,0) = 0
+                                          )
+                                      AND (
+                                            NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'CodingProblems' AND COLUMN_NAME = 'IsDeleted')
+                                            OR ISNULL(cp.IsDeleted,0) = 0
+                                          )
+                                    ORDER BY ISNULL(cpl.OrderIndex, 0)", new SqlParameter("@LessonId", lesson.LessonId));
+
                                 if (dtProblems != null && dtProblems.Rows.Count > 0)
                                 {
                                     foreach (DataRow pr in dtProblems.Rows)
@@ -485,10 +646,259 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             }
         }
 
-        private void btnEnrollStart_Click(object sender, EventArgs e)
+        private async void btnEnrollStart_Click(object sender, EventArgs e)
         {
             if (_course == null) return;
-            MessageBox.Show($"Đăng ký / Bắt đầu: {_course.Title}", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            var currentUser = GlobalStore.user;
+            if (currentUser == null || currentUser.UserID == Guid.Empty)
+            {
+                MessageBox.Show("Bạn phải đăng nhập để đăng ký hoặc tiếp tục học.", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // UI lock + feedback
+            btnEnrollStart.Enabled = false;
+            var originalText = btnEnrollStart.Text;
+            var prevCursor = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
+
+            try
+            {
+                AppLogger.LogInfo($"Course details enroll clicked. User={currentUser.UserID}, Course={_courseId}", nameof(btnEnrollStart_Click));
+
+                bool isEnrolled = false;
+                try { isEnrolled = await Task.Run(() => _enrollmentService.IsUserEnrolled(currentUser.UserID, _courseId)); }
+                catch (Exception chkEx) { AppLogger.LogException(chkEx, "IsUserEnrolled check"); }
+
+                var courseRepo = _courseRepository as CourseRepository ?? new CourseRepository();
+
+                if (!isEnrolled)
+                {
+                    var confirm = MessageBox.Show("Bạn có muốn đăng ký khóa học này?", "Xác nhận đăng ký", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (confirm != DialogResult.Yes) return;
+
+                    bool enrolled = false;
+                    int attempts = 0, maxAttempts = 2;
+                    while (attempts < maxAttempts && !enrolled)
+                    {
+                        attempts++;
+                        try
+                        {
+                            AppLogger.LogInfo($"Attempting enrollment (attempt {attempts}) User={currentUser.UserID}, Course={_courseId}", nameof(btnEnrollStart_Click));
+                            enrolled = await Task.Run(() => _enrollmentService.EnrollUserToCourse(currentUser.UserID, _courseId));
+                            AppLogger.LogInfo($"Enroll result: {enrolled} (attempt {attempts}) User={currentUser.UserID}, Course={_courseId}", nameof(btnEnrollStart_Click));
+                        }
+                        catch (SqlException sqlEx)
+                        {
+                            AppLogger.LogException(sqlEx, $"SQL error on enroll attempt {attempts}");
+                            if (attempts >= maxAttempts) throw;
+                            await Task.Delay(300);
+                        }
+                        catch (Exception ex)
+                        {
+                            AppLogger.LogException(ex, $"Unexpected error on enroll attempt {attempts}");
+                            throw;
+                        }
+                    }
+
+                    if (!enrolled)
+                    {
+                        AppLogger.LogError($"Enrollment failed after {maxAttempts} attempts for User={currentUser.UserID}, Course={_courseId}", nameof(btnEnrollStart_Click));
+                        MessageBox.Show("Đăng ký khóa học thất bại. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // refresh UI so IsEnrolled / Progress show correctly
+                    try { await LoadCourseAsync(); } catch (Exception refreshEx) { AppLogger.LogException(refreshEx, "LoadCourseAsync after enroll"); }
+
+                    // navigate to learning page
+                    MainFormStudent.Instance?.NavigateTo(new ucCourseLearning(_courseId, courseRepo));
+                }
+                else
+                {
+                    // already enrolled -> go straight to learning
+                    MainFormStudent.Instance?.NavigateTo(new ucCourseLearning(_courseId, courseRepo));
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                AppLogger.LogException(sqlEx, "Database error during enrollment from details");
+                MessageBox.Show("Lỗi cơ sở dữ liệu. Vui lòng thử lại sau.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogException(ex, "Enrollment error from details");
+                MessageBox.Show("Đã xảy ra lỗi. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // restore UI
+                btnEnrollStart.Enabled = true;
+                btnEnrollStart.Text = originalText;
+                Cursor.Current = prevCursor;
+            }
+        }
+
+        // Review UI helpers (NEW)
+        private void UpdateReviewTabAccess()
+        {
+            // Review panel functionality removed - controls not defined in designer
+            // This method is intentionally left empty as review input controls are not part of the UI
+
+            // Keep the comment above for history; implement access logic below.
+            try
+            {
+                var currentUser = GlobalStore.user;
+                bool canReview = false;
+                if (currentUser != null && currentUser.UserID != Guid.Empty)
+                {
+                    try
+                    {
+                        canReview = _reviewService?.CanReviewCourse(currentUser.UserID, _courseId) ?? false;
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogException(ex, nameof(UpdateReviewTabAccess));
+                        canReview = false;
+                    }
+                }
+
+                // if controls are present, enable/disable accordingly
+                if (cbRating != null) cbRating.Enabled = canReview;
+                if (txtComment != null) txtComment.Enabled = canReview;
+                if (btnSubmitReview != null) btnSubmitReview.Enabled = canReview;
+
+                if (lblReviewHint != null)
+                {
+                    lblReviewHint.Visible = !canReview;
+                    lblReviewHint.Text = canReview ? string.Empty : "Bạn phải đăng ký để đánh giá.";
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogException(ex, nameof(UpdateReviewTabAccess));
+            }
+        }
+
+        private async Task LoadUserReviewAsync()
+        {
+            // Review loading functionality removed - controls not defined in designer
+            // This method is intentionally left empty as review input controls are not part of the UI
+
+            // Keep previous comment above; implement actual load below.
+            try
+            {
+                var currentUser = GlobalStore.user;
+                if (currentUser == null || currentUser.UserID == Guid.Empty) return;
+                if (_reviewService == null) return;
+
+                CourseReview existing = null;
+                try
+                {
+                    existing = await Task.Run(() => _reviewService.GetUserReview(currentUser.UserID, _courseId));
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogException(ex, nameof(LoadUserReviewAsync));
+                }
+
+                if (existing != null)
+                {
+                    if (cbRating != null)
+                    {
+                        // service stores rating as 1..5; combobox items are strings "5","4",...
+                        var str = existing.Rating.ToString();
+                        var idx = cbRating.Items.IndexOf(str);
+                        if (idx >= 0) cbRating.SelectedIndex = idx;
+                    }
+                    if (txtComment != null) txtComment.Text = existing.Comment ?? string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogException(ex, nameof(LoadUserReviewAsync));
+            }
+        }
+
+        private async void btnSubmitReview_Click(object sender, EventArgs e)
+        {
+            // Review submission functionality removed - controls not defined in designer
+            // This method is intentionally left empty as review input controls are not part of the UI
+
+            // Implement submission using ICourseReviewService (synchronous service wrapped in Task.Run)
+            try
+            {
+                var currentUser = GlobalStore.user;
+                if (currentUser == null || currentUser.UserID == Guid.Empty)
+                {
+                    MessageBox.Show("Bạn phải đăng nhập để gửi đánh giá.", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (_reviewService == null)
+                {
+                    MessageBox.Show("Không thể gửi đánh giá tại thời điểm này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (cbRating == null || cbRating.SelectedItem == null)
+                {
+                    MessageBox.Show("Vui lòng chọn số sao (1 - 5).", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (int.TryParse(cbRating.SelectedItem.ToString(), out int rating))
+                {
+                    // rating accepted (1..5)
+                }
+                else
+                {
+                    MessageBox.Show("Giá trị đánh giá không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                rating = int.Parse(cbRating.SelectedItem.ToString());
+                var comment = txtComment?.Text?.Trim();
+
+                // UI feedback
+                btnSubmitReview.Enabled = false;
+                var prevCursor = Cursor.Current;
+                Cursor.Current = Cursors.WaitCursor;
+
+                bool result = false;
+                try
+                {
+                    // call service on background thread to avoid UI hang
+                    result = await Task.Run(() => _reviewService.SubmitReview(currentUser.UserID, _courseId, rating, comment));
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogException(ex, nameof(btnSubmitReview_Click));
+                    result = false;
+                }
+
+                if (result)
+                {
+                    MessageBox.Show("Gửi đánh giá thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    await LoadReviewsAsync();
+                    UpdateReviewTabAccess();
+                }
+                else
+                {
+                    MessageBox.Show("Không thể gửi đánh giá. Kiểm tra điều kiện (phải đăng ký khóa học) hoặc thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogException(ex, nameof(btnSubmitReview_Click));
+                MessageBox.Show("Đã xảy ra lỗi khi gửi đánh giá.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                try { btnSubmitReview.Enabled = true; } catch { }
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         // Reuse helper for nice thumbnail placeholder
@@ -510,10 +920,28 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                     path.AddArc(arc, 0, 90);
                     arc.X = rect.Left;
                     arc.Y = rect.Bottom - diameter;
-                    path.AddArc(arc, 90, 90);
+                    path.AddArc(arc, 90, 90);   
                     path.CloseFigure();
-                    g.FillPath(new System.Drawing.SolidBrush(color), path);
+                    g.FillPath(new System.Drawing.SolidBrush(color), path);             
                 }
+            }
+            return bmp;
+        }
+
+        // small green check icon generator (used for "completed")
+        private Image GetCheckIcon(int size, Color color)
+        {
+            var bmp = new Bitmap(size, size);
+            using (var g = Graphics.FromImage(bmp))
+            using (var b = new SolidBrush(color))
+            using (var pen = new Pen(Color.White, Math.Max(1, size / 8)))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.FillEllipse(b, 0, 0, size - 1, size - 1);
+                var p1 = new PointF(size * 0.25f, size * 0.55f);
+                var p2 = new PointF(size * 0.45f, size * 0.75f);
+                var p3 = new PointF(size * 0.78f, size * 0.28f);
+                g.DrawLines(pen, new[] { p1, p2, p3 });
             }
             return bmp;
         }
@@ -534,11 +962,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             public int Duration { get; set; } // minutes
             public string ExtraInfo { get; set; }
             public List<CodingProblemInfo> CodingProblems { get; } = new List<CodingProblemInfo>();
+
+            // new: completion flag for current user (set by UI layer using ProgressRepository)
+            public bool IsCompleted { get; set; } = false;
         }
 
         private class CodingProblemInfo
         {
-            public Guid ProblemID { get; set; }
+            public Guid ProblemID { get; set; } = Guid.Empty;
             public string Title { get; set; }
             public string Difficulty { get; set; }
         }

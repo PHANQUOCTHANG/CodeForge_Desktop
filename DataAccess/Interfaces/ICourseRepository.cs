@@ -15,6 +15,11 @@ namespace CodeForge_Desktop.DataAccess.Interfaces
         Task<List<Course>> GetAllAsync();
 
         /// <summary>
+        /// Lấy danh sách khóa học kèm trạng thái đăng ký + tiến trình cho user (derived fields)
+        /// </summary>
+        Task<List<Course>> GetListHasEnrollAsync(Guid userId);
+
+        /// <summary>
         /// Tìm kiếm khóa học theo từ khóa (Title) và lọc theo Level (Beginner/Intermediate/Advanced)
         /// </summary>
         Task<List<Course>> SearchAsync(string keyword, string level = null);

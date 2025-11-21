@@ -15,41 +15,45 @@ namespace CodeForge_Desktop.DataAccess.Repositories
         {
             return new Progress
             {
-                ProgressID = (Guid)row["ProgressID"],
-                UserID = (Guid)row["UserID"],
-                CourseID = (Guid)row["CourseID"],
-                LessonID = (Guid)row["LessonID"],
-                IsCompleted = (bool)row["IsCompleted"],
-                CompletedAt = row["CompletedAt"] != DBNull.Value ? (DateTime?)row["CompletedAt"] : null,
-                ProgressPercentage = row["ProgressPercentage"] != DBNull.Value ? (int)row["ProgressPercentage"] : 0,
-                CreatedAt = (DateTime)row["CreatedAt"],
-                UpdatedAt = row["UpdatedAt"] != DBNull.Value ? (DateTime?)row["UpdatedAt"] : null,
-                IsDeleted = (bool)row["IsDeleted"]
+                ProgressID = row.Table.Columns.Contains("ProgressID") && row["ProgressID"] != DBNull.Value ? (Guid)row["ProgressID"] : Guid.Empty,
+                UserID = row.Table.Columns.Contains("UserID") && row["UserID"] != DBNull.Value ? (Guid)row["UserID"] : Guid.Empty,
+                LessonID = row.Table.Columns.Contains("LessonID") && row["LessonID"] != DBNull.Value ? (Guid)row["LessonID"] : Guid.Empty,
+                Status = row.Table.Columns.Contains("Status") && row["Status"] != DBNull.Value ? row["Status"].ToString() : "in_progress",
+                UpdatedAt = row.Table.Columns.Contains("UpdatedAt") && row["UpdatedAt"] != DBNull.Value ? (DateTime)row["UpdatedAt"] : DateTime.MinValue
             };
         }
 
         public Progress GetById(Guid id)
         {
-            string sql = "SELECT * FROM Progress WHERE ProgressID = @id AND IsDeleted = 0";
+            string sql = "SELECT TOP 1 ProgressID, UserID, LessonID, Status, UpdatedAt FROM Progress WHERE ProgressID = @id";
             DataTable dt = DbContext.Query(sql, new SqlParameter("@id", id));
             return dt.Rows.Count > 0 ? MapToProgress(dt.Rows[0]) : null;
         }
 
         public List<Progress> GetByUserAndCourse(Guid userId, Guid courseId)
         {
+            // join Lessons -> Modules to filter by course
+            string sql = @"
+                SELECT p.ProgressID, p.UserID, p.LessonID, p.Status, p.UpdatedAt
+                FROM Progress p
+                INNER JOIN Lessons l ON p.LessonID = l.LessonID
+                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
+                WHERE p.UserID = @userId AND m.CourseID = @courseId";
+            DataTable dt = DbContext.Query(sql, new SqlParameter("@userId", userId), new SqlParameter("@courseId", courseId));
             var list = new List<Progress>();
-            string sql = "SELECT * FROM Progress WHERE UserID = @userId AND CourseID = @courseId AND IsDeleted = 0";
-            DataTable dt = DbContext.Query(sql,
-                new SqlParameter("@userId", userId),
-                new SqlParameter("@courseId", courseId));
-            foreach (DataRow row in dt.Rows)
-                list.Add(MapToProgress(row));
+            foreach (DataRow r in dt.Rows) list.Add(MapToProgress(r));
             return list;
         }
 
         public Progress GetByUserLessonAndCourse(Guid userId, Guid lessonId, Guid courseId)
         {
-            string sql = "SELECT TOP 1 * FROM Progress WHERE UserID = @userId AND LessonID = @lessonId AND CourseID = @courseId AND IsDeleted = 0";
+            // ensure the lesson belongs to the course by joining Modules
+            string sql = @"
+                SELECT TOP 1 p.ProgressID, p.UserID, p.LessonID, p.Status, p.UpdatedAt
+                FROM Progress p
+                INNER JOIN Lessons l ON p.LessonID = l.LessonID
+                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
+                WHERE p.UserID = @userId AND p.LessonID = @lessonId AND m.CourseID = @courseId";
             DataTable dt = DbContext.Query(sql,
                 new SqlParameter("@userId", userId),
                 new SqlParameter("@lessonId", lessonId),
@@ -59,64 +63,59 @@ namespace CodeForge_Desktop.DataAccess.Repositories
 
         public int Add(Progress progress)
         {
-            if (progress.ProgressID == Guid.Empty)
-                progress.ProgressID = Guid.NewGuid();
-
+            if (progress.ProgressID == Guid.Empty) progress.ProgressID = Guid.NewGuid();
+            // Insert only columns present in DB schema
             string sql = @"
-                INSERT INTO Progress (ProgressID, UserID, CourseID, LessonID, IsCompleted, CompletedAt, ProgressPercentage, CreatedAt, IsDeleted)
-                VALUES (@ProgressID, @UserID, @CourseID, @LessonID, @IsCompleted, @CompletedAt, @ProgressPercentage, @CreatedAt, 0)";
-
+                INSERT INTO Progress (ProgressID, UserID, LessonID, Status, UpdatedAt)
+                VALUES (@ProgressID, @UserID, @LessonID, @Status, @UpdatedAt)";
             return DbContext.Execute(sql,
                 new SqlParameter("@ProgressID", progress.ProgressID),
                 new SqlParameter("@UserID", progress.UserID),
-                new SqlParameter("@CourseID", progress.CourseID),
                 new SqlParameter("@LessonID", progress.LessonID),
-                new SqlParameter("@IsCompleted", progress.IsCompleted),
-                new SqlParameter("@CompletedAt", (object)progress.CompletedAt ?? DBNull.Value),
-                new SqlParameter("@ProgressPercentage", progress.ProgressPercentage),
-                new SqlParameter("@CreatedAt", progress.CreatedAt));
+                new SqlParameter("@Status", (object)progress.Status ?? "in_progress"),
+                new SqlParameter("@UpdatedAt", progress.UpdatedAt == DateTime.MinValue ? DateTime.UtcNow : progress.UpdatedAt));
         }
 
         public int Update(Progress progress)
         {
-            progress.UpdatedAt = DateTime.Now;
+            progress.UpdatedAt = DateTime.UtcNow;
             string sql = @"
-                UPDATE Progress 
-                SET IsCompleted = @IsCompleted, CompletedAt = @CompletedAt, ProgressPercentage = @ProgressPercentage, UpdatedAt = @UpdatedAt
-                WHERE ProgressID = @ProgressID AND IsDeleted = 0";
-
+                UPDATE Progress
+                SET Status = @Status, UpdatedAt = @UpdatedAt
+                WHERE ProgressID = @ProgressID";
             return DbContext.Execute(sql,
-                new SqlParameter("@ProgressID", progress.ProgressID),
-                new SqlParameter("@IsCompleted", progress.IsCompleted),
-                new SqlParameter("@CompletedAt", (object)progress.CompletedAt ?? DBNull.Value),
-                new SqlParameter("@ProgressPercentage", progress.ProgressPercentage),
-                new SqlParameter("@UpdatedAt", progress.UpdatedAt));
+                new SqlParameter("@Status", (object)progress.Status ?? "in_progress"),
+                new SqlParameter("@UpdatedAt", progress.UpdatedAt),
+                new SqlParameter("@ProgressID", progress.ProgressID));
         }
 
         public int Delete(Guid id)
         {
-            string sql = "UPDATE Progress SET IsDeleted = 1 WHERE ProgressID = @id";
+            string sql = "DELETE FROM Progress WHERE ProgressID = @id";
             return DbContext.Execute(sql, new SqlParameter("@id", id));
         }
 
         public int GetCompletedLessonCount(Guid userId, Guid courseId)
         {
-            string sql = "SELECT COUNT(*) FROM Progress WHERE UserID = @userId AND CourseID = @courseId AND IsCompleted = 1 AND IsDeleted = 0";
-            DataTable dt = DbContext.Query(sql,
-                new SqlParameter("@userId", userId),
-                new SqlParameter("@courseId", courseId));
-            return dt.Rows.Count > 0 ? (int)dt.Rows[0][0] : 0;
+            string sql = @"
+                SELECT COUNT(DISTINCT p.LessonID)
+                FROM Progress p
+                INNER JOIN Lessons l ON p.LessonID = l.LessonID
+                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
+                WHERE p.UserID = @userId AND m.CourseID = @courseId AND p.Status = 'completed'";
+            DataTable dt = DbContext.Query(sql, new SqlParameter("@userId", userId), new SqlParameter("@courseId", courseId));
+            return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
         }
 
         public int GetTotalLessonCount(Guid courseId)
         {
             string sql = @"
-                SELECT COUNT(DISTINCT l.LessonID) 
+                SELECT COUNT(1)
                 FROM Lessons l
-                WHERE l.CourseID = (SELECT CourseID FROM Modules WHERE ModuleID IN (SELECT ModuleID FROM Lessons WHERE CourseID IN (SELECT CourseID FROM Courses WHERE CourseID = @courseId)))
-                AND l.IsDeleted = 0";
+                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
+                WHERE m.CourseID = @courseId AND ISNULL(l.IsDeleted,0) = 0 AND ISNULL(m.IsDeleted,0) = 0";
             DataTable dt = DbContext.Query(sql, new SqlParameter("@courseId", courseId));
-            return dt.Rows.Count > 0 ? (int)dt.Rows[0][0] : 0;
+            return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
         }
 
         public double GetProgressPercentage(Guid userId, Guid courseId)
@@ -129,15 +128,15 @@ namespace CodeForge_Desktop.DataAccess.Repositories
 
         public List<Guid> GetCompletedLessonIds(Guid userId, Guid courseId)
         {
-            string sql = "SELECT LessonID FROM Progress WHERE UserID = @userId AND CourseID = @courseId AND IsCompleted = 1 AND IsDeleted = 0";
-            DataTable dt = DbContext.Query(sql,
-                new SqlParameter("@userId", userId),
-                new SqlParameter("@courseId", courseId));
-            
             var list = new List<Guid>();
-            foreach (DataRow row in dt.Rows)
-                if (row["LessonID"] != DBNull.Value)
-                    list.Add((Guid)row["LessonID"]);
+            string sql = @"
+                SELECT DISTINCT p.LessonID
+                FROM Progress p
+                INNER JOIN Lessons l ON p.LessonID = l.LessonID
+                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
+                WHERE p.UserID = @userId AND m.CourseID = @courseId AND p.Status = 'completed'";
+            DataTable dt = DbContext.Query(sql, new SqlParameter("@userId", userId), new SqlParameter("@courseId", courseId));
+            foreach (DataRow r in dt.Rows) if (r["LessonID"] != DBNull.Value) list.Add((Guid)r["LessonID"]);
             return list;
         }
     }

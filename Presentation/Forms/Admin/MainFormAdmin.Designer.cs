@@ -40,6 +40,7 @@
             this.lblAppName = new System.Windows.Forms.Label();
             this.lblLogo = new System.Windows.Forms.Label();
             this.pnlContent = new System.Windows.Forms.Panel();
+            this.btnCourseManagement = new System.Windows.Forms.Button();
             this.pnlSidebar.SuspendLayout();
             this.pnlMenu.SuspendLayout();
             this.pnlLogo.SuspendLayout();
@@ -58,6 +59,7 @@
             // 
             // pnlMenu
             // 
+            this.pnlMenu.Controls.Add(this.btnCourseManagement);
             this.pnlMenu.Controls.Add(this.btnDangXuat);
             this.pnlMenu.Controls.Add(this.btnCaiDat);
             this.pnlMenu.Controls.Add(this.btnSystemLogs);
@@ -227,6 +229,25 @@
             this.pnlContent.Size = new System.Drawing.Size(1532, 803);
             this.pnlContent.TabIndex = 1;
             // 
+            // btnCourseManagement
+            // 
+            this.btnCourseManagement.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCourseManagement.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnCourseManagement.FlatAppearance.BorderSize = 0;
+            this.btnCourseManagement.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnCourseManagement.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCourseManagement.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.btnCourseManagement.ForeColor = System.Drawing.Color.White;
+            this.btnCourseManagement.Location = new System.Drawing.Point(0, 235);
+            this.btnCourseManagement.Name = "btnCourseManagement";
+            this.btnCourseManagement.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.btnCourseManagement.Size = new System.Drawing.Size(250, 45);
+            this.btnCourseManagement.TabIndex = 7;
+            this.btnCourseManagement.Text = "📋  Quản lý Khóa học";
+            this.btnCourseManagement.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCourseManagement.UseVisualStyleBackColor = true;
+            this.btnCourseManagement.Click += new System.EventHandler(this.btnCourseManagement_Click);
+            // 
             // MainFormAdmin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -260,5 +281,6 @@
         private System.Windows.Forms.Panel pnlContent;
         private System.Windows.Forms.Button btnSystemLogs;
         private System.Windows.Forms.Button btnDangXuat;
+        private System.Windows.Forms.Button btnCourseManagement;
     }
 }
