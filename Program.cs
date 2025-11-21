@@ -18,19 +18,9 @@ namespace CodeForge_Desktop
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // --- Thiết lập Dependency Injection thủ công ---
+            //Application.Run(new Login());
+            Application.Run(new MainFormAdmin());
 
-            // 1. Đăng ký Repository
-            IUserRepository userRepository = new UserRepository();
-
-            // 2. Đăng ký Service, truyền Repository vào
-            IAuthService authService = new AuthService(userRepository);
-
-               // 3. Khởi chạy Form Login, truyền AuthService vào Constructor
-            //Login loginForm = new Login(authService);
-
-            Application.Run(new Login(authService));
-            
         }
     }
 }

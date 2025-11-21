@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business\Helpers\CodeEditorHelper.cs" />
+    <Compile Include="Business\Helpers\CodeEditorHelper.cs" /><Compile Include="Business\Helpers\InputParser.cs" />
     <Compile Include="Business\Helpers\JsonConverter.cs" />
     <Compile Include="Business\Helpers\LanguageConverter.cs" />
     <Compile Include="Business\Helpers\PasswordHasher.cs" /><Compile Include="Business\Helpers\GlobalStore.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="Business\Models\Response.cs" />
     <Compile Include="Business\Models\RunProblem.cs" />
     <Compile Include="Business\Services\AuthSerivce.cs" />
-    <Compile Include="Business\Services\CodingProblemService.cs" /><Compile Include="Business\Services\ISubmissionService.cs" />
+    <Compile Include="Business\Services\CodingProblemService.cs" /><Compile Include="Business\Interfaces\ISubmissionService.cs" />
     <Compile Include="Business\Services\ProblemRunnerService.cs" /><Compile Include="Business\Services\SubmissionService.cs" />
     <Compile Include="Business\Services\TestCaseService.cs" />
     <Compile Include="Business\Services\UserService.cs" />
@@ -185,7 +185,7 @@
       <DependentUpon>ucSubmissions.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" /><EmbeddedResource Include="Presentation\Forms\Admin\AddEditProblemForm.resx"><DependentUpon>AddEditProblemForm.cs</DependentUpon></EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Admin\AddEditUserForm.resx">
       <DependentUpon>AddEditUserForm.cs</DependentUpon>
     </EmbeddedResource>

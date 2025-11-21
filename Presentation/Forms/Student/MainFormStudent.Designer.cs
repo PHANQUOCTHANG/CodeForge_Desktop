@@ -52,8 +52,9 @@
             this.pnlSidebar.Controls.Add(this.pnlLogo);
             this.pnlSidebar.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlSidebar.Location = new System.Drawing.Point(0, 0);
+            this.pnlSidebar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlSidebar.Name = "pnlSidebar";
-            this.pnlSidebar.Size = new System.Drawing.Size(240, 803);
+            this.pnlSidebar.Size = new System.Drawing.Size(180, 652);
             this.pnlSidebar.TabIndex = 0;
             // 
             // btnDangXuat
@@ -66,13 +67,15 @@
             this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold);
             this.btnDangXuat.ForeColor = System.Drawing.Color.White;
-            this.btnDangXuat.Location = new System.Drawing.Point(0, 748);
+            this.btnDangXuat.Location = new System.Drawing.Point(0, 607);
+            this.btnDangXuat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDangXuat.Name = "btnDangXuat";
-            this.btnDangXuat.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
-            this.btnDangXuat.Size = new System.Drawing.Size(240, 55);
+            this.btnDangXuat.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnDangXuat.Size = new System.Drawing.Size(180, 45);
             this.btnDangXuat.TabIndex = 5;
             this.btnDangXuat.Text = "Đăng xuất";
             this.btnDangXuat.UseVisualStyleBackColor = false;
+            this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click);
             // 
             // pnlMenu
             // 
@@ -81,10 +84,11 @@
             this.pnlMenu.Controls.Add(this.btnDanhSachBaiTap);
             this.pnlMenu.Controls.Add(this.btnTrangChu);
             this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMenu.Location = new System.Drawing.Point(0, 80);
+            this.pnlMenu.Location = new System.Drawing.Point(0, 65);
+            this.pnlMenu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlMenu.Name = "pnlMenu";
-            this.pnlMenu.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.pnlMenu.Size = new System.Drawing.Size(240, 723);
+            this.pnlMenu.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.pnlMenu.Size = new System.Drawing.Size(180, 587);
             this.pnlMenu.TabIndex = 1;
             // 
             // btnCaiDat
@@ -96,10 +100,11 @@
             this.btnCaiDat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnCaiDat.ForeColor = System.Drawing.Color.White;
-            this.btnCaiDat.Location = new System.Drawing.Point(0, 145);
+            this.btnCaiDat.Location = new System.Drawing.Point(0, 119);
+            this.btnCaiDat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCaiDat.Name = "btnCaiDat";
-            this.btnCaiDat.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnCaiDat.Size = new System.Drawing.Size(240, 45);
+            this.btnCaiDat.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnCaiDat.Size = new System.Drawing.Size(180, 37);
             this.btnCaiDat.TabIndex = 4;
             this.btnCaiDat.Text = "⚙  Cài đặt";
             this.btnCaiDat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -115,10 +120,11 @@
             this.btnLichSuNopBai.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLichSuNopBai.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnLichSuNopBai.ForeColor = System.Drawing.Color.White;
-            this.btnLichSuNopBai.Location = new System.Drawing.Point(0, 100);
+            this.btnLichSuNopBai.Location = new System.Drawing.Point(0, 82);
+            this.btnLichSuNopBai.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnLichSuNopBai.Name = "btnLichSuNopBai";
-            this.btnLichSuNopBai.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnLichSuNopBai.Size = new System.Drawing.Size(240, 45);
+            this.btnLichSuNopBai.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnLichSuNopBai.Size = new System.Drawing.Size(180, 37);
             this.btnLichSuNopBai.TabIndex = 3;
             this.btnLichSuNopBai.Text = "🕐  Lịch sử nộp bài";
             this.btnLichSuNopBai.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -134,10 +140,11 @@
             this.btnDanhSachBaiTap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDanhSachBaiTap.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnDanhSachBaiTap.ForeColor = System.Drawing.Color.White;
-            this.btnDanhSachBaiTap.Location = new System.Drawing.Point(0, 55);
+            this.btnDanhSachBaiTap.Location = new System.Drawing.Point(0, 45);
+            this.btnDanhSachBaiTap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDanhSachBaiTap.Name = "btnDanhSachBaiTap";
-            this.btnDanhSachBaiTap.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnDanhSachBaiTap.Size = new System.Drawing.Size(240, 45);
+            this.btnDanhSachBaiTap.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnDanhSachBaiTap.Size = new System.Drawing.Size(180, 37);
             this.btnDanhSachBaiTap.TabIndex = 2;
             this.btnDanhSachBaiTap.Text = "📋  Danh sách bài tập";
             this.btnDanhSachBaiTap.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -153,10 +160,11 @@
             this.btnTrangChu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTrangChu.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnTrangChu.ForeColor = System.Drawing.Color.White;
-            this.btnTrangChu.Location = new System.Drawing.Point(0, 10);
+            this.btnTrangChu.Location = new System.Drawing.Point(0, 8);
+            this.btnTrangChu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnTrangChu.Name = "btnTrangChu";
-            this.btnTrangChu.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnTrangChu.Size = new System.Drawing.Size(240, 45);
+            this.btnTrangChu.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnTrangChu.Size = new System.Drawing.Size(180, 37);
             this.btnTrangChu.TabIndex = 1;
             this.btnTrangChu.Text = "🏠  Trang chủ";
             this.btnTrangChu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -170,8 +178,9 @@
             this.pnlLogo.Controls.Add(this.lblLogo);
             this.pnlLogo.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlLogo.Location = new System.Drawing.Point(0, 0);
+            this.pnlLogo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlLogo.Name = "pnlLogo";
-            this.pnlLogo.Size = new System.Drawing.Size(240, 80);
+            this.pnlLogo.Size = new System.Drawing.Size(180, 65);
             this.pnlLogo.TabIndex = 0;
             // 
             // lblAppName
@@ -179,9 +188,10 @@
             this.lblAppName.AutoSize = true;
             this.lblAppName.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblAppName.ForeColor = System.Drawing.Color.White;
-            this.lblAppName.Location = new System.Drawing.Point(70, 20);
+            this.lblAppName.Location = new System.Drawing.Point(52, 16);
+            this.lblAppName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblAppName.Name = "lblAppName";
-            this.lblAppName.Size = new System.Drawing.Size(110, 46);
+            this.lblAppName.Size = new System.Drawing.Size(88, 38);
             this.lblAppName.TabIndex = 1;
             this.lblAppName.Text = "CodePractice\r\nStudent";
             // 
@@ -190,9 +200,10 @@
             this.lblLogo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(100)))), ((int)(((byte)(180)))));
             this.lblLogo.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblLogo.ForeColor = System.Drawing.Color.White;
-            this.lblLogo.Location = new System.Drawing.Point(15, 18);
+            this.lblLogo.Location = new System.Drawing.Point(11, 15);
+            this.lblLogo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblLogo.Name = "lblLogo";
-            this.lblLogo.Size = new System.Drawing.Size(45, 45);
+            this.lblLogo.Size = new System.Drawing.Size(34, 37);
             this.lblLogo.TabIndex = 0;
             this.lblLogo.Text = "CP";
             this.lblLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -201,18 +212,20 @@
             // 
             this.pnlContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlContent.Location = new System.Drawing.Point(240, 0);
+            this.pnlContent.Location = new System.Drawing.Point(180, 0);
+            this.pnlContent.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlContent.Name = "pnlContent";
-            this.pnlContent.Size = new System.Drawing.Size(1542, 803);
+            this.pnlContent.Size = new System.Drawing.Size(1156, 652);
             this.pnlContent.TabIndex = 1;
             // 
             // MainFormStudent
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1782, 803);
+            this.ClientSize = new System.Drawing.Size(1336, 652);
             this.Controls.Add(this.pnlContent);
             this.Controls.Add(this.pnlSidebar);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MainFormStudent";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CodePractice - Student";

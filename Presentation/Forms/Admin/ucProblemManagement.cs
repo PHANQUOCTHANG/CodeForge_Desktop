@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeForge_Desktop.Business.Interfaces;
 using CodeForge_Desktop.Business.Services;
 using CodeForge_Desktop.DataAccess.Entities;
-using CodeForge_Desktop.DataAccess.Repositories; // Cần thêm dòng này để new Repository
+
 
 namespace CodeForge_Desktop.Presentation.Forms.Admin
 {
     public partial class ucProblemManagement : UserControl
     {
-        private readonly CodingProblemService _problemService;
+        private ICodingProblemService _problemService;
+        private ITestCaseService _testCaseService;
 
         private const int ButtonWidth = 30;
         private const int ButtonHeight = 30;
@@ -23,8 +25,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
             // --- SỬA LỖI KHỞI TẠO SERVICE ---
             // Vì Service của bạn cần Repository, ta phải tạo Repository trước
-            var repo = new CodingProblemRepository();
+           
             _problemService = new CodingProblemService();
+            _testCaseService = new TestCaseService();
 
             SetupDataGridView();
             LoadData();
@@ -107,11 +110,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
                     false,
                     p.Title,
                     p.Difficulty,
-                    p.Tags, // Dùng Tags làm Category
+                    p.Tags, 
                     "", // Deadline chưa có thì để trống
-                    0, // Submissions chưa có thì để 0
-                    p.Status,
-                    ""
+                    0 // Submissions chưa có thì để 0  
                 );
 
                 dgvAssignments.Rows[rowIndex].Tag = p.ProblemID;
@@ -124,7 +125,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
         private void BtnAdd_Click(object sender, EventArgs e)
         {
             // Đảm bảo AddEditProblemForm có constructor nhận service
-            var form = new AddEditProblemForm(_problemService);
+            var form = new AddEditProblemForm(_problemService , _testCaseService);
             if (form.ShowDialog() == DialogResult.OK) LoadData();
         }
 
@@ -134,7 +135,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             {
                 Guid id = (Guid)dgvAssignments.SelectedRows[0].Tag;
                 // Đảm bảo AddEditProblemForm có constructor nhận service và ID
-                var form = new AddEditProblemForm(_problemService, id);
+                var form = new AddEditProblemForm(_problemService,_testCaseService ,id);
                 if (form.ShowDialog() == DialogResult.OK) LoadData();
             }
             else
@@ -247,7 +248,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
                 if (rectEdit.Contains(e.Location))
                 {
-                    var form = new AddEditProblemForm(_problemService, problemId);
+                    var form = new AddEditProblemForm(_problemService, _testCaseService ,problemId);
                     if (form.ShowDialog() == DialogResult.OK) LoadData();
                 }
                 else if (rectDel.Contains(e.Location))

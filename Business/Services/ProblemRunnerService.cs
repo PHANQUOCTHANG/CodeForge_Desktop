@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace CodeForge_Desktop.Business.Services
 {
-    internal class ProblemRunnerService
+    public class ProblemRunnerService
     {
         private readonly string _baseUrl = "http://localhost:5000/api"; // Thay đổi URL Backend của bạn
         private readonly HttpClient _httpClient;

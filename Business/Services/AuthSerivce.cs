@@ -3,21 +3,18 @@ using CodeForge_Desktop.Business.Interfaces;
 using CodeForge_Desktop.Business.Models;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CodeForge_Desktop.DataAccess.Repositories;
+
 
 namespace CodeForge_Desktop.Business.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _userRepository;
+        private IUserRepository _userRepository;
 
-        public AuthService(IUserRepository userRepository)
+        public AuthService()
         {
-            _userRepository = userRepository;
+            _userRepository = new UserRepository();
         }
 
         // Logic Đăng nhập

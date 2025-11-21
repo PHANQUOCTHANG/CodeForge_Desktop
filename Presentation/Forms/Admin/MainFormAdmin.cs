@@ -78,11 +78,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             LoadUserControl(new ucAdminSettings());
         }
 
-        private void btnDangXuat_Click(object sender, EventArgs e)
+        
+
+        private void btnDangXuat_Click_1(object sender, EventArgs e)
         {
-            // Xử lý đăng xuất, ví dụ:
-            this.Close();
-            // new LoginForm().Show(); 
+            this.Hide();
+            Login login = new Login();  
+            login.Show();
+            
         }
     }
 }

@@ -31,7 +31,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             // Đăng ký sự kiện
             dgvSubmissions.CellPainting += DgvSubmissions_CellPainting;
             dgvSubmissions.CellClick += DgvSubmissions_CellClick;
-            btnBack.Click += (s, e) => BackButtonClicked?.Invoke(this, EventArgs.Empty);
+           
             btnApplyFilter.Click += (s, e) => ApplyFilters();
 
             // Load dữ liệu khi control được load
