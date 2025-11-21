@@ -31,6 +31,8 @@
             this.pnlSidebar = new System.Windows.Forms.Panel();
             this.btnDangXuat = new System.Windows.Forms.Button();
             this.pnlMenu = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
+            this.btnDanhSachKhoaHoc = new System.Windows.Forms.Button();
             this.btnCaiDat = new System.Windows.Forms.Button();
             this.btnLichSuNopBai = new System.Windows.Forms.Button();
             this.btnDanhSachBaiTap = new System.Windows.Forms.Button();
@@ -52,7 +54,7 @@
             this.pnlSidebar.Controls.Add(this.pnlLogo);
             this.pnlSidebar.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlSidebar.Location = new System.Drawing.Point(0, 0);
-            this.pnlSidebar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlSidebar.Margin = new System.Windows.Forms.Padding(2);
             this.pnlSidebar.Name = "pnlSidebar";
             this.pnlSidebar.Size = new System.Drawing.Size(180, 652);
             this.pnlSidebar.TabIndex = 0;
@@ -68,7 +70,7 @@
             this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold);
             this.btnDangXuat.ForeColor = System.Drawing.Color.White;
             this.btnDangXuat.Location = new System.Drawing.Point(0, 607);
-            this.btnDangXuat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnDangXuat.Margin = new System.Windows.Forms.Padding(2);
             this.btnDangXuat.Name = "btnDangXuat";
             this.btnDangXuat.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnDangXuat.Size = new System.Drawing.Size(180, 45);
@@ -79,29 +81,67 @@
             // 
             // pnlMenu
             // 
+            this.pnlMenu.Controls.Add(this.button2);
+            this.pnlMenu.Controls.Add(this.btnDanhSachKhoaHoc);
             this.pnlMenu.Controls.Add(this.btnCaiDat);
             this.pnlMenu.Controls.Add(this.btnLichSuNopBai);
             this.pnlMenu.Controls.Add(this.btnDanhSachBaiTap);
             this.pnlMenu.Controls.Add(this.btnTrangChu);
             this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMenu.Location = new System.Drawing.Point(0, 65);
-            this.pnlMenu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlMenu.Margin = new System.Windows.Forms.Padding(2);
             this.pnlMenu.Name = "pnlMenu";
             this.pnlMenu.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
             this.pnlMenu.Size = new System.Drawing.Size(180, 587);
             this.pnlMenu.TabIndex = 1;
             // 
+            // button2
+            // 
+            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.button2.ForeColor = System.Drawing.Color.White;
+            this.button2.Location = new System.Drawing.Point(0, 164);
+            this.button2.Name = "button2";
+            this.button2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.button2.Size = new System.Drawing.Size(180, 45);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "📋  Khóa học của tôi";
+            this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // btnDanhSachKhoaHoc
+            // 
+            this.btnDanhSachKhoaHoc.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDanhSachKhoaHoc.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDanhSachKhoaHoc.FlatAppearance.BorderSize = 0;
+            this.btnDanhSachKhoaHoc.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnDanhSachKhoaHoc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDanhSachKhoaHoc.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.btnDanhSachKhoaHoc.ForeColor = System.Drawing.Color.White;
+            this.btnDanhSachKhoaHoc.Location = new System.Drawing.Point(0, 119);
+            this.btnDanhSachKhoaHoc.Name = "btnDanhSachKhoaHoc";
+            this.btnDanhSachKhoaHoc.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.btnDanhSachKhoaHoc.Size = new System.Drawing.Size(180, 45);
+            this.btnDanhSachKhoaHoc.TabIndex = 5;
+            this.btnDanhSachKhoaHoc.Text = "📋  Khóa học";
+            this.btnDanhSachKhoaHoc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDanhSachKhoaHoc.UseVisualStyleBackColor = true;
+            this.btnDanhSachKhoaHoc.Click += new System.EventHandler(this.btnDanhSachKhoaHoc_Click);
+            // 
             // btnCaiDat
             // 
             this.btnCaiDat.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnCaiDat.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnCaiDat.FlatAppearance.BorderSize = 0;
             this.btnCaiDat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.btnCaiDat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnCaiDat.ForeColor = System.Drawing.Color.White;
-            this.btnCaiDat.Location = new System.Drawing.Point(0, 119);
-            this.btnCaiDat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnCaiDat.Location = new System.Drawing.Point(2, 214);
+            this.btnCaiDat.Margin = new System.Windows.Forms.Padding(2);
             this.btnCaiDat.Name = "btnCaiDat";
             this.btnCaiDat.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.btnCaiDat.Size = new System.Drawing.Size(180, 37);
@@ -121,7 +161,7 @@
             this.btnLichSuNopBai.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnLichSuNopBai.ForeColor = System.Drawing.Color.White;
             this.btnLichSuNopBai.Location = new System.Drawing.Point(0, 82);
-            this.btnLichSuNopBai.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnLichSuNopBai.Margin = new System.Windows.Forms.Padding(2);
             this.btnLichSuNopBai.Name = "btnLichSuNopBai";
             this.btnLichSuNopBai.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.btnLichSuNopBai.Size = new System.Drawing.Size(180, 37);
@@ -141,7 +181,7 @@
             this.btnDanhSachBaiTap.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnDanhSachBaiTap.ForeColor = System.Drawing.Color.White;
             this.btnDanhSachBaiTap.Location = new System.Drawing.Point(0, 45);
-            this.btnDanhSachBaiTap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnDanhSachBaiTap.Margin = new System.Windows.Forms.Padding(2);
             this.btnDanhSachBaiTap.Name = "btnDanhSachBaiTap";
             this.btnDanhSachBaiTap.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.btnDanhSachBaiTap.Size = new System.Drawing.Size(180, 37);
@@ -161,7 +201,7 @@
             this.btnTrangChu.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnTrangChu.ForeColor = System.Drawing.Color.White;
             this.btnTrangChu.Location = new System.Drawing.Point(0, 8);
-            this.btnTrangChu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTrangChu.Margin = new System.Windows.Forms.Padding(2);
             this.btnTrangChu.Name = "btnTrangChu";
             this.btnTrangChu.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.btnTrangChu.Size = new System.Drawing.Size(180, 37);
@@ -178,7 +218,7 @@
             this.pnlLogo.Controls.Add(this.lblLogo);
             this.pnlLogo.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlLogo.Location = new System.Drawing.Point(0, 0);
-            this.pnlLogo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlLogo.Margin = new System.Windows.Forms.Padding(2);
             this.pnlLogo.Name = "pnlLogo";
             this.pnlLogo.Size = new System.Drawing.Size(180, 65);
             this.pnlLogo.TabIndex = 0;
@@ -213,7 +253,7 @@
             this.pnlContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContent.Location = new System.Drawing.Point(180, 0);
-            this.pnlContent.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlContent.Margin = new System.Windows.Forms.Padding(2);
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(1156, 652);
             this.pnlContent.TabIndex = 1;
@@ -225,7 +265,7 @@
             this.ClientSize = new System.Drawing.Size(1336, 652);
             this.Controls.Add(this.pnlContent);
             this.Controls.Add(this.pnlSidebar);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainFormStudent";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CodePractice - Student";
@@ -251,5 +291,7 @@
         private System.Windows.Forms.Button btnCaiDat;
         private System.Windows.Forms.Button btnDangXuat;
         private System.Windows.Forms.Panel pnlContent;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnDanhSachKhoaHoc;
     }
 }
