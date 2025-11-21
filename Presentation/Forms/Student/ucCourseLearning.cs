@@ -4,13 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.Json;
+using CodeForge_Desktop.Business.Helpers;
+using CodeForge_Desktop.Business.Services;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 {
@@ -102,13 +106,13 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 path.AddArc(rect.Left, rect.Bottom - radius, radius, radius, 90, 90);
                 path.CloseFigure();
                 g.FillPath(brush, path);
-                
+
                 // Draw play triangle
                 var pts = new[] {
-                    new PointF(size * 0.35f, size * 0.3f),
-                    new PointF(size * 0.35f, size * 0.7f),
-                    new PointF(size * 0.65f, size * 0.5f)
-                };
+                        new PointF(size * 0.35f, size * 0.3f),
+                        new PointF(size * 0.35f, size * 0.7f),
+                        new PointF(size * 0.65f, size * 0.5f)
+                    };
                 g.FillPolygon(Brushes.White, pts);
             }
             return bmp;
@@ -124,7 +128,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 var rect = new Rectangle(2, 2, size - 4, size - 4);
                 g.FillRectangle(brush, rect);
-                
+
                 // Draw lines representing text
                 int lineY = 6;
                 for (int i = 0; i < 3; i++)
@@ -146,9 +150,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 var rect = new Rectangle(2, 2, size - 4, size - 4);
                 g.FillEllipse(brush, rect);
-                
+
                 // Draw question mark
-                g.DrawString("?", new Font("Segoe UI", size * 0.6f, FontStyle.Bold), Brushes.White, 
+                g.DrawString("?", new Font("Segoe UI", size * 0.6f, FontStyle.Bold), Brushes.White,
                     size * 0.15f, size * 0.15f);
             }
             return bmp;
@@ -164,7 +168,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 var rect = new Rectangle(2, 2, size - 4, size - 4);
                 g.FillRectangle(brush, rect);
-                
+
                 // Draw angle brackets < >
                 g.DrawLine(linePen, size * 0.25f, size * 0.35f, size * 0.4f, size * 0.5f);
                 g.DrawLine(linePen, size * 0.4f, size * 0.5f, size * 0.25f, size * 0.65f);
@@ -196,6 +200,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
         {
             await LoadModulesAndLessonsAsync();
             await LoadCompletedSetAsync();
+            ApplyCompletedFlags();
             PopulateTree(); // re-populate with completed info
             var first = FindFirstLessonNode();
             if (first != null) tvModulesLessons.SelectedNode = first;
@@ -221,10 +226,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             try
             {
                 string sqlModules = @"
-                    SELECT ModuleID, Title, OrderIndex
-                    FROM Modules
-                    WHERE CourseID = @CourseId AND IsDeleted = 0
-                    ORDER BY OrderIndex";
+                        SELECT ModuleID, Title, OrderIndex
+                        FROM Modules
+                        WHERE CourseID = @CourseId AND IsDeleted = 0
+                        ORDER BY OrderIndex";
                 var dtModules = DbContext.Query(sqlModules, new SqlParameter("@CourseId", courseId));
                 if (dtModules == null) return modules;
 
@@ -238,10 +243,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                     };
 
                     string sqlLessons = @"
-                        SELECT LessonID, Title, LessonType, Duration, OrderIndex
-                        FROM Lessons
-                        WHERE ModuleID = @ModuleId AND IsDeleted = 0
-                        ORDER BY OrderIndex";
+                            SELECT LessonID, Title, LessonType, Duration, OrderIndex
+                            FROM Lessons
+                            WHERE ModuleID = @ModuleId AND IsDeleted = 0
+                            ORDER BY OrderIndex";
                     var dtLessons = DbContext.Query(sqlLessons, new SqlParameter("@ModuleId", mod.ModuleId));
                     if (dtLessons != null)
                     {
@@ -302,13 +307,59 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                             case "coding": key = "code"; break;
                         }
                     }
-                    var ln = new TreeNode(l.Title) { Tag = l, ImageKey = _completedLessonIds.Contains(l.LessonId) ? "completed" : key, SelectedImageKey = _completedLessonIds.Contains(l.LessonId) ? "completed" : key };
+                    // prefer lesson.IsCompleted flag (set from progress) to determine icon
+                    var ln = new TreeNode(l.Title) { Tag = l, ImageKey = l.IsCompleted ? "completed" : key, SelectedImageKey = l.IsCompleted ? "completed" : key };
                     mn.Nodes.Add(ln);
                 }
                 tvModulesLessons.Nodes.Add(mn);
             }
 
+            // Replace previous EndUpdate with calls that also refresh icons
             tvModulesLessons.EndUpdate();
+            RefreshTreeNodeCompletionIcons();
+        }
+
+        // Add this helper near PopulateTree / ApplyCompletedFlags (inside the class)
+        private void RefreshTreeNodeCompletionIcons()
+        {
+            if (tvModulesLessons.InvokeRequired)
+            {
+                tvModulesLessons.Invoke(new Action(RefreshTreeNodeCompletionIcons));
+                return;
+            }
+
+            try
+            {
+                tvModulesLessons.BeginUpdate();
+                foreach (TreeNode m in tvModulesLessons.Nodes)
+                {
+                    foreach (TreeNode lnode in m.Nodes)
+                    {
+                        var lesson = lnode.Tag as LessonDto;
+                        if (lesson == null) continue;
+
+                        string key = "text";
+                        if (!string.IsNullOrEmpty(lesson.LessonType))
+                        {
+                            switch (lesson.LessonType.ToLowerInvariant())
+                            {
+                                case "video": key = "video"; break;
+                                case "quiz": key = "quiz"; break;
+                                case "coding": key = "code"; break;
+                            }
+                        }
+
+                        var imageKey = lesson.IsCompleted ? "completed" : key;
+                        lnode.ImageKey = imageKey;
+                        lnode.SelectedImageKey = imageKey;
+                    }
+                }
+            }
+            finally
+            {
+                tvModulesLessons.EndUpdate();
+                tvModulesLessons.Refresh();
+            }
         }
 
         private async Task LoadCompletedSetAsync()
@@ -326,12 +377,30 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             try
             {
                 var set = new HashSet<Guid>();
-                var dt = DbContext.Query("SELECT LessonID FROM Progress WHERE CourseID = @C AND IsCompleted = 1", new SqlParameter("@C", courseId));
+                var currentUser = GlobalStore.user;
+                if (currentUser == null || currentUser.UserID == Guid.Empty) return set;
+
+                // Progress table in your schema does not have CourseID or IsCompleted columns.
+                // Join Progress -> Lessons -> Modules to filter by CourseID and check Status = 'completed'.
+                string sql = @"
+            SELECT DISTINCT p.LessonID
+            FROM Progress p
+            INNER JOIN Lessons l ON p.LessonID = l.LessonID
+            INNER JOIN Modules m ON l.ModuleID = m.ModuleID
+            WHERE m.CourseID = @CourseId
+              AND p.UserID = @UserId
+              AND ISNULL(p.Status,'') = 'completed'";
+
+                var dt = DbContext.Query(sql,
+                    new SqlParameter("@CourseId", courseId),
+                    new SqlParameter("@UserId", currentUser.UserID));
+
                 if (dt != null)
                 {
                     foreach (DataRow r in dt.Rows)
                     {
-                        if (r["LessonID"] != DBNull.Value) set.Add((Guid)r["LessonID"]);
+                        if (r["LessonID"] != DBNull.Value)
+                            set.Add((Guid)r["LessonID"]);
                     }
                 }
                 return set;
@@ -340,6 +409,35 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             {
                 System.Diagnostics.Debug.WriteLine("FetchCompletedLessonIds: " + ex.Message);
                 return new HashSet<Guid>();
+            }
+        }
+
+        private string FetchLessonText(Guid lessonId)
+        {
+            try
+            {
+                // Table name in your DB is LessonTexts (plural)
+                var dt = DbContext.Query("SELECT TOP 1 Content FROM LessonTexts WHERE LessonID = @L", new SqlParameter("@L", lessonId));
+                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["Content"] != DBNull.Value)
+                    return dt.Rows[0]["Content"].ToString();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("FetchLessonText: " + ex.Message);
+            }
+            return null;
+        }
+
+        // apply _completedLessonIds into lesson DTOs so UI can rely on lesson.IsCompleted
+        private void ApplyCompletedFlags()
+        {
+            if (_modules == null || _completedLessonIds == null) return;
+            foreach (var m in _modules)
+            {
+                foreach (var l in m.Lessons)
+                {
+                    l.IsCompleted = _completedLessonIds.Contains(l.LessonId);
+                }
             }
         }
 
@@ -357,7 +455,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
         private async Task DisplayLessonAsync(LessonDto lesson)
         {
             _isQuizLoaded = false; // FIX 2: Reset quiz loaded flag
-            
+
             try
             {
                 _currentLesson = lesson;
@@ -413,14 +511,27 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                     default:
                         var text = await Task.Run(() => FetchLessonText(lesson.LessonId));
                         rtbLessonText.Visible = true;
-                        // Render HTML content
+
+                        // debug: log returned text length/preview
+                        System.Diagnostics.Debug.WriteLine($"FetchLessonText: len={(text?.Length ?? 0)}, preview={(text?.Substring(0, Math.Min(200, text?.Length ?? 0)) ?? "<null>")}");
+
+                        // Render HTML content (await it so errors are not swallowed)
                         if (!string.IsNullOrEmpty(text) && text.Contains("<"))
                         {
-                            RenderHtmlContent(text);
+                            await RenderHtmlContent(text); // now returns Task and is awaited
                         }
                         else
                         {
                             rtbLessonText.Text = string.IsNullOrEmpty(text) ? "(No content)" : text;
+                        }
+
+                        // If rendering produced no visible browser, show raw HTML so user sees data
+                        bool webViewVisible = (_webView2Instance is Control wc && wc.Visible) || (wbVideo != null && wbVideo.Visible);
+                        if (!webViewVisible && !string.IsNullOrEmpty(text) && text.Contains("<"))
+                        {
+                            // show the raw HTML as a fallback so it is not completely blank
+                            rtbLessonText.Visible = true;
+                            rtbLessonText.Text = text;
                         }
                         break;
                 }
@@ -436,240 +547,118 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
         // FIX 1: Improved video handling
         private async Task HandleVideoLessonAsync(LessonDto lesson)
         {
-            var vid = await Task.Run(() => FetchLessonVideoUrl(lesson.LessonId));
-            
-            if (string.IsNullOrEmpty(vid))
+            string vid = await Task.Run(() => FetchLessonVideoUrl(lesson.LessonId));
+
+            if (string.IsNullOrWhiteSpace(vid))
             {
-                rtbLessonText.Visible = true;
-                rtbLessonText.Text = "Video lesson. URL not available.";
+                ShowErrorInPanel("Video URL not found or empty.");
                 return;
             }
 
-            // Try WebView2 first if URL is from a known provider
-            if (IsVideoUrl(vid) && TryUseWebView2Navigate(vid))
+            vid = vid.Trim();
+
+            if (!Uri.IsWellFormedUriString(vid, UriKind.Absolute) && File.Exists(vid))
+                vid = new Uri(Path.GetFullPath(vid)).AbsoluteUri;
+
+            if (!IsVideoUrl(vid))
+            {
+                ShowErrorInPanel("Video URL is not a supported video link.");
+                return;
+            }
+
+            if (IsEmbeddableVideoUrl(vid) && _webView2Type == null)
+            {
+                var openExtern = MessageBox.Show("This video may not play inside the app. Open in your browser instead?", "Open video", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (openExtern == DialogResult.Yes)
+                {
+                    try { Process.Start(new ProcessStartInfo { FileName = vid, UseShellExecute = true }); }
+                    catch (Exception ex) { ShowErrorInPanel("Unable to open external browser: " + ex.Message); }
+                }
+                else
+                {
+                    ShowErrorInPanel("Embedded playback requires WebView2. Please install WebView2 runtime or open externally.");
+                }
+                return;
+            }
+
+            string htmlContent = GenerateEmbedVideoHtml(vid);
+
+            // 1) Prefer WebView2 and ensure CoreWebView2 is initialized before NavigateToString
+            if (await TryUseWebView2NavigateAsync(htmlContent))
             {
                 wbVideo.Visible = false;
+                rtbLessonText.Visible = false;
                 return;
             }
 
-            // Fallback to WebBrowser with HTML embed
-            wbVideo.Visible = true;
-            try
+            // 2) Fallback: check URL accessibility and offer external open
+            bool accessible = await CheckUrlAccessibleAsync(vid);
+
+            if (!accessible)
             {
-                if (IsEmbeddableVideoUrl(vid))
+                var open = MessageBox.Show("Video link is inaccessible. Open in browser?", "Video inaccessible", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (open == DialogResult.Yes)
                 {
-                    string html = GenerateVideoHtml(vid);
-                    wbVideo.DocumentText = html;
+                    try { Process.Start(new ProcessStartInfo { FileName = vid, UseShellExecute = true }); }
+                    catch (Exception ex) { ShowErrorInPanel("Unable to open external browser: " + ex.Message); }
                 }
                 else
                 {
-                    wbVideo.Navigate(vid);
+                    ShowErrorInPanel("Cannot play video in embedded player.");
                 }
+                return;
+            }
+
+            // 3) Final fallback: use WebBrowser control to render the embed HTML (may still fail for YouTube)
+            try
+            {
+                wbVideo.Visible = true;
+                rtbLessonText.Visible = false;
+                wbVideo.DocumentText = htmlContent;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Video navigate failed: " + ex.Message);
-                rtbLessonText.Visible = true;
-                rtbLessonText.Text = $"Video URL: {System.Net.WebUtility.HtmlEncode(vid)}\n\nCouldn't load video. Open link in browser manually.";
-            }
-        }
-
-        // FIX 1: Helper methods for video handling
-        private bool IsVideoUrl(string url)
-        {
-            if (string.IsNullOrEmpty(url)) return false;
-            url = url.ToLowerInvariant();
-            return url.Contains("youtube") || url.Contains("vimeo") || url.Contains("mp4") || 
-                   url.Contains("webm") || url.Contains("video") || url.StartsWith("http");
-        }
-
-        private bool IsEmbeddableVideoUrl(string url)
-        {
-            url = url.ToLowerInvariant();
-            return url.Contains("youtube") || url.Contains("vimeo");
-        }
-
-        private string GenerateVideoHtml(string videoUrl)
-        {
-            string embedHtml = "";
-            
-            // YouTube embed
-            if (videoUrl.Contains("youtube.com") || videoUrl.Contains("youtu.be"))
-            {
-                string videoId = ExtractYoutubeId(videoUrl);
-                if (!string.IsNullOrEmpty(videoId))
+                System.Diagnostics.Debug.WriteLine("WebBrowser render failed: " + ex.Message);
+                var ask = MessageBox.Show("Embedded player failed. Open in external browser?", "Playback error", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (ask == DialogResult.Yes)
                 {
-                    embedHtml = $@"<iframe width='100%' height='420' src='https://www.youtube.com/embed/{System.Net.WebUtility.UrlEncode(videoId)}' 
-                        frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' 
-                        allowfullscreen></iframe>";
+                    try { Process.Start(new ProcessStartInfo { FileName = vid, UseShellExecute = true }); }
+                    catch { ShowErrorInPanel("Cannot open external browser."); }
                 }
                 else
                 {
-                    embedHtml = @"<p>Invalid YouTube URL format</p>";
+                    ShowErrorInPanel("Cannot play video in embedded player.");
                 }
             }
-            // Vimeo embed
-            else if (videoUrl.Contains("vimeo.com"))
-            {
-                string videoId = ExtractVimeoId(videoUrl);
-                if (!string.IsNullOrEmpty(videoId))
-                {
-                    embedHtml = $@"<iframe src='https://player.vimeo.com/video/{System.Net.WebUtility.UrlEncode(videoId)}' width='100%' height='420' 
-                        frameborder='0' allow='autoplay; fullscreen; picture-in-picture' allowfullscreen></iframe>";
-                }
-                else
-                {
-                    embedHtml = @"<p>Invalid Vimeo URL format</p>";
-                }
-            }
-            else
-            {
-                embedHtml = $@"<video width='100%' height='420' controls>
-                    <source src='{System.Net.WebUtility.HtmlEncode(videoUrl)}' type='video/mp4'>
-                    Your browser does not support the video tag.
-                </video>";  
-            }
-
-            return $@"<!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body {{ margin: 0; padding: 10px; background: #f5f5f5; font-family: Segoe UI, sans-serif; }}
-                    .video-container {{ width: 100%; max-width: 100%; }}
-                </style>
-            </head>
-            <body>
-                <div class='video-container'>
-                    {embedHtml}
-                </div>
-            </body>
-            </html>";
         }
 
-        private string ExtractYoutubeId(string url)
+        // New helper: do a fast HEAD request to check URL accessibility
+        private async Task<bool> CheckUrlAccessibleAsync(string url)
         {
             try
             {
-                if (url.Contains("youtu.be"))
+                using (var http = new HttpClient())
                 {
-                    return url.Split(new[] { "youtu.be/" }, StringSplitOptions.None)[1].Split('?')[0];
-                }
-                if (url.Contains("youtube.com"))
-                {
-                    return url.Split(new[] { "v=" }, StringSplitOptions.None)[1].Split('&')[0];
-                }
-            }
-            catch { }
-            return null;
-        }
+                    http.Timeout = TimeSpan.FromSeconds(6);
+                    // Some servers don't accept HEAD; fall back to GET but request only headers
+                    var req = new HttpRequestMessage(HttpMethod.Head, url);
+                    var resp = await http.SendAsync(req);
+                    if (resp.IsSuccessStatusCode) return true;
 
-        private string ExtractVimeoId(string url)
-        {
-            try
-            {
-                var parts = url.Split('/');
-                return parts[parts.Length - 1].Split('?')[0];
-            }
-            catch { }
-            return null;
-        }
-
-        private string FetchLessonVideoUrl(Guid lessonId)
-        {
-            try
-            {
-                var dt = DbContext.Query("SELECT TOP 1 VideoUrl FROM LessonVideos WHERE LessonID = @L", new SqlParameter("@L", lessonId));
-                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["VideoUrl"] != DBNull.Value) 
-                {
-                    return dt.Rows[0]["VideoUrl"].ToString();
+                    // fallback: try GET but do not download content fully
+                    req = new HttpRequestMessage(HttpMethod.Get, url);
+                    req.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 0);
+                    resp = await http.SendAsync(req);
+                    return resp.IsSuccessStatusCode;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine("FetchLessonVideoUrl: " + ex.Message); }
-            return null;
-        }
-
-        private DataTable FetchQuizQuestions(Guid lessonId)
-        {
-            try
+            catch
             {
-                string sql = @"
-                    SELECT q.QuestionID, q.Question, q.Answers, q.CorrectIndex, q.Explanation
-                    FROM QuizQuestions q
-                    INNER JOIN LessonQuizzes lq ON q.LessonQuizId = lq.LessonID
-                    WHERE lq.LessonID = @L
-                    ORDER BY q.QuestionID";
-                return DbContext.Query(sql, new SqlParameter("@L", lessonId));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("FetchQuizQuestions: " + ex.Message);
-                return null;
+                return false;
             }
         }
 
-        private void BuildQuizUi(DataTable questions)
-        {
-            flpQuizQuestions.Controls.Clear();
-            foreach (DataRow q in questions.Rows)
-            {
-                var panel = new Panel { Width = flpQuizQuestions.ClientSize.Width - 25, AutoSize = true, BackColor = Color.White, Padding = new Padding(8), Margin = new Padding(6), BorderStyle = BorderStyle.FixedSingle };
-                string qText = q.Table.Columns.Contains("Question") ? (q["Question"]?.ToString() ?? "") : "";
-                var lbl = new Label { Text = qText, AutoSize = true, MaximumSize = new Size(panel.Width - 16, 0), Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
-                panel.Controls.Add(lbl);
-
-                var optionsPanel = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false, Width = panel.Width - 16 };
-                
-                // Parse JSON answers array
-                string answersJson = q.Table.Columns.Contains("Answers") ? (q["Answers"]?.ToString() ?? "[]") : "[]";
-                int correctIndex = q.Table.Columns.Contains("CorrectIndex") && q["CorrectIndex"] != DBNull.Value ? Convert.ToInt32(q["CorrectIndex"]) : -1;
-                
-                var answers = ParseJsonAnswers(answersJson);
-                
-                for (int i = 0; i < answers.Length; i++)
-                {
-                    char optionLabel = (char)('A' + i);
-                    var rb = new RadioButton { Text = $"{optionLabel}. {answers[i]}", AutoSize = true, Tag = i, Margin = new Padding(4) };
-                    optionsPanel.Controls.Add(rb);
-                }
-                        
-                panel.Controls.Add(optionsPanel);
-
-                panel.Tag = q; // store DataRow
-                flpQuizQuestions.Controls.Add(panel);
-            }
-        }
-
-        private DataTable FetchCodingProblemsForLesson(Guid lessonId)
-        {
-            try
-            {
-                string sql = @"
-                    SELECT cp.ProblemID, cp.Title, cp.Difficulty, cp.Description
-                    FROM CodingProblemLessons cpl
-                    INNER JOIN CodingProblems cp ON cpl.ProblemID = cp.ProblemID
-                    WHERE cpl.LessonID = @L AND (cpl.IsDeleted = 0 OR cpl.IsDeleted IS NULL) AND (cp.IsDeleted = 0 OR cp.IsDeleted IS NULL)
-                    ORDER BY cpl.OrderIndex";
-                return DbContext.Query(sql, new SqlParameter("@L", lessonId));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("FetchCodingProblemsForLesson: " + ex.Message);
-                return null;
-            }
-        }
-
-        private string FetchLessonText(Guid lessonId)
-        {
-            try
-            {
-                var dt = DbContext.Query("SELECT TOP 1 Content FROM LessonText WHERE LessonID = @L", new SqlParameter("@L", lessonId));
-                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["Content"] != DBNull.Value) return dt.Rows[0]["Content"].ToString();
-            }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine("FetchLessonText: " + ex.Message); }
-            return null;
-        }
-
-        private async void  BtnSubmitQuiz_Click(object sender, EventArgs e)
+        private async Task SubmitQuizAsync()
         {
             // FIX 2: Validate quiz is loaded before allowing submission
             if (!_isQuizLoaded)
@@ -701,7 +690,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
                                     if (rb is RadioButton r && r.Checked)
                                     {
                                         selectedIndex = r.Tag is int idx ? idx : -1;
-                                    }       
+                                    }
                                 }
                             }
                         }
@@ -719,171 +708,150 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             }
         }
 
-        private void LvCodingProblems_DoubleClick(object sender, EventArgs e)
+        private async Task RenderHtmlContentAsync(string htmlContent)
         {
-            if (lvCodingProblems.SelectedItems.Count == 0) return;
-            var tag = lvCodingProblems.SelectedItems[0].Tag as DataRow;
-            if (tag == null) return;
-            var id = tag.Table.Columns.Contains("ProblemID") && tag["ProblemID"] != DBNull.Value ? (Guid)tag["ProblemID"] : Guid.Empty;
-            if (id == Guid.Empty) return;
+            // Wrap HTML content in a complete HTML document
+            string wrappedHtml = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 12px;
+            padding: 8px;
+            background: white;
+            color: #333;
+            line-height: 1.6;
+        }}
+        h1, h2, h3, h4, h5, h6 {{ margin: 12px 0 8px 0; color: #2c3e50; }}
+        p {{ margin: 8px 0; }}
+        a {{ color: #0078d4; text-decoration: none; }}
+        a:hover {{ text-decoration: underline; }}
+        code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }}
+        pre {{ background: #f4f4f4; padding: 12px; border-radius: 4px; overflow-x: auto; }}
+        blockquote {{ border-left: 4px solid #0078d4; padding-left: 12px; margin-left: 0; color: #666; }}
+        ul, ol {{ margin: 8px 0; padding-left: 24px; }}
+        li {{ margin: 4px 0; }}
+        table {{ border-collapse: collapse; width: 100%; margin: 12px 0; }}
+        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+        th {{ background: #f4f4f4; font-weight: bold; }}
+        img {{ max-width: 100%; height: auto; margin: 8px 0; }}
+    </style>
+</head>
+<body>
+    {htmlContent}
+</body>
+</html>";
 
-            // open a simple viewer form
-            using (var f = new ProblemViewer(id))
-            {
-                f.ShowDialog();
-            }
-        }
-
-        private TreeNode FindFirstLessonNode()
-        {
-            foreach (TreeNode m in tvModulesLessons.Nodes)
-            {
-                foreach (TreeNode l in m.Nodes) return l;
-            }
-            return null;
-        }
-
-        private TreeNode FindAdjacentLessonNode(int direction)
-        {
-            if (tvModulesLessons.SelectedNode == null) return FindFirstLessonNode();
-            var lessonNodes = new List<TreeNode>();
-            foreach (TreeNode m in tvModulesLessons.Nodes)
-                foreach (TreeNode l in m.Nodes) lessonNodes.Add(l);
-            if (lessonNodes.Count == 0) return null;
-            var idx = lessonNodes.IndexOf(tvModulesLessons.SelectedNode);
-            if (idx < 0) return lessonNodes.FirstOrDefault();
-            var newIdx = idx + direction;
-            if (newIdx >= 0 && newIdx < lessonNodes.Count) return lessonNodes[newIdx];
-            return null;
-        }
-
-        private void BtnPrev_Click(object sender, EventArgs e)
-        {
-            var prev = FindAdjacentLessonNode(-1);
-            if (prev != null) tvModulesLessons.SelectedNode = prev;
-        }
-
-        private void BtnNext_Click(object sender, EventArgs e)
-        {
-            var next = FindAdjacentLessonNode(1);
-            if (next != null) tvModulesLessons.SelectedNode = next;
-        }
-
-        private async void BtnMarkCompleted_Click(object sender, EventArgs e)
-        {
-            if (_currentLesson == null) return;
             try
             {
-                await Task.Run(() =>
+                // 1) If a WebView2 instance exists, try NavigateToString on it (reflection)
+                if (_webView2Instance != null)
                 {
                     try
                     {
-                        string sqlCheck = "SELECT COUNT(1) FROM Progress WHERE LessonID = @L AND CourseID = @C";
-                        var dt = DbContext.Query(sqlCheck, new SqlParameter("@L", _currentLesson.LessonId), new SqlParameter("@C", _courseId));
-                        if (dt != null && dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0][0]) > 0)
+                        var instType = _webView2Instance.GetType();
+                        var nav = instType.GetMethod("NavigateToString", new[] { typeof(string) });
+                        if (nav != null)
                         {
-                            DbContext.Execute("UPDATE Progress SET IsCompleted = 1, CompletedAt = @T WHERE LessonID = @L AND CourseID = @C",
-                                new SqlParameter("@T", DateTime.Now), new SqlParameter("@L", _currentLesson.LessonId), new SqlParameter("@C", _courseId));
-                        }
-                        else
-                        {
-                            DbContext.Execute("INSERT INTO Progress (ProgressID, CourseID, LessonID, IsCompleted, CompletedAt) VALUES (NEWID(), @C, @L, 1, @T)",
-                                new SqlParameter("@C", _courseId), new SqlParameter("@L", _currentLesson.LessonId), new SqlParameter("@T", DateTime.Now));
+                            // Invoke on UI thread
+                            if (this.InvokeRequired)
+                                this.Invoke(new Action(() => nav.Invoke(_webView2Instance, new object[] { wrappedHtml })));
+                            else
+                                nav.Invoke(_webView2Instance, new object[] { wrappedHtml });
+
+                            // ensure WebView2 control visible if it's a Control
+                            if (_webView2Instance is Control c)
+                            {
+                                if (this.InvokeRequired) this.Invoke(new Action(() => { c.Visible = true; c.BringToFront(); }));
+                                else { c.Visible = true; c.BringToFront(); }
+                            }
+
+                            rtbLessonText.Visible = false;
+                            return;
                         }
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("MarkCompleted DB op failed: " + ex.Message);
+                        System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync: WebView2 navigate failed: " + ex.Message);
                     }
-                });
-
-                // update local set and node icon
-                _completedLessonIds.Add(_currentLesson.LessonId);
-                if (tvModulesLessons.SelectedNode != null)
-                {
-                    tvModulesLessons.SelectedNode.ImageKey = "completed";
-                    tvModulesLessons.SelectedNode.SelectedImageKey = "completed";
-                    tvModulesLessons.SelectedNode.ForeColor = Color.Green;
                 }
 
-                MessageBox.Show("Đã đánh dấu hoàn thành.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // 2) Try to create/use WebView2 via helper (async)
+                if (_webView2Type != null)
+                {
+                    try
+                    {
+                        var used = await TryUseWebView2NavigateAsync(wrappedHtml);
+                        if (used)
+                        {
+                            rtbLessonText.Visible = false;
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync: TryUseWebView2NavigateAsync failed: " + ex.Message);
+                    }
+                }
+
+                // 3) Fallback to legacy WebBrowser control (wbVideo)
+                Action setDoc = () =>
+                {
+                    try
+                    {
+                        // if wbVideo was removed from the visual tree earlier, re-add it to this control
+                        if (wbVideo.Parent == null)
+                        {
+                            // place it into the same container as rtbLessonText if available, otherwise onto this control
+                            var container = rtbLessonText.Parent ?? (Control)this;
+                            container.Controls.Add(wbVideo);
+                            wbVideo.Dock = DockStyle.Fill;
+                        }
+
+                        wbVideo.Visible = true;
+                        rtbLessonText.Visible = false;
+                        wbVideo.DocumentText = wrappedHtml;
+                        wbVideo.BringToFront();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync (WebBrowser) error: " + ex.Message);
+                        rtbLessonText.Visible = true;
+                        rtbLessonText.Text = "Cannot render HTML content. Raw:\n\n" + htmlContent;
+                    }
+                };
+
+                if (this.InvokeRequired) this.Invoke(setDoc);
+                else setDoc();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi đánh dấu hoàn thành: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync error: " + ex.Message);
+                if (this.InvokeRequired)
+                    this.Invoke(new Action(() => { rtbLessonText.Visible = true; rtbLessonText.Text = "Cannot render HTML content. Raw:\n\n" + htmlContent; }));
+                else
+                {
+                    rtbLessonText.Visible = true;
+                    rtbLessonText.Text = "Cannot render HTML content. Raw:\n\n" + htmlContent;
+                }
             }
         }
 
-        private void UpdateCourseLessonInfo()
+        private Task RenderHtmlContent(string htmlContent)
         {
-            int lessonIndex = 0;
-            int totalLessons = 0;
-            var ordered = new List<LessonDto>();
-            foreach (var m in _modules ?? Enumerable.Empty<ModuleDto>()) foreach (var l in m.Lessons) ordered.Add(l);
-            totalLessons = ordered.Count;
-            if (_currentLesson != null) lessonIndex = ordered.FindIndex(x => x.LessonId == _currentLesson.LessonId) + 1;
-            lblCourseLessonInfo.Text = $"{ (lessonIndex>0 ? $"Lesson {lessonIndex}/{totalLessons}" : "") }";
+            // forward to the existing async renderer so callers can await it and catch errors
+            return RenderHtmlContentAsync(htmlContent);
         }
 
-        // WebView2 runtime helper (reflection) - avoids hard dependency at compile time
-        private void TryPrepareWebView2Type()
+        private void ShowErrorInPanel(string message)
         {
-            try
-            {
-                _webView2Type = Type.GetType("Microsoft.Web.WebView2.WinForms.WebView2, Microsoft.Web.WebView2.WinForms");
-            }
-            catch { _webView2Type = null; }
-        }
-
-        private bool TryUseWebView2Navigate(string url)
-        {
-            try
-            {
-                if (_webView2Type == null) TryPrepareWebView2Type();
-                if (_webView2Type == null) return false;
-
-                if (_webView2Instance == null)
-                {
-                    _webView2Instance = Activator.CreateInstance(_webView2Type);
-                    var c = _webView2Instance as Control;
-                    if (c != null)
-                    {
-                        c.Dock = DockStyle.Top;
-                        c.Height = wbVideo.Height;
-                        pnlLessonContent.Controls.Add(c);
-                        c.BringToFront();
-                        wbVideo.Visible = false;
-                    }
-                    var ensure = _webView2Type.GetMethod("EnsureCoreWebView2Async", new Type[] { typeof(object) });
-                    if (ensure == null)
-                    {
-                        ensure = _webView2Type.GetMethod("EnsureCoreWebView2Async", Type.EmptyTypes);
-                    }
-                    if (ensure != null)
-                    {
-                        ensure.Invoke(_webView2Instance, null);
-                    }
-                }
-
-                var nav = _webView2Type.GetMethod("Navigate", new[] { typeof(string) });
-                if (nav != null)
-                {
-                    nav.Invoke(_webView2Instance, new object[] { url });
-                    return true;
-                }
-
-                var srcProp = _webView2Type.GetProperty("Source");
-                if (srcProp != null)
-                {
-                    srcProp.SetValue(_webView2Instance, new Uri(url));
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("WebView2 navigate failed: " + ex.Message);
-            }
-            return false;
+            rtbLessonText.Visible = true;
+            wbVideo.Visible = false;
+            pnlQuiz.Visible = false;
+            lvCodingProblems.Visible = false;
+            rtbLessonText.Text = message;
         }
 
         // DTOs
@@ -902,6 +870,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             public int Duration { get; set; }
             public string ExtraInfo { get; set; }
             public List<CodingProblemInfo> CodingProblems { get; } = new List<CodingProblemInfo>();
+
+            // completion flag applied from Progress data
+            public bool IsCompleted { get; set; } = false;
         }
 
         private class CodingProblemInfo
@@ -932,54 +903,362 @@ namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
             }
         }
 
-        private void RenderHtmlContent(string htmlContent)
+        private void BtnPrev_Click(object sender, EventArgs e)
+        {
+            // TODO: Implement logic to navigate to the previous lesson.
+            MessageBox.Show("Previous button clicked. Implement navigation logic here.");
+        }
+
+        private void BtnNext_Click(object sender, EventArgs e)
+        {
+            // Navigate to next lesson node if available
+            var sel = tvModulesLessons.SelectedNode;
+            if (sel == null)
+            {
+                MessageBox.Show("No lesson selected.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // if a module node was selected, try to pick its first child
+            if (sel.Tag is ModuleDto)
+            {
+                if (sel.Nodes.Count > 0) { tvModulesLessons.SelectedNode = sel.Nodes[0]; return; }
+                return;
+            }
+
+            // lesson node -> move to next sibling, or next module's first child
+            var parent = sel.Parent;
+            if (parent == null) return;
+            int idx = parent.Nodes.IndexOf(sel);
+            if (idx >= 0 && idx + 1 < parent.Nodes.Count)
+            {
+                tvModulesLessons.SelectedNode = parent.Nodes[idx + 1];
+                return;
+            }
+
+            // move to next module's first lesson
+            var moduleIdx = tvModulesLessons.Nodes.IndexOf(parent);
+            if (moduleIdx >= 0 && moduleIdx + 1 < tvModulesLessons.Nodes.Count)
+            {
+                var nextModule = tvModulesLessons.Nodes[moduleIdx + 1];
+                if (nextModule.Nodes.Count > 0) tvModulesLessons.SelectedNode = nextModule.Nodes[0];
+            }
+        }
+
+        private void BtnMarkCompleted_Click(object sender, EventArgs e)
+        {
+            if (_currentLesson == null)
+            {
+                MessageBox.Show("No lesson selected.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // toggle local completion state; ideally you would persist via ProgressRepository/Service
+            _currentLesson.IsCompleted = !_currentLesson.IsCompleted;
+            if (_currentLesson.IsCompleted) _completedLessonIds.Add(_currentLesson.LessonId);
+            else _completedLessonIds.Remove(_currentLesson.LessonId);
+
+            RefreshTreeNodeCompletionIcons();
+            UpdateCourseLessonInfo();
+
+            // Optionally notify user; persistence to DB omitted here (call repository/service in real code)
+            MessageBox.Show(_currentLesson.IsCompleted ? "Marked completed." : "Marked not completed.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private async void BtnSubmitQuiz_Click(object sender, EventArgs e)
+        {
+            await SubmitQuizAsync();
+        }
+
+        private void LvCodingProblems_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvCodingProblems.SelectedItems.Count == 0) return;
+            var item = lvCodingProblems.SelectedItems[0];
+            var row = item.Tag as DataRow;
+            if (row != null)
+            {
+                var id = row.Table.Columns.Contains("ProblemID") && row["ProblemID"] != DBNull.Value ? row["ProblemID"].ToString() : "(unknown)";
+                var title = row.Table.Columns.Contains("Title") && row["Title"] != DBNull.Value ? row["Title"].ToString() : item.Text;
+                MessageBox.Show($"Open coding problem:\n{title}\nID: {id}", "Coding problem", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private TreeNode FindFirstLessonNode()
+        {
+            foreach (TreeNode module in tvModulesLessons.Nodes)
+            {
+                foreach (TreeNode ln in module.Nodes)
+                {
+                    if (ln.Tag is LessonDto) return ln;
+                }
+            }
+            return null;
+        }
+
+        private void UpdateCourseLessonInfo()
+        {
+            // enable/disable nav buttons and update mark-completed caption
+            var sel = tvModulesLessons.SelectedNode;
+            bool hasPrev = false, hasNext = false;
+            if (sel != null && sel.Parent != null)
+            {
+                var parent = sel.Parent;
+                int idx = parent.Nodes.IndexOf(sel);
+                hasPrev = idx > 0 || tvModulesLessons.Nodes.IndexOf(parent) > 0;
+                hasNext = idx < parent.Nodes.Count - 1 || tvModulesLessons.Nodes.IndexOf(parent) < tvModulesLessons.Nodes.Count - 1;
+            }
+            btnPrev.Enabled = hasPrev;
+            btnNext.Enabled = hasNext;
+
+            if (_currentLesson != null)
+            {
+                btnMarkCompleted.Text = _currentLesson.IsCompleted ? "Unmark completed" : "Mark completed";
+            }
+            else
+            {
+                btnMarkCompleted.Text = "Mark completed";
+            }
+        }
+
+        private void TryPrepareWebView2Type()
         {
             try
             {
-                // Wrap HTML content in a complete HTML document
-                string wrappedHtml = $@"<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='UTF-8'>
-    <style>
-        body {{ 
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 12px;
-            padding: 8px;
-            background: white;
-            color: #333;
-            line-height: 1.6;
-        }}
-        h1, h2, h3, h4, h5, h6 {{ margin: 12px 0 8px 0; color: #2c3e50; }}
-        p {{ margin: 8px 0; }}
-        a {{ color: #0078d4; text-decoration: none; }}
-        a:hover {{ text-decoration: underline; }}
-        code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }}
-        pre {{ background: #f4f4f4; padding: 12px; border-radius: 4px; overflow-x: auto; }}
-        blockquote {{ border-left: 4px solid #0078d4; padding-left: 12px; margin-left: 0; color: #666; }}
-        ul, ol {{ margin: 8px 0; padding-left: 24px; }}
-        li {{ margin: 4px 0; }}
-        table {{ border-collapse: collapse; width: 100%; margin: 12px 0; }}
-        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-        th {{ background: #f4f4f4; font-weight: bold; }}
-        img {{ max-width: 100%; height: auto; margin: 8px 0; }}
-    </style>
-</head>
-<body>
-    {htmlContent}
-</body>
-</html>";
+                // Attempt to find WebView2 WinForms type by full type name
+                _webView2Type = Type.GetType("Microsoft.Web.WebView2.WinForms.WebView2, Microsoft.Web.WebView2.WinForms");
+            }
+            catch
+            {
+                _webView2Type = null;
+            }
+        }
 
-                wbVideo.Visible = true;
-                rtbLessonText.Visible = false;
-                wbVideo.DocumentText = wrappedHtml;
+        // Data access helpers (lightweight fallbacks that try to read from DB; adjust SQL to your schema)
+        private DataTable FetchQuizQuestions(Guid lessonId)
+        {
+            try
+            {
+                // Schema: QuizQuestions references LessonQuizzes via LessonQuizId and stores Answers (JSON).
+                string sql = @"
+            SELECT QuestionID,
+                   Question AS QuestionText,
+                   Answers AS OptionsJson,
+                   CorrectIndex
+            FROM QuizQuestions
+            WHERE LessonQuizId = @L
+            ORDER BY QuestionID";
+                var dt = DbContext.Query(sql, new SqlParameter("@L", lessonId));
+                return dt ?? new DataTable();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("RenderHtmlContent error: " + ex.Message);
-                rtbLessonText.Visible = true;
-                rtbLessonText.Text = "Không thể render HTML content. Nội dung gốc:\n\n" + htmlContent;
+                System.Diagnostics.Debug.WriteLine("FetchQuizQuestions: " + ex.Message);
+                return new DataTable();
             }
+        }
+
+        private string FetchLessonVideoUrl(Guid lessonId)
+        {
+            try
+            {
+                // Video URL is stored in LessonVideos table per your DDL.
+                var dt = DbContext.Query("SELECT TOP 1 VideoUrl FROM LessonVideos WHERE LessonID = @L", new SqlParameter("@L", lessonId));
+                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["VideoUrl"] != DBNull.Value)
+                    return dt.Rows[0]["VideoUrl"].ToString();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("FetchLessonVideoUrl: " + ex.Message);
+            }
+            return null;
+        }
+
+        private DataTable FetchCodingProblemsForLesson(Guid lessonId)
+        {
+            try
+            {
+                // In your schema CodingProblems has LessonID directly (no join table).
+                string sql = @"
+            SELECT ProblemID, Title, Difficulty
+            FROM CodingProblems
+            WHERE LessonID = @L AND IsDeleted = 0
+            ORDER BY Title";
+                var dt = DbContext.Query(sql, new SqlParameter("@L", lessonId));
+                return dt ?? new DataTable();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("FetchCodingProblemsForLesson: " + ex.Message);
+                return new DataTable();
+            }
+        }
+
+        private void BuildQuizUi(DataTable quiz)
+        {
+            if (flpQuizQuestions.InvokeRequired)
+            {
+                flpQuizQuestions.Invoke(new Action<DataTable>(BuildQuizUi), quiz);
+                return;
+            }
+
+            flpQuizQuestions.Controls.Clear();
+            int qIndex = 0;
+            foreach (DataRow r in quiz.Rows)
+            {
+                var panel = new Panel { AutoSize = true, Tag = r, Padding = new Padding(6), Margin = new Padding(6) };
+                string qText = r.Table.Columns.Contains("QuestionText") && r["QuestionText"] != DBNull.Value
+                    ? r["QuestionText"].ToString()
+                    : r.Table.Columns.Contains("Question") && r["Question"] != DBNull.Value
+                        ? r["Question"].ToString()
+                        : "(Question)";
+
+                var lbl = new Label { AutoSize = true, Text = $"{++qIndex}. {qText}", MaximumSize = new Size(Math.Max(100, flpQuizQuestions.Width - 40), 0) };
+                panel.Controls.Add(lbl);
+
+                var optsPanel = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false, Margin = new Padding(4) };
+                string optsJson = r.Table.Columns.Contains("OptionsJson") && r["OptionsJson"] != DBNull.Value
+                    ? r["OptionsJson"].ToString()
+                    : r.Table.Columns.Contains("Answers") && r["Answers"] != DBNull.Value
+                        ? r["Answers"].ToString()
+                        : null;
+
+                var options = ParseJsonAnswers(optsJson);
+                for (int i = 0; i < options.Length; i++)
+                {
+                    var rb = new RadioButton { AutoSize = true, Text = options[i], Tag = i, Margin = new Padding(2) };
+                    optsPanel.Controls.Add(rb);
+                }
+
+                panel.Controls.Add(optsPanel);
+                flpQuizQuestions.Controls.Add(panel);
+            }
+
+            _isQuizLoaded = true;
+        }
+
+        private bool IsVideoUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return false;
+            if (Uri.TryCreate(url, UriKind.Absolute, out var u))
+            {
+                var ext = Path.GetExtension(u.AbsolutePath)?.ToLowerInvariant();
+                if (!string.IsNullOrEmpty(ext) && (ext == ".mp4" || ext == ".webm" || ext == ".ogg")) return true;
+                var host = u.Host.ToLowerInvariant();
+                if (host.Contains("youtube.com") || host.Contains("youtu.be") || host.Contains("vimeo.com")) return true;
+                // treat other absolute http(s) urls as playable externally
+                return u.Scheme.StartsWith("http");
+            }
+            // allow local file path
+            return File.Exists(url);
+        }
+
+        private bool IsEmbeddableVideoUrl(string url)
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var u)) return false;
+            var host = u.Host.ToLowerInvariant();
+            return host.Contains("youtube.com") || host.Contains("youtu.be") || host.Contains("vimeo.com");
+        }
+
+        private string GenerateEmbedVideoHtml(string url)
+        {
+            try
+            {
+                if (url.Contains("youtube.com") || url.Contains("youtu.be"))
+                {
+                    string id = null;
+                    try
+                    {
+                        var uri = new Uri(url);
+                        if (uri.Host.Contains("youtu.be"))
+                        {
+                            id = uri.AbsolutePath.Trim('/');
+                        }
+                        else
+                        {
+                            var q = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                            id = q["v"];
+                        }
+                    }
+                    catch { /* ignore parse errors */ }
+
+                    if (string.IsNullOrEmpty(id))
+                        return $"<iframe width='100%' height='480' src='{url}' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>";
+
+                    var src = $"https://www.youtube-nocookie.com/embed/{id}?rel=0&modestbranding=1&enablejsapi=1";
+                    return $"<!DOCTYPE html><html><head><meta charset='utf-8'></head><body style='margin:0'><iframe src='{src}' width='100%' height='480' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe></body></html>";
+                }
+
+                if (url.Contains("vimeo.com"))
+                {
+                    return $"<!DOCTYPE html><html><head><meta charset='utf-8'></head><body style='margin:0'><iframe src='{url}' width='100%' height='480' frameborder='0' allow='autoplay; fullscreen' allowfullscreen></iframe></body></html>";
+                }
+
+                // generic video tag fallback
+                return $"<!DOCTYPE html><html><head><meta charset='utf-8'></head><body style='margin:0'><video width='100%' height='480' controls><source src='{url}' type='video/mp4'>Your browser does not support the video tag.</video></body></html>";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GenerateEmbedVideoHtml: " + ex.Message);
+                return $"<p>Unable to generate embed for {url}</p>";
+            }
+        }
+
+        private async Task<bool> TryUseWebView2NavigateAsync(string html)
+        {
+            if (_webView2Type == null) return false;
+
+            try
+            {
+                var instance = Activator.CreateInstance(_webView2Type);
+                if (instance == null) return false;
+
+                if (!(instance is Control createdControl)) return false;
+
+                // call EnsureCoreWebView2Async if available (await so NavigateToString works)
+                var ensureMethod = _webView2Type.GetMethod("EnsureCoreWebView2Async", Type.EmptyTypes)
+                                   ?? _webView2Type.GetMethod("EnsureCoreWebView2Async", new[] { typeof(object) });
+
+                if (ensureMethod != null)
+                {
+                    var taskObj = ensureMethod.GetParameters().Length == 0
+                        ? ensureMethod.Invoke(instance, null)
+                        : ensureMethod.Invoke(instance, new object[] { null });
+
+                    if (taskObj is Task t) await t;
+                    else
+                    {
+                        try { await (dynamic)taskObj; } catch { /* best-effort */ }
+                    }
+                }
+
+                var parent = wbVideo?.Parent;
+                if (parent != null)
+                {
+                    // insert WebView2 control and remove legacy WebBrowser
+                    createdControl.Dock = DockStyle.Fill;
+                    parent.Controls.Add(createdControl);
+                    parent.Controls.Remove(wbVideo);
+                }
+
+                var nav = _webView2Type.GetMethod("NavigateToString", new[] { typeof(string) });
+                if (nav != null)
+                {
+                    nav.Invoke(instance, new object[] { html });
+                    _webView2Instance = instance;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("TryUseWebView2NavigateAsync: " + ex.Message);
+            }
+
+            return false;
+        }
+
+        private void splitMain_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+
         }
     }
 }

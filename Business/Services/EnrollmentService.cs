@@ -1,35 +1,20 @@
 ﻿using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
+using CodeForge_Desktop.Business.Interfaces;
+
 using System;
-using System.Collections.Generic;
 
 namespace CodeForge_Desktop.Business.Services
 {
-    public class EnrollmentService
+    public class EnrollmentService : IEnrollmentService
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IProgressRepository _progressRepository;
 
         public EnrollmentService(IEnrollmentRepository enrollmentRepository, IProgressRepository progressRepository)
         {
-            _enrollmentRepository = enrollmentRepository;
-            _progressRepository = progressRepository;
-        }
-
-        public bool EnrollUserToCourse(Guid userId, Guid courseId)
-        {
-            // Kiểm tra đã đăng ký chưa
-            if (_enrollmentRepository.IsUserEnrolled(userId, courseId))
-                return false;
-
-            var enrollment = new Enrollment
-            {
-                UserID = userId,
-                CourseID = courseId,
-                Status = "Active"
-            };
-
-            return _enrollmentRepository.Add(enrollment) > 0;
+            _enrollmentRepository = enrollmentRepository ?? throw new ArgumentNullException(nameof(enrollmentRepository));
+            _progressRepository = progressRepository ?? throw new ArgumentNullException(nameof(progressRepository));
         }
 
         public bool IsUserEnrolled(Guid userId, Guid courseId)
@@ -37,38 +22,31 @@ namespace CodeForge_Desktop.Business.Services
             return _enrollmentRepository.IsUserEnrolled(userId, courseId);
         }
 
-        public double GetEnrollmentProgress(Guid userId, Guid courseId)
+        public bool EnrollUserToCourse(Guid userId, Guid courseId)
         {
-            return _progressRepository.GetProgressPercentage(userId, courseId);
-        }
-
-        public int GetCompletedLessonCount(Guid userId, Guid courseId)
-        {
-            return _progressRepository.GetCompletedLessonCount(userId, courseId);
-        }
-
-        public void MarkLessonComplete(Guid userId, Guid courseId, Guid lessonId)
-        {
-            var progress = _progressRepository.GetByUserLessonAndCourse(userId, lessonId, courseId);
-            
-            if (progress == null)
+            try
             {
-                progress = new Progress
+                var enrollment = new Enrollment
                 {
+                    EnrollmentID = Guid.NewGuid(),
                     UserID = userId,
                     CourseID = courseId,
-                    LessonID = lessonId,
-                    IsCompleted = true,
-                    CompletedAt = DateTime.Now
+                    EnrolledAt = DateTime.UtcNow,
+                    Status = "enrolled",
                 };
-                _progressRepository.Add(progress);
+
+                int result = _enrollmentRepository.Add(enrollment);
+                return result > 0;
             }
-            else
+            catch
             {
-                progress.IsCompleted = true;
-                progress.CompletedAt = DateTime.Now;
-                _progressRepository.Update(progress);
+                return false;
             }
+        }
+
+        public int GetEnrolledStudentCount(Guid courseId)
+        {
+            return _enrollmentRepository.GetEnrolledStudentCount(courseId);
         }
     }
 }

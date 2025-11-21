@@ -42,6 +42,13 @@ namespace CodeForge_Desktop.DataAccess.Entities
         // Xóa mềm
         public bool IsDeleted { get; set; } = false;
 
+        // Derived fields for UI (not persisted by EF here — filled by repository)
+        // indicates current user is enrolled in this course
+        public bool IsEnrolled { get; set; } = false;
+
+        // derived progress percentage for the current user (0-100)
+        public int ProgressPercentage { get; set; } = 0;
+
         // Constructor mặc định
         public Course()
         {

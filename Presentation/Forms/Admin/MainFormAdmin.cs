@@ -84,5 +84,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             this.Close();
             // new LoginForm().Show(); 
         }
+
+        private void btnCourseManagement_Click(object sender, EventArgs e)
+        {
+            SetActiveButton(btnCourseManagement);
+            LoadUserControl(new ucCourseManagement());
+        }
     }
 }
