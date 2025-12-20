@@ -28,189 +28,272 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btnDangXuat = new Guna.UI2.WinForms.Guna2Button();
-            this.btnCaiDat = new Guna.UI2.WinForms.Guna2Button();
-            this.btnSystemLogs = new Guna.UI2.WinForms.Guna2Button();
-            this.btnQuanLyAssignments = new Guna.UI2.WinForms.Guna2Button();
-            this.btnQuanLyUsers = new Guna.UI2.WinForms.Guna2Button();
-            this.btnTrangChu = new Guna.UI2.WinForms.Guna2Button();
+            this.pnlSidebar = new System.Windows.Forms.Panel();
+            this.pnlMenu = new System.Windows.Forms.Panel();
+            this.btnCourseManagement = new System.Windows.Forms.Button();
+            this.btnDangXuat = new System.Windows.Forms.Button();
+            this.btnCaiDat = new System.Windows.Forms.Button();
+            this.btnSystemLogs = new System.Windows.Forms.Button();
+            this.btnQuanLyAssignments = new System.Windows.Forms.Button();
+            this.btnQuanLyUsers = new System.Windows.Forms.Button();
+            this.btnTrangChu = new System.Windows.Forms.Button();
+            this.pnlLogo = new System.Windows.Forms.Panel();
+            this.lblAppName = new System.Windows.Forms.Label();
+            this.lblLogo = new System.Windows.Forms.Label();
             this.pnlContent = new System.Windows.Forms.Panel();
-            this.panel1.SuspendLayout();
+            this.pnlSidebar.SuspendLayout();
+            this.pnlMenu.SuspendLayout();
+            this.pnlLogo.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // pnlSidebar
             // 
-            this.panel1.BackColor = System.Drawing.Color.DarkSlateGray;
-            this.panel1.Controls.Add(this.btnDangXuat);
-            this.panel1.Controls.Add(this.btnCaiDat);
-            this.panel1.Controls.Add(this.btnSystemLogs);
-            this.panel1.Controls.Add(this.btnQuanLyAssignments);
-            this.panel1.Controls.Add(this.btnQuanLyUsers);
-            this.panel1.Controls.Add(this.btnTrangChu);
-            this.panel1.Controls.Add(this.panel2);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(290, 803);
-            this.panel1.TabIndex = 0;
+            this.pnlSidebar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.pnlSidebar.Controls.Add(this.pnlMenu);
+            this.pnlSidebar.Controls.Add(this.pnlLogo);
+            this.pnlSidebar.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlSidebar.Location = new System.Drawing.Point(0, 0);
+            this.pnlSidebar.Margin = new System.Windows.Forms.Padding(2);
+            this.pnlSidebar.Name = "pnlSidebar";
+            this.pnlSidebar.Size = new System.Drawing.Size(188, 652);
+            this.pnlSidebar.TabIndex = 0;
             // 
-            // panel2
+            // pnlMenu
             // 
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(290, 66);
-            this.panel2.TabIndex = 0;
+            this.pnlMenu.Controls.Add(this.btnCourseManagement);
+            this.pnlMenu.Controls.Add(this.btnDangXuat);
+            this.pnlMenu.Controls.Add(this.btnCaiDat);
+            this.pnlMenu.Controls.Add(this.btnSystemLogs);
+            this.pnlMenu.Controls.Add(this.btnQuanLyAssignments);
+            this.pnlMenu.Controls.Add(this.btnQuanLyUsers);
+            this.pnlMenu.Controls.Add(this.btnTrangChu);
+            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMenu.Location = new System.Drawing.Point(0, 63);
+            this.pnlMenu.Margin = new System.Windows.Forms.Padding(2);
+            this.pnlMenu.Name = "pnlMenu";
+            this.pnlMenu.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.pnlMenu.Size = new System.Drawing.Size(188, 589);
+            this.pnlMenu.TabIndex = 2;
+            // 
+            // btnCourseManagement
+            // 
+            this.btnCourseManagement.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCourseManagement.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnCourseManagement.FlatAppearance.BorderSize = 0;
+            this.btnCourseManagement.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnCourseManagement.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCourseManagement.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.btnCourseManagement.ForeColor = System.Drawing.Color.White;
+            this.btnCourseManagement.Location = new System.Drawing.Point(0, 168);
+            this.btnCourseManagement.Name = "btnCourseManagement";
+            this.btnCourseManagement.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.btnCourseManagement.Size = new System.Drawing.Size(188, 48);
+            this.btnCourseManagement.TabIndex = 7;
+            this.btnCourseManagement.Text = "📋  Quản lý Khóa học";
+            this.btnCourseManagement.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCourseManagement.UseVisualStyleBackColor = true;
+            this.btnCourseManagement.Click += new System.EventHandler(this.btnCourseManagement_Click);
             // 
             // btnDangXuat
             // 
-            this.btnDangXuat.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnDangXuat.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnDangXuat.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnDangXuat.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnDangXuat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnDangXuat.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDangXuat.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnDangXuat.FillColor = System.Drawing.Color.Transparent;
-            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDangXuat.FlatAppearance.BorderSize = 0;
+            this.btnDangXuat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold);
             this.btnDangXuat.ForeColor = System.Drawing.Color.White;
-            this.btnDangXuat.Image = global::CodeForge_Desktop.Properties.Resources.logout__1_;
-            this.btnDangXuat.Location = new System.Drawing.Point(0, 750);
+            this.btnDangXuat.Location = new System.Drawing.Point(0, 544);
+            this.btnDangXuat.Margin = new System.Windows.Forms.Padding(2);
             this.btnDangXuat.Name = "btnDangXuat";
-            this.btnDangXuat.Size = new System.Drawing.Size(290, 53);
+            this.btnDangXuat.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnDangXuat.Size = new System.Drawing.Size(188, 45);
             this.btnDangXuat.TabIndex = 6;
             this.btnDangXuat.Text = "Đăng xuất";
+            this.btnDangXuat.UseVisualStyleBackColor = false;
+            this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click_1);
             // 
             // btnCaiDat
             // 
-            this.btnCaiDat.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnCaiDat.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnCaiDat.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnCaiDat.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnCaiDat.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnCaiDat.FillColor = System.Drawing.Color.Transparent;
-            this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCaiDat.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCaiDat.FlatAppearance.BorderSize = 0;
+            this.btnCaiDat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnCaiDat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnCaiDat.ForeColor = System.Drawing.Color.White;
-            this.btnCaiDat.Image = global::CodeForge_Desktop.Properties.Resources.setting;
-            this.btnCaiDat.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnCaiDat.Location = new System.Drawing.Point(0, 278);
+            this.btnCaiDat.Location = new System.Drawing.Point(0, 221);
+            this.btnCaiDat.Margin = new System.Windows.Forms.Padding(2);
             this.btnCaiDat.Name = "btnCaiDat";
-            this.btnCaiDat.Size = new System.Drawing.Size(290, 53);
+            this.btnCaiDat.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnCaiDat.Size = new System.Drawing.Size(188, 40);
             this.btnCaiDat.TabIndex = 5;
-            this.btnCaiDat.Text = "Cài đặt";
+            this.btnCaiDat.Text = "⚙  Cài đặt";
+            this.btnCaiDat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCaiDat.UseVisualStyleBackColor = true;
             this.btnCaiDat.Click += new System.EventHandler(this.btnCaiDat_Click);
             // 
             // btnSystemLogs
             // 
-            this.btnSystemLogs.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnSystemLogs.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnSystemLogs.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnSystemLogs.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnSystemLogs.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSystemLogs.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSystemLogs.FillColor = System.Drawing.Color.Transparent;
-            this.btnSystemLogs.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSystemLogs.FlatAppearance.BorderSize = 0;
+            this.btnSystemLogs.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnSystemLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSystemLogs.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnSystemLogs.ForeColor = System.Drawing.Color.White;
-            this.btnSystemLogs.Image = global::CodeForge_Desktop.Properties.Resources.trend__2_;
-            this.btnSystemLogs.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnSystemLogs.Location = new System.Drawing.Point(0, 225);
+            this.btnSystemLogs.Location = new System.Drawing.Point(0, 128);
+            this.btnSystemLogs.Margin = new System.Windows.Forms.Padding(2);
             this.btnSystemLogs.Name = "btnSystemLogs";
-            this.btnSystemLogs.Size = new System.Drawing.Size(290, 53);
+            this.btnSystemLogs.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnSystemLogs.Size = new System.Drawing.Size(188, 40);
             this.btnSystemLogs.TabIndex = 4;
-            this.btnSystemLogs.Text = "Nhật kí hệ thống";
+            this.btnSystemLogs.Text = "📉  System Logs";
+            this.btnSystemLogs.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSystemLogs.UseVisualStyleBackColor = true;
             this.btnSystemLogs.Click += new System.EventHandler(this.btnSystemLogs_Click);
             // 
             // btnQuanLyAssignments
             // 
-            this.btnQuanLyAssignments.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnQuanLyAssignments.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnQuanLyAssignments.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnQuanLyAssignments.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnQuanLyAssignments.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnQuanLyAssignments.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnQuanLyAssignments.FillColor = System.Drawing.Color.Transparent;
-            this.btnQuanLyAssignments.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnQuanLyAssignments.FlatAppearance.BorderSize = 0;
+            this.btnQuanLyAssignments.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnQuanLyAssignments.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuanLyAssignments.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnQuanLyAssignments.ForeColor = System.Drawing.Color.White;
-            this.btnQuanLyAssignments.Image = global::CodeForge_Desktop.Properties.Resources.paper;
-            this.btnQuanLyAssignments.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnQuanLyAssignments.Location = new System.Drawing.Point(0, 172);
+            this.btnQuanLyAssignments.Location = new System.Drawing.Point(0, 88);
+            this.btnQuanLyAssignments.Margin = new System.Windows.Forms.Padding(2);
             this.btnQuanLyAssignments.Name = "btnQuanLyAssignments";
-            this.btnQuanLyAssignments.Size = new System.Drawing.Size(290, 53);
+            this.btnQuanLyAssignments.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnQuanLyAssignments.Size = new System.Drawing.Size(188, 40);
             this.btnQuanLyAssignments.TabIndex = 3;
-            this.btnQuanLyAssignments.Text = "Quản lí bài tập";
+            this.btnQuanLyAssignments.Text = "📋  Quản lý Assignments";
+            this.btnQuanLyAssignments.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyAssignments.UseVisualStyleBackColor = true;
             this.btnQuanLyAssignments.Click += new System.EventHandler(this.btnQuanLyAssignments_Click);
             // 
             // btnQuanLyUsers
             // 
-            this.btnQuanLyUsers.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnQuanLyUsers.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnQuanLyUsers.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnQuanLyUsers.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnQuanLyUsers.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnQuanLyUsers.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnQuanLyUsers.FillColor = System.Drawing.Color.Transparent;
-            this.btnQuanLyUsers.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnQuanLyUsers.FlatAppearance.BorderSize = 0;
+            this.btnQuanLyUsers.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnQuanLyUsers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuanLyUsers.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnQuanLyUsers.ForeColor = System.Drawing.Color.White;
-            this.btnQuanLyUsers.Image = global::CodeForge_Desktop.Properties.Resources.group;
-            this.btnQuanLyUsers.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnQuanLyUsers.Location = new System.Drawing.Point(0, 119);
+            this.btnQuanLyUsers.Location = new System.Drawing.Point(0, 48);
+            this.btnQuanLyUsers.Margin = new System.Windows.Forms.Padding(2);
             this.btnQuanLyUsers.Name = "btnQuanLyUsers";
-            this.btnQuanLyUsers.Size = new System.Drawing.Size(290, 53);
+            this.btnQuanLyUsers.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnQuanLyUsers.Size = new System.Drawing.Size(188, 40);
             this.btnQuanLyUsers.TabIndex = 2;
-            this.btnQuanLyUsers.Text = "Quản lí tài khoản";
+            this.btnQuanLyUsers.Text = "👥  Quản lý Users";
+            this.btnQuanLyUsers.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyUsers.UseVisualStyleBackColor = true;
             this.btnQuanLyUsers.Click += new System.EventHandler(this.btnQuanLyUsers_Click);
             // 
             // btnTrangChu
             // 
-            this.btnTrangChu.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnTrangChu.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnTrangChu.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnTrangChu.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnTrangChu.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnTrangChu.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnTrangChu.FillColor = System.Drawing.Color.Transparent;
-            this.btnTrangChu.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrangChu.FlatAppearance.BorderSize = 0;
+            this.btnTrangChu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.btnTrangChu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTrangChu.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnTrangChu.ForeColor = System.Drawing.Color.White;
-            this.btnTrangChu.Image = global::CodeForge_Desktop.Properties.Resources.home;
-            this.btnTrangChu.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnTrangChu.Location = new System.Drawing.Point(0, 66);
+            this.btnTrangChu.Location = new System.Drawing.Point(0, 8);
+            this.btnTrangChu.Margin = new System.Windows.Forms.Padding(2);
             this.btnTrangChu.Name = "btnTrangChu";
-            this.btnTrangChu.Size = new System.Drawing.Size(290, 53);
+            this.btnTrangChu.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.btnTrangChu.Size = new System.Drawing.Size(188, 40);
             this.btnTrangChu.TabIndex = 1;
-            this.btnTrangChu.Text = "Trang chủ";
+            this.btnTrangChu.Text = "🏠  Trang chủ";
+            this.btnTrangChu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnTrangChu.UseVisualStyleBackColor = true;
             this.btnTrangChu.Click += new System.EventHandler(this.btnTrangChu_Click);
+            // 
+            // pnlLogo
+            // 
+            this.pnlLogo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.pnlLogo.Controls.Add(this.lblAppName);
+            this.pnlLogo.Controls.Add(this.lblLogo);
+            this.pnlLogo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlLogo.Location = new System.Drawing.Point(0, 0);
+            this.pnlLogo.Margin = new System.Windows.Forms.Padding(2);
+            this.pnlLogo.Name = "pnlLogo";
+            this.pnlLogo.Size = new System.Drawing.Size(188, 63);
+            this.pnlLogo.TabIndex = 0;
+            // 
+            // lblAppName
+            // 
+            this.lblAppName.AutoSize = true;
+            this.lblAppName.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblAppName.ForeColor = System.Drawing.Color.White;
+            this.lblAppName.Location = new System.Drawing.Point(54, 16);
+            this.lblAppName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblAppName.Name = "lblAppName";
+            this.lblAppName.Size = new System.Drawing.Size(88, 38);
+            this.lblAppName.TabIndex = 1;
+            this.lblAppName.Text = "CodePractice\r\nAdmin";
+            // 
+            // lblLogo
+            // 
+            this.lblLogo.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.lblLogo.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblLogo.ForeColor = System.Drawing.Color.White;
+            this.lblLogo.Location = new System.Drawing.Point(13, 15);
+            this.lblLogo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblLogo.Name = "lblLogo";
+            this.lblLogo.Size = new System.Drawing.Size(34, 40);
+            this.lblLogo.TabIndex = 0;
+            this.lblLogo.Text = "CP";
+            this.lblLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pnlContent
             // 
+            this.pnlContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlContent.Location = new System.Drawing.Point(290, 0);
+            this.pnlContent.Location = new System.Drawing.Point(188, 0);
+            this.pnlContent.Margin = new System.Windows.Forms.Padding(2);
             this.pnlContent.Name = "pnlContent";
-            this.pnlContent.Size = new System.Drawing.Size(1442, 803);
-            this.pnlContent.TabIndex = 3;
+            this.pnlContent.Size = new System.Drawing.Size(1148, 652);
+            this.pnlContent.TabIndex = 1;
             // 
             // MainFormAdmin
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1732, 803);
+            this.ClientSize = new System.Drawing.Size(1336, 652);
             this.Controls.Add(this.pnlContent);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlSidebar);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainFormAdmin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MainFormAdmin";
+            this.Text = "CodePractice - Admin";
             this.Load += new System.EventHandler(this.MainFormAdmin_Load);
-            this.panel1.ResumeLayout(false);
+            this.pnlSidebar.ResumeLayout(false);
+            this.pnlMenu.ResumeLayout(false);
+            this.pnlLogo.ResumeLayout(false);
+            this.pnlLogo.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
-        private Guna.UI2.WinForms.Guna2Button btnTrangChu;
-        private Guna.UI2.WinForms.Guna2Button btnDangXuat;
-        private Guna.UI2.WinForms.Guna2Button btnCaiDat;
-        private Guna.UI2.WinForms.Guna2Button btnSystemLogs;
-        private Guna.UI2.WinForms.Guna2Button btnQuanLyAssignments;
-        private Guna.UI2.WinForms.Guna2Button btnQuanLyUsers;
+        private System.Windows.Forms.Panel pnlSidebar;
+        private System.Windows.Forms.Panel pnlLogo;
+        private System.Windows.Forms.Label lblLogo;
+        private System.Windows.Forms.Label lblAppName;
+        private System.Windows.Forms.Panel pnlMenu;
+        private System.Windows.Forms.Button btnTrangChu;
+        private System.Windows.Forms.Button btnQuanLyUsers;
+        private System.Windows.Forms.Button btnQuanLyAssignments;
+        private System.Windows.Forms.Button btnCaiDat;
         private System.Windows.Forms.Panel pnlContent;
+        private System.Windows.Forms.Button btnSystemLogs;
+        private System.Windows.Forms.Button btnDangXuat;
+        private System.Windows.Forms.Button btnCourseManagement;
     }
 }
