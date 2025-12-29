@@ -1,23 +1,19 @@
-using CodeForge_Desktop.DataAccess.Entities;
+﻿using CodeForge_Desktop.DataAccess.Entities; // Giả sử bạn đã có Entity Progress
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.DataAccess.Interfaces
 {
     public interface IProgressRepository
     {
-        // CRUD
-        Progress GetById(Guid id);
-        List<Progress> GetByUserAndCourse(Guid userId, Guid courseId);
-        Progress GetByUserLessonAndCourse(Guid userId, Guid lessonId, Guid courseId);
-        int Add(Progress progress);
-        int Update(Progress progress);
-        int Delete(Guid id); // Soft delete
+        // 1. Mark hoàn thành (Upsert: Thêm mới hoặc cập nhật)
+        Task<bool> MarkCompletedAsync(Guid userId, Guid lessonId);
 
-        // Queries
-        int GetCompletedLessonCount(Guid userId, Guid courseId);
-        int GetTotalLessonCount(Guid courseId);
-        double GetProgressPercentage(Guid userId, Guid courseId); // 0-100
-        List<Guid> GetCompletedLessonIds(Guid userId, Guid courseId);
+        // 2. Lấy danh sách LessonID đã hoàn thành trong 1 khóa học
+        Task<List<Guid>> GetCompletedLessonsAsync(Guid userId, Guid courseId);
+
+        // 3. Tính % hoàn thành của 1 khóa học
+        Task<double> GetProgressPercentageAsync(Guid userId, Guid courseId);
     }
 }

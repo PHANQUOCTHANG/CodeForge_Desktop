@@ -11,5 +11,6 @@ namespace CodeForge_Desktop.DataAccess.Entities
         public string Comment { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public User User { get; set; } // Navigation property to User entity
     }
 }
