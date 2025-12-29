@@ -1,143 +1,111 @@
-using CodeForge_Desktop.Config;
-using CodeForge_Desktop.DataAccess.Entities;
+﻿using CodeForge_Desktop.Config;
 using CodeForge_Desktop.DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.DataAccess.Repositories
 {
     public class ProgressRepository : IProgressRepository
     {
-        private Progress MapToProgress(DataRow row)
+        public async Task<bool> MarkCompletedAsync(Guid userId, Guid lessonId)
         {
-            return new Progress
+            return await Task.Run(() =>
             {
-                ProgressID = row.Table.Columns.Contains("ProgressID") && row["ProgressID"] != DBNull.Value ? (Guid)row["ProgressID"] : Guid.Empty,
-                UserID = row.Table.Columns.Contains("UserID") && row["UserID"] != DBNull.Value ? (Guid)row["UserID"] : Guid.Empty,
-                LessonID = row.Table.Columns.Contains("LessonID") && row["LessonID"] != DBNull.Value ? (Guid)row["LessonID"] : Guid.Empty,
-                Status = row.Table.Columns.Contains("Status") && row["Status"] != DBNull.Value ? row["Status"].ToString() : "in_progress",
-                UpdatedAt = row.Table.Columns.Contains("UpdatedAt") && row["UpdatedAt"] != DBNull.Value ? (DateTime)row["UpdatedAt"] : DateTime.MinValue
-            };
+                try
+                {
+                    // Logic UPSERT: Kiểm tra tồn tại -> Insert hoặc Update
+                    string checkSql = "SELECT COUNT(1) FROM Progress WHERE UserID = @U AND LessonID = @L";
+                    int count = Convert.ToInt32(DbContext.ExecuteScalar(checkSql, new SqlParameter("@U", userId), new SqlParameter("@L", lessonId)));
+
+                    if (count == 0)
+                    {
+                        // Insert mới
+                        string insertSql = @"INSERT INTO Progress (ProgressID, UserID, LessonID, Status, UpdatedAt) 
+                                             VALUES (@Id, @U, @L, 'completed', GETDATE())";
+                        DbContext.Execute(insertSql,
+                            new SqlParameter("@Id", Guid.NewGuid()),
+                            new SqlParameter("@U", userId),
+                            new SqlParameter("@L", lessonId));
+                    }
+                    else
+                    {
+                        // Update trạng thái (nếu cần thiết, ví dụ muốn đổi ngày cập nhật)
+                        string updateSql = "UPDATE Progress SET Status = 'completed', UpdatedAt = GETDATE() WHERE UserID = @U AND LessonID = @L";
+                        DbContext.Execute(updateSql, new SqlParameter("@U", userId), new SqlParameter("@L", lessonId));
+                    }
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    // Log error here
+                    Console.WriteLine("Progress Error: " + ex.Message);
+                    return false;
+                }
+            });
         }
 
-        public Progress GetById(Guid id)
+        public async Task<List<Guid>> GetCompletedLessonsAsync(Guid userId, Guid courseId)
         {
-            string sql = "SELECT TOP 1 ProgressID, UserID, LessonID, Status, UpdatedAt FROM Progress WHERE ProgressID = @id";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@id", id));
-            return dt.Rows.Count > 0 ? MapToProgress(dt.Rows[0]) : null;
+            return await Task.Run(() =>
+            {
+                // Join 3 bảng để lọc ra các bài học thuộc khóa học này mà user đã hoàn thành
+                string sql = @"
+                    SELECT p.LessonID 
+                    FROM Progress p
+                    JOIN Lessons l ON p.LessonID = l.LessonID
+                    JOIN Modules m ON l.ModuleID = m.ModuleID
+                    WHERE p.UserID = @U 
+                      AND m.CourseID = @C 
+                      AND ISNULL(p.Status, '') = 'completed'";
+
+                DataTable dt = DbContext.Query(sql, new SqlParameter("@U", userId), new SqlParameter("@C", courseId));
+                var list = new List<Guid>();
+
+                if (dt != null)
+                {
+                    foreach (DataRow r in dt.Rows)
+                    {
+                        if (r["LessonID"] != DBNull.Value)
+                            list.Add((Guid)r["LessonID"]);
+                    }
+                }
+                return list;
+            });
         }
 
-        public List<Progress> GetByUserAndCourse(Guid userId, Guid courseId)
+        public async Task<double> GetProgressPercentageAsync(Guid userId, Guid courseId)
         {
-            // join Lessons -> Modules to filter by course
-            string sql = @"
-                SELECT p.ProgressID, p.UserID, p.LessonID, p.Status, p.UpdatedAt
-                FROM Progress p
-                INNER JOIN Lessons l ON p.LessonID = l.LessonID
-                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
-                WHERE p.UserID = @userId AND m.CourseID = @courseId";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@userId", userId), new SqlParameter("@courseId", courseId));
-            var list = new List<Progress>();
-            foreach (DataRow r in dt.Rows) list.Add(MapToProgress(r));
-            return list;
-        }
+            return await Task.Run(() =>
+            {
+                // 1. Đếm tổng số bài học trong khóa
+                string sqlTotal = @"
+                    SELECT COUNT(*) 
+                    FROM Lessons l
+                    JOIN Modules m ON l.ModuleID = m.ModuleID
+                    WHERE m.CourseID = @C AND ISNULL(l.IsDeleted, 0) = 0";
 
-        public Progress GetByUserLessonAndCourse(Guid userId, Guid lessonId, Guid courseId)
-        {
-            // ensure the lesson belongs to the course by joining Modules
-            string sql = @"
-                SELECT TOP 1 p.ProgressID, p.UserID, p.LessonID, p.Status, p.UpdatedAt
-                FROM Progress p
-                INNER JOIN Lessons l ON p.LessonID = l.LessonID
-                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
-                WHERE p.UserID = @userId AND p.LessonID = @lessonId AND m.CourseID = @courseId";
-            DataTable dt = DbContext.Query(sql,
-                new SqlParameter("@userId", userId),
-                new SqlParameter("@lessonId", lessonId),
-                new SqlParameter("@courseId", courseId));
-            return dt.Rows.Count > 0 ? MapToProgress(dt.Rows[0]) : null;
-        }
+                int totalLessons = Convert.ToInt32(DbContext.ExecuteScalar(sqlTotal, new SqlParameter("@C", courseId)));
 
-        public int Add(Progress progress)
-        {
-            if (progress.ProgressID == Guid.Empty) progress.ProgressID = Guid.NewGuid();
-            // Insert only columns present in DB schema
-            string sql = @"
-                INSERT INTO Progress (ProgressID, UserID, LessonID, Status, UpdatedAt)
-                VALUES (@ProgressID, @UserID, @LessonID, @Status, @UpdatedAt)";
-            return DbContext.Execute(sql,
-                new SqlParameter("@ProgressID", progress.ProgressID),
-                new SqlParameter("@UserID", progress.UserID),
-                new SqlParameter("@LessonID", progress.LessonID),
-                new SqlParameter("@Status", (object)progress.Status ?? "in_progress"),
-                new SqlParameter("@UpdatedAt", progress.UpdatedAt == DateTime.MinValue ? DateTime.UtcNow : progress.UpdatedAt));
-        }
+                if (totalLessons == 0) return 0.0;
 
-        public int Update(Progress progress)
-        {
-            progress.UpdatedAt = DateTime.UtcNow;
-            string sql = @"
-                UPDATE Progress
-                SET Status = @Status, UpdatedAt = @UpdatedAt
-                WHERE ProgressID = @ProgressID";
-            return DbContext.Execute(sql,
-                new SqlParameter("@Status", (object)progress.Status ?? "in_progress"),
-                new SqlParameter("@UpdatedAt", progress.UpdatedAt),
-                new SqlParameter("@ProgressID", progress.ProgressID));
-        }
+                // 2. Đếm số bài đã hoàn thành
+                string sqlCompleted = @"
+                    SELECT COUNT(DISTINCT p.LessonID)
+                    FROM Progress p
+                    JOIN Lessons l ON p.LessonID = l.LessonID
+                    JOIN Modules m ON l.ModuleID = m.ModuleID
+                    WHERE p.UserID = @U 
+                      AND m.CourseID = @C 
+                      AND ISNULL(p.Status, '') = 'completed'";
 
-        public int Delete(Guid id)
-        {
-            string sql = "DELETE FROM Progress WHERE ProgressID = @id";
-            return DbContext.Execute(sql, new SqlParameter("@id", id));
-        }
+                int completedLessons = Convert.ToInt32(DbContext.Execute(sqlCompleted, new SqlParameter("@U", userId), new SqlParameter("@C", courseId)));
 
-        public int GetCompletedLessonCount(Guid userId, Guid courseId)
-        {
-            string sql = @"
-                SELECT COUNT(DISTINCT p.LessonID)
-                FROM Progress p
-                INNER JOIN Lessons l ON p.LessonID = l.LessonID
-                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
-                WHERE p.UserID = @userId AND m.CourseID = @courseId AND p.Status = 'completed'";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@userId", userId), new SqlParameter("@courseId", courseId));
-            return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
-        }
-
-        public int GetTotalLessonCount(Guid courseId)
-        {
-            string sql = @"
-                SELECT COUNT(1)
-                FROM Lessons l
-                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
-                WHERE m.CourseID = @courseId AND ISNULL(l.IsDeleted,0) = 0 AND ISNULL(m.IsDeleted,0) = 0";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@courseId", courseId));
-            return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
-        }
-
-        public double GetProgressPercentage(Guid userId, Guid courseId)
-        {
-            int completed = GetCompletedLessonCount(userId, courseId);
-            int total = GetTotalLessonCount(courseId);
-            if (total == 0) return 0;
-            return (double)completed / total * 100;
-        }
-
-        public List<Guid> GetCompletedLessonIds(Guid userId, Guid courseId)
-        {
-            var list = new List<Guid>();
-            string sql = @"
-                SELECT DISTINCT p.LessonID
-                FROM Progress p
-                INNER JOIN Lessons l ON p.LessonID = l.LessonID
-                INNER JOIN Modules m ON l.ModuleID = m.ModuleID
-                WHERE p.UserID = @userId AND m.CourseID = @courseId AND p.Status = 'completed'";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@userId", userId), new SqlParameter("@courseId", courseId));
-            foreach (DataRow r in dt.Rows) if (r["LessonID"] != DBNull.Value) list.Add((Guid)r["LessonID"]);
-            return list;
+                // 3. Tính phần trăm
+                return Math.Round(((double)completedLessons / totalLessons) * 100, 1);
+            });
         }
     }
 }

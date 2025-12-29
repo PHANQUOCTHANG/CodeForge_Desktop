@@ -1,274 +1,343 @@
-﻿using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Drawing;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 {
     partial class ucCourseLearning
     {
-        private IContainer components = null;
+        private System.ComponentModel.IContainer components = null;
 
-        private Panel pnlTop;
-        private Button btnBack;
-        private Button btnPrev;
-        private Button btnNext;
-        private Button btnMarkCompleted;
-        private Label lblCourseLessonInfo;
+        // Top Bar
+        private System.Windows.Forms.Panel pnlTopBar;
+        private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.Label lblCourseTitle;
+        private System.Windows.Forms.Label lblProgress;
+        private System.Windows.Forms.ProgressBar pbProgress;
 
-        private SplitContainer splitMain;
-        private TreeView tvModulesLessons;
-        private Panel pnlLessonContent;
+        // Main Layout
+        private System.Windows.Forms.SplitContainer splitMain;
 
-        private Label lblLessonTitle;
-        private RichTextBox rtbLessonText;
-        private Panel pnlQuiz;
-        private Button btnSubmitQuiz;
-        private FlowLayoutPanel flpQuizQuestions;
+        // Left Side (Content)
+        private System.Windows.Forms.Panel pnlLeftContainer;
+        private System.Windows.Forms.Panel pnlVideoArea;
+        private System.Windows.Forms.Panel pnlNavButtons;
+        private System.Windows.Forms.TabControl tabInfo;
+        private System.Windows.Forms.TabPage tabDescription;
+        private System.Windows.Forms.TabPage tabQnA;
+        private System.Windows.Forms.WebBrowser wbDescription;
 
-        private ListView lvCodingProblems;
-        private WebBrowser wbVideo; // used for video url preview
+        // Nav Buttons
+        private System.Windows.Forms.Button btnPrev;
+        private System.Windows.Forms.Button btnNext;
+        private System.Windows.Forms.Button btnMarkCompleted; // Nút hoàn thành
+
+        // Right Side (Curriculum)
+        private System.Windows.Forms.Panel pnlRightContainer;
+        private System.Windows.Forms.Panel pnlSidebarHeader;
+        private System.Windows.Forms.Label lblCurriculumHeader;
+        private System.Windows.Forms.FlowLayoutPanel flpCurriculum;
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
-        #region Designer generated
         private void InitializeComponent()
         {
-            this.pnlTop = new System.Windows.Forms.Panel();
+            this.pnlTopBar = new System.Windows.Forms.Panel();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.pbProgress = new System.Windows.Forms.ProgressBar();
+            this.lblCourseTitle = new System.Windows.Forms.Label();
             this.btnBack = new System.Windows.Forms.Button();
-            this.btnPrev = new System.Windows.Forms.Button();
-            this.btnNext = new System.Windows.Forms.Button();
-            this.btnMarkCompleted = new System.Windows.Forms.Button();
-            this.lblCourseLessonInfo = new System.Windows.Forms.Label();
             this.splitMain = new System.Windows.Forms.SplitContainer();
-            this.tvModulesLessons = new System.Windows.Forms.TreeView();
-            this.pnlLessonContent = new System.Windows.Forms.Panel();
-            this.lblLessonTitle = new System.Windows.Forms.Label();
-            this.pnlQuiz = new System.Windows.Forms.Panel();
-            this.flpQuizQuestions = new System.Windows.Forms.FlowLayoutPanel();
-            this.wbVideo = new System.Windows.Forms.WebBrowser();
-            this.rtbLessonText = new System.Windows.Forms.RichTextBox();
-            this.btnSubmitQuiz = new System.Windows.Forms.Button();
-            this.lvCodingProblems = new System.Windows.Forms.ListView();
-            this.pnlTop.SuspendLayout();
+            this.pnlLeftContainer = new System.Windows.Forms.Panel();
+            this.pnlVideoArea = new System.Windows.Forms.Panel();
+            this.pnlNavButtons = new System.Windows.Forms.Panel();
+            this.btnMarkCompleted = new System.Windows.Forms.Button();
+            this.btnNext = new System.Windows.Forms.Button();
+            this.btnPrev = new System.Windows.Forms.Button();
+            this.tabInfo = new System.Windows.Forms.TabControl();
+            this.tabDescription = new System.Windows.Forms.TabPage();
+            this.wbDescription = new System.Windows.Forms.WebBrowser();
+            this.tabQnA = new System.Windows.Forms.TabPage();
+            this.pnlRightContainer = new System.Windows.Forms.Panel();
+            this.flpCurriculum = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlSidebarHeader = new System.Windows.Forms.Panel();
+            this.lblCurriculumHeader = new System.Windows.Forms.Label();
+            this.pnlTopBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
             this.splitMain.SuspendLayout();
-            this.pnlLessonContent.SuspendLayout();
-            this.pnlQuiz.SuspendLayout();
-            this.flpQuizQuestions.SuspendLayout();
+            this.pnlLeftContainer.SuspendLayout();
+            this.pnlNavButtons.SuspendLayout();
+            this.tabInfo.SuspendLayout();
+            this.tabDescription.SuspendLayout();
+            this.pnlRightContainer.SuspendLayout();
+            this.pnlSidebarHeader.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlTop
+            // pnlTopBar
             // 
-            this.pnlTop.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pnlTop.Controls.Add(this.btnBack);
-            this.pnlTop.Controls.Add(this.btnPrev);
-            this.pnlTop.Controls.Add(this.btnNext);
-            this.pnlTop.Controls.Add(this.btnMarkCompleted);
-            this.pnlTop.Controls.Add(this.lblCourseLessonInfo);
-            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlTop.Size = new System.Drawing.Size(980, 48);
-            this.pnlTop.TabIndex = 1;
+            this.pnlTopBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.pnlTopBar.Controls.Add(this.lblProgress);
+            this.pnlTopBar.Controls.Add(this.pbProgress);
+            this.pnlTopBar.Controls.Add(this.lblCourseTitle);
+            this.pnlTopBar.Controls.Add(this.btnBack);
+            this.pnlTopBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTopBar.Location = new System.Drawing.Point(0, 0);
+            this.pnlTopBar.Name = "pnlTopBar";
+            this.pnlTopBar.Padding = new System.Windows.Forms.Padding(10);
+            this.pnlTopBar.Size = new System.Drawing.Size(1200, 60);
+            this.pnlTopBar.TabIndex = 0;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblProgress.ForeColor = System.Drawing.Color.LightGray;
+            this.lblProgress.Location = new System.Drawing.Point(880, 10);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(60, 40);
+            this.lblProgress.TabIndex = 3;
+            this.lblProgress.Text = "0%";
+            this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // pbProgress
+            // 
+            this.pbProgress.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pbProgress.Location = new System.Drawing.Point(940, 10);
+            this.pbProgress.Name = "pbProgress";
+            this.pbProgress.Size = new System.Drawing.Size(250, 40);
+            this.pbProgress.TabIndex = 2;
+            // 
+            // lblCourseTitle
+            // 
+            this.lblCourseTitle.AutoSize = true;
+            this.lblCourseTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblCourseTitle.ForeColor = System.Drawing.Color.White;
+            this.lblCourseTitle.Location = new System.Drawing.Point(120, 18);
+            this.lblCourseTitle.Name = "lblCourseTitle";
+            this.lblCourseTitle.Size = new System.Drawing.Size(180, 28);
+            this.lblCourseTitle.TabIndex = 1;
+            this.lblCourseTitle.Text = "Đang tải dữ liệu...";
             // 
             // btnBack
             // 
-            this.btnBack.Location = new System.Drawing.Point(8, 8);
+            this.btnBack.BackColor = System.Drawing.Color.Transparent;
+            this.btnBack.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnBack.FlatAppearance.BorderSize = 0;
+            this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBack.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnBack.ForeColor = System.Drawing.Color.White;
+            this.btnBack.Location = new System.Drawing.Point(10, 12);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(92, 23);
+            this.btnBack.Size = new System.Drawing.Size(90, 36);
             this.btnBack.TabIndex = 0;
-            this.btnBack.Text = "← Quay lại ";
-            // 
-            // btnPrev
-            // 
-            this.btnPrev.Location = new System.Drawing.Point(112, 8);
-            this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(92, 23);
-            this.btnPrev.TabIndex = 1;
-            this.btnPrev.Text = "◀ Trước";
-            // 
-            // btnNext
-            // 
-            this.btnNext.Location = new System.Drawing.Point(212, 8);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(92, 23);
-            this.btnNext.TabIndex = 2;
-            this.btnNext.Text = "Sau ▶";
-            // 
-            // btnMarkCompleted
-            // 
-            this.btnMarkCompleted.BackColor = System.Drawing.Color.White;
-            this.btnMarkCompleted.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMarkCompleted.Location = new System.Drawing.Point(320, 8);
-            this.btnMarkCompleted.Name = "btnMarkCompleted";
-            this.btnMarkCompleted.Size = new System.Drawing.Size(140, 23);
-            this.btnMarkCompleted.TabIndex = 3;
-            this.btnMarkCompleted.Text = "✔ Mark Completed";
-            this.btnMarkCompleted.UseVisualStyleBackColor = false;
-            // 
-            // lblCourseLessonInfo
-            // 
-            this.lblCourseLessonInfo.AutoSize = true;
-            this.lblCourseLessonInfo.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblCourseLessonInfo.Location = new System.Drawing.Point(480, 14);
-            this.lblCourseLessonInfo.Name = "lblCourseLessonInfo";
-            this.lblCourseLessonInfo.Size = new System.Drawing.Size(0, 15);
-            this.lblCourseLessonInfo.TabIndex = 4;
+            this.btnBack.Text = "❮ Quay lại";
+            this.btnBack.UseVisualStyleBackColor = false;
             // 
             // splitMain
             // 
             this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitMain.Location = new System.Drawing.Point(0, 48);
+            this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitMain.Location = new System.Drawing.Point(0, 60);
             this.splitMain.Name = "splitMain";
             // 
             // splitMain.Panel1
             // 
-            this.splitMain.Panel1.Controls.Add(this.tvModulesLessons);
-            this.splitMain.Panel1.Padding = new System.Windows.Forms.Padding(8);
+            this.splitMain.Panel1.Controls.Add(this.pnlLeftContainer);
             // 
             // splitMain.Panel2
             // 
-            this.splitMain.Panel2.Controls.Add(this.pnlLessonContent);
-            this.splitMain.Panel2.Padding = new System.Windows.Forms.Padding(12);
-            this.splitMain.Size = new System.Drawing.Size(980, 572);
-            this.splitMain.SplitterDistance = 497;
-            this.splitMain.TabIndex = 0;
-            this.splitMain.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitMain_SplitterMoved);
+            this.splitMain.Panel2.Controls.Add(this.pnlRightContainer);
+            this.splitMain.Size = new System.Drawing.Size(1200, 660);
+            this.splitMain.SplitterDistance = 850;
+            this.splitMain.TabIndex = 1;
             // 
-            // tvModulesLessons
+            // pnlLeftContainer
             // 
-            this.tvModulesLessons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvModulesLessons.FullRowSelect = true;
-            this.tvModulesLessons.HideSelection = false;
-            this.tvModulesLessons.Location = new System.Drawing.Point(8, 8);
-            this.tvModulesLessons.Name = "tvModulesLessons";
-            this.tvModulesLessons.Size = new System.Drawing.Size(481, 556);
-            this.tvModulesLessons.TabIndex = 0;
+            this.pnlLeftContainer.Controls.Add(this.pnlVideoArea);
+            this.pnlLeftContainer.Controls.Add(this.pnlNavButtons);
+            this.pnlLeftContainer.Controls.Add(this.tabInfo);
+            this.pnlLeftContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlLeftContainer.Location = new System.Drawing.Point(0, 0);
+            this.pnlLeftContainer.Name = "pnlLeftContainer";
+            this.pnlLeftContainer.Size = new System.Drawing.Size(850, 660);
+            this.pnlLeftContainer.TabIndex = 0;
             // 
-            // pnlLessonContent
+            // pnlVideoArea
             // 
-            this.pnlLessonContent.BackColor = System.Drawing.Color.White;
-            this.pnlLessonContent.Controls.Add(this.lblLessonTitle);
-            this.pnlLessonContent.Controls.Add(this.pnlQuiz);
-            this.pnlLessonContent.Controls.Add(this.lvCodingProblems);
-            this.pnlLessonContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlLessonContent.Location = new System.Drawing.Point(12, 12);
-            this.pnlLessonContent.Name = "pnlLessonContent";
-            this.pnlLessonContent.Size = new System.Drawing.Size(455, 548);
-            this.pnlLessonContent.TabIndex = 0;
+            this.pnlVideoArea.BackColor = System.Drawing.Color.Black;
+            this.pnlVideoArea.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlVideoArea.Location = new System.Drawing.Point(0, 0);
+            this.pnlVideoArea.Name = "pnlVideoArea";
+            this.pnlVideoArea.Size = new System.Drawing.Size(850, 482);
+            this.pnlVideoArea.TabIndex = 2;
             // 
-            // lblLessonTitle
+            // pnlNavButtons
             // 
-            this.lblLessonTitle.AutoSize = true;
-            this.lblLessonTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblLessonTitle.Location = new System.Drawing.Point(8, 8);
-            this.lblLessonTitle.Name = "lblLessonTitle";
-            this.lblLessonTitle.Size = new System.Drawing.Size(96, 21);
-            this.lblLessonTitle.TabIndex = 0;
-            this.lblLessonTitle.Text = "Lesson title";
+            this.pnlNavButtons.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.pnlNavButtons.Controls.Add(this.btnMarkCompleted);
+            this.pnlNavButtons.Controls.Add(this.btnNext);
+            this.pnlNavButtons.Controls.Add(this.btnPrev);
+            this.pnlNavButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlNavButtons.Location = new System.Drawing.Point(0, 482);
+            this.pnlNavButtons.Name = "pnlNavButtons";
+            this.pnlNavButtons.Size = new System.Drawing.Size(850, 60);
+            this.pnlNavButtons.TabIndex = 1;
             // 
-            // pnlQuiz
+            // btnMarkCompleted
             // 
-            this.pnlQuiz.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlQuiz.Controls.Add(this.flpQuizQuestions);
-            this.pnlQuiz.Controls.Add(this.btnSubmitQuiz);
-            this.pnlQuiz.Location = new System.Drawing.Point(8, 44);
-            this.pnlQuiz.Name = "pnlQuiz";
-            this.pnlQuiz.Size = new System.Drawing.Size(447, 868);
-            this.pnlQuiz.TabIndex = 3;
+            this.btnMarkCompleted.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMarkCompleted.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnMarkCompleted.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMarkCompleted.FlatAppearance.BorderSize = 0;
+            this.btnMarkCompleted.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMarkCompleted.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnMarkCompleted.ForeColor = System.Drawing.Color.White;
+            this.btnMarkCompleted.Location = new System.Drawing.Point(550, 10);
+            this.btnMarkCompleted.Name = "btnMarkCompleted";
+            this.btnMarkCompleted.Size = new System.Drawing.Size(160, 40);
+            this.btnMarkCompleted.TabIndex = 2;
+            this.btnMarkCompleted.Text = "✔ Hoàn thành";
+            this.btnMarkCompleted.UseVisualStyleBackColor = false;
             // 
-            // flpQuizQuestions
+            // btnNext
             // 
-            this.flpQuizQuestions.AutoScroll = true;
-            this.flpQuizQuestions.Controls.Add(this.wbVideo);
-            this.flpQuizQuestions.Controls.Add(this.rtbLessonText);
-            this.flpQuizQuestions.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flpQuizQuestions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpQuizQuestions.Location = new System.Drawing.Point(0, 0);
-            this.flpQuizQuestions.Name = "flpQuizQuestions";
-            this.flpQuizQuestions.Size = new System.Drawing.Size(447, 400);
-            this.flpQuizQuestions.TabIndex = 0;
-            this.flpQuizQuestions.WrapContents = false;
+            this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNext.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.btnNext.FlatAppearance.BorderSize = 0;
+            this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNext.ForeColor = System.Drawing.Color.White;
+            this.btnNext.Location = new System.Drawing.Point(738, 10);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(100, 40);
+            this.btnNext.TabIndex = 1;
+            this.btnNext.Text = "Bài tiếp ❯";
+            this.btnNext.UseVisualStyleBackColor = false;
             // 
-            // wbVideo
+            // btnPrev
             // 
-            this.wbVideo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.wbVideo.Location = new System.Drawing.Point(3, 3);
-            this.wbVideo.Name = "wbVideo";
-            this.wbVideo.Size = new System.Drawing.Size(0, 420);
-            this.wbVideo.TabIndex = 2;
-            this.wbVideo.Visible = false;
+            this.btnPrev.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.btnPrev.FlatAppearance.BorderSize = 0;
+            this.btnPrev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPrev.ForeColor = System.Drawing.Color.White;
+            this.btnPrev.Location = new System.Drawing.Point(12, 10);
+            this.btnPrev.Name = "btnPrev";
+            this.btnPrev.Size = new System.Drawing.Size(100, 40);
+            this.btnPrev.TabIndex = 0;
+            this.btnPrev.Text = "❮ Bài trước";
+            this.btnPrev.UseVisualStyleBackColor = false;
             // 
-            // rtbLessonText
+            // tabInfo
             // 
-            this.rtbLessonText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbLessonText.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.rtbLessonText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbLessonText.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.rtbLessonText.Location = new System.Drawing.Point(3, 429);
-            this.rtbLessonText.Name = "rtbLessonText";
-            this.rtbLessonText.ReadOnly = true;
-            this.rtbLessonText.Size = new System.Drawing.Size(0, 868);
-            this.rtbLessonText.TabIndex = 1;
-            this.rtbLessonText.Text = "";
+            this.tabInfo.Controls.Add(this.tabDescription);
+            this.tabInfo.Controls.Add(this.tabQnA);
+            this.tabInfo.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tabInfo.Location = new System.Drawing.Point(0, 542);
+            this.tabInfo.Name = "tabInfo";
+            this.tabInfo.SelectedIndex = 0;
+            this.tabInfo.Size = new System.Drawing.Size(850, 118);
+            this.tabInfo.TabIndex = 0;
             // 
-            // btnSubmitQuiz
+            // tabDescription
             // 
-            this.btnSubmitQuiz.Location = new System.Drawing.Point(164, 429);
-            this.btnSubmitQuiz.Name = "btnSubmitQuiz";
-            this.btnSubmitQuiz.Size = new System.Drawing.Size(120, 36);
-            this.btnSubmitQuiz.TabIndex = 1;
-            this.btnSubmitQuiz.Text = "Nộp bài";
+            this.tabDescription.Controls.Add(this.wbDescription);
+            this.tabDescription.Location = new System.Drawing.Point(4, 29);
+            this.tabDescription.Name = "tabDescription";
+            this.tabDescription.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDescription.Size = new System.Drawing.Size(842, 85);
+            this.tabDescription.TabIndex = 0;
+            this.tabDescription.Text = "Tổng quan bài học";
+            this.tabDescription.UseVisualStyleBackColor = true;
             // 
-            // lvCodingProblems
+            // wbDescription
             // 
-            this.lvCodingProblems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvCodingProblems.HideSelection = false;
-            this.lvCodingProblems.Location = new System.Drawing.Point(8, 44);
-            this.lvCodingProblems.Name = "lvCodingProblems";
-            this.lvCodingProblems.Size = new System.Drawing.Size(875, 868);
-            this.lvCodingProblems.TabIndex = 4;
-            this.lvCodingProblems.UseCompatibleStateImageBehavior = false;
-            this.lvCodingProblems.View = System.Windows.Forms.View.List;
-            this.lvCodingProblems.Visible = false;
+            this.wbDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wbDescription.Location = new System.Drawing.Point(3, 3);
+            this.wbDescription.MinimumSize = new System.Drawing.Size(20, 20);
+            this.wbDescription.Name = "wbDescription";
+            this.wbDescription.Size = new System.Drawing.Size(836, 79);
+            this.wbDescription.TabIndex = 0;
+            // 
+            // tabQnA
+            // 
+            this.tabQnA.Location = new System.Drawing.Point(4, 25);
+            this.tabQnA.Name = "tabQnA";
+            this.tabQnA.Padding = new System.Windows.Forms.Padding(3);
+            this.tabQnA.Size = new System.Drawing.Size(842, 221);
+            this.tabQnA.TabIndex = 1;
+            this.tabQnA.Text = "Hỏi đáp";
+            this.tabQnA.UseVisualStyleBackColor = true;
+            // 
+            // pnlRightContainer
+            // 
+            this.pnlRightContainer.BackColor = Color.FromArgb(248, 249, 250);
+            this.pnlRightContainer.Controls.Add(this.flpCurriculum);
+            this.pnlRightContainer.Controls.Add(this.pnlSidebarHeader);
+            this.pnlRightContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlRightContainer.Location = new System.Drawing.Point(0, 0);
+            this.pnlRightContainer.Name = "pnlRightContainer";
+            this.pnlRightContainer.Size = new System.Drawing.Size(346, 660);
+            this.pnlRightContainer.TabIndex = 0;
+            // 
+            // flpCurriculum
+            // 
+            this.flpCurriculum.BackColor = Color.FromArgb(248, 249, 250);
+            this.flpCurriculum.AutoScroll = true;
+            this.flpCurriculum.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpCurriculum.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpCurriculum.Location = new System.Drawing.Point(0, 40);
+            this.flpCurriculum.Name = "flpCurriculum";
+            this.flpCurriculum.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.flpCurriculum.Size = new System.Drawing.Size(346, 620);
+            this.flpCurriculum.TabIndex = 1;
+            this.flpCurriculum.WrapContents = false;
+            // 
+            // pnlSidebarHeader
+            // 
+            this.pnlSidebarHeader.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.pnlSidebarHeader.Controls.Add(this.lblCurriculumHeader);
+            this.pnlSidebarHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlSidebarHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlSidebarHeader.Name = "pnlSidebarHeader";
+            this.pnlSidebarHeader.Size = new System.Drawing.Size(346, 40);
+            this.pnlSidebarHeader.TabIndex = 0;
+            // 
+            // lblCurriculumHeader
+            // 
+            this.lblCurriculumHeader.AutoSize = true;
+            this.lblCurriculumHeader.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblCurriculumHeader.Location = new System.Drawing.Point(10, 10);
+            this.lblCurriculumHeader.Name = "lblCurriculumHeader";
+            this.lblCurriculumHeader.Size = new System.Drawing.Size(162, 23);
+            this.lblCurriculumHeader.TabIndex = 0;
+            this.lblCurriculumHeader.Text = "Nội dung khóa học";
             // 
             // ucCourseLearning
             // 
-            this.BackColor = System.Drawing.SystemColors.Control;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitMain);
-            this.Controls.Add(this.pnlTop);
+            this.Controls.Add(this.pnlTopBar);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "ucCourseLearning";
-            this.Size = new System.Drawing.Size(980, 620);
-            this.pnlTop.ResumeLayout(false);
-            this.pnlTop.PerformLayout();
+            this.Size = new System.Drawing.Size(1200, 720);
+            this.pnlTopBar.ResumeLayout(false);
+            this.pnlTopBar.PerformLayout();
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
             this.splitMain.ResumeLayout(false);
-            this.pnlLessonContent.ResumeLayout(false);
-            this.pnlLessonContent.PerformLayout();
-            this.pnlQuiz.ResumeLayout(false);
-            this.flpQuizQuestions.ResumeLayout(false);
+            this.pnlLeftContainer.ResumeLayout(false);
+            this.pnlNavButtons.ResumeLayout(false);
+            this.tabInfo.ResumeLayout(false);
+            this.tabDescription.ResumeLayout(false);
+            this.pnlRightContainer.ResumeLayout(false);
+            this.pnlSidebarHeader.ResumeLayout(false);
+            this.pnlSidebarHeader.PerformLayout();
             this.ResumeLayout(false);
 
         }
-        #endregion
     }
 }

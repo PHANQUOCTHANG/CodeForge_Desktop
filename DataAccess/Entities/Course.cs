@@ -6,7 +6,7 @@ namespace CodeForge_Desktop.DataAccess.Entities
     public class Course
     {
         // Khóa chính (tương ứng cột CourseID)
-        public Guid CourseId { get; set; } = Guid.NewGuid();
+        public Guid CourseID { get; set; } = Guid.NewGuid();
 
         // Thông tin cơ bản
         public string Title { get; set; }

@@ -1,9 +1,12 @@
-﻿using CodeForge_Desktop.Business.Interfaces;
+﻿using CodeForge_Desktop.Business.DTOs;
+using CodeForge_Desktop.Business.Interfaces;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
-using System;
 using CodeForge_Desktop.DataAccess.Repositories;
-using CodeForge_Desktop.Business.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.Business.Services
 {
@@ -11,74 +14,123 @@ namespace CodeForge_Desktop.Business.Services
     {
         private readonly ICourseReviewRepository _reviewRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
+        private readonly ICourseRepository _courseRepository; // Cần repo này để update rating cho Course
 
-        public CourseReviewService(ICourseReviewRepository reviewRepository, IEnrollmentRepository enrollmentRepository)
+        // Constructor
+        public CourseReviewService(ICourseReviewRepository reviewRepo, IEnrollmentRepository enrollRepo)
         {
-            _reviewRepository = reviewRepository;
-            _enrollmentRepository = enrollmentRepository;
+            _reviewRepository = reviewRepo ?? new CourseReviewRepository();
+            _enrollmentRepository = enrollRepo ?? new EnrollmentRepository();
+            _courseRepository = new CourseRepository(); // Tự khởi tạo nếu không được inject
+        }
+
+        public async Task<List<CourseReviewDto>> GetReviewsByCourseIdAsync(Guid courseId)
+        {
+            var reviews = await _reviewRepository.GetReviewsByCourseIdAsync(courseId);
+
+            // Map thủ công Entity -> DTO
+            return reviews.Select(r => new CourseReviewDto
+            {
+                ReviewID = r.ReviewID,
+                CourseID = r.CourseID,
+                User = r.User?.Username ?? "Anonymous", // Lấy tên user
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt
+            }).ToList();
         }
 
         public bool CanReviewCourse(Guid userId, Guid courseId)
         {
-            // Chỉ người đã đăng ký mới có thể đánh giá
-            return _enrollmentRepository.IsUserEnrolled(userId, courseId);
+            // 1. Phải đã đăng ký (Enrolled)
+            if (!_enrollmentRepository.IsUserEnrolled(userId, courseId)) return false;
+
+            // 2. Chưa từng review (Logic web cho phép sửa, nhưng ở đây check để hiện nút Submit hay Update)
+            // (Tạm thời cho phép review nhiều lần hoặc update sau)
+            return true;
         }
 
-        public bool SubmitReview(Guid userId, Guid courseId, int rating, string comment)
+        public CourseReviewDto GetUserReview(Guid userId, Guid courseId)
         {
-            if (!CanReviewCourse(userId, courseId))
-                return false;
+            // Hàm này chạy sync để UI bind dữ liệu nhanh
+            var review = _reviewRepository.GetReviewByUserAndCourseAsync(userId, courseId).Result;
+            if (review == null) return null;
 
-            if (rating < 1 || rating > 5)
-                return false;
+            return new CourseReviewDto
+            {
+                ReviewID = review.ReviewID,
+                Rating = review.Rating,
+                Comment = review.Comment,
+                CreatedAt = review.CreatedAt
+            };
+        }
 
-            var existingReview = _reviewRepository.GetByUserAndCourse(userId, courseId);
+        public async Task<bool> SubmitReview(Guid userId, Guid courseId, int rating, string comment)
+        {
+            // 1. Kiểm tra enrollment
+            if (!_enrollmentRepository.IsUserEnrolled(userId, courseId))
+                throw new Exception("Bạn phải đăng ký khóa học trước khi đánh giá.");
+
+            // 2. Kiểm tra đã review chưa
+            var existingReview = await _reviewRepository.GetReviewByUserAndCourseAsync(userId, courseId);
+            var course = await _courseRepository.GetByIdAsync(courseId);
+
+            if (course == null) throw new Exception("Khóa học không tồn tại.");
 
             if (existingReview != null)
             {
-                // Cập nhật đánh giá cũ
+                // --- UPDATE ---
+                int oldRating = existingReview.Rating;
+
                 existingReview.Rating = rating;
                 existingReview.Comment = comment;
-                existingReview.UpdatedAt = DateTime.UtcNow;
-                return _reviewRepository.Update(existingReview) > 0;
+                await _reviewRepository.UpdateAsync(existingReview);
+
+                // Tính lại Rating trung bình (Logic Update)
+                course.Rating = CalculateNewRatingOnUpdate(course.Rating, course.TotalRatings, oldRating, rating);
             }
             else
             {
-                // Tạo đánh giá mới
-                var review = new CourseReview
+                // --- CREATE ---
+                var newReview = new CourseReview
                 {
-                    ReviewID = Guid.NewGuid(),
                     UserID = userId,
                     CourseID = courseId,
                     Rating = rating,
-                    Comment = comment,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    Comment = comment
                 };
-                return _reviewRepository.Add(review) > 0;
+                await _reviewRepository.AddAsync(newReview);
+
+                // Tăng bộ đếm & Tính lại Rating (Logic Create)
+                course.TotalRatings += 1;
+                course.Rating = CalculateNewRatingOnCreate(course.Rating, course.TotalRatings, rating);
             }
+
+            // Cập nhật lại thông tin Course
+            await _courseRepository.UpdateAsync(course);
+            return true;
         }
 
-        public CourseReview GetUserReview(Guid userId, Guid courseId)
+        // ========================================================
+        // 📊 LOGIC TÍNH TOÁN RATING (Mang từ Backend Web sang)
+        // ========================================================
+
+        private double CalculateNewRatingOnCreate(double currentAvg, int newTotalCount, int newRating)
         {
-            return _reviewRepository.GetByUserAndCourse(userId, courseId);
+            if (newTotalCount <= 1) return (double)newRating;
+
+            double oldTotalCount = (double)newTotalCount - 1;
+            double oldTotalSum = currentAvg * oldTotalCount;
+            return (oldTotalSum + newRating) / (double)newTotalCount;
         }
 
-        public double GetAverageRating(Guid courseId)
+        private double CalculateNewRatingOnUpdate(double currentAvg, int totalCount, int oldRating, int newRating)
         {
-            return _reviewRepository.GetAverageRating(courseId);
+            if (totalCount == 0) return 0;
+            double totalCountDouble = (double)totalCount;
+            double oldTotalSum = currentAvg * totalCountDouble;
+            double newTotalSum = oldTotalSum - oldRating + newRating;
+            return newTotalSum / totalCountDouble;
         }
     }
-
-    // ====================
-    // MOVE METHOD TO CLASS
-    // ====================
-    //
-    // NOTE: UI classes (WinForms UserControl like ucCourseList) and code that references
-    // System.Windows.Forms / System.Drawing were accidentally placed in this business
-    // service file. That produces numerous CS0246 / CS0103 errors because the business
-    // layer file isn't expected to reference UI types. The UI code has been removed from
-    // this file — move it into Presentation/Forms/Student/ucCourseList.cs (WinForms file)
-    // and add the appropriate using directives there: System.Windows.Forms, System.Drawing.
-    //
 }
