@@ -1,57 +1,47 @@
-﻿using CodeForge_Desktop.DataAccess.Entities;
+﻿using CodeForge_Desktop.Business.DTOs;
+using CodeForge_Desktop.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.DataAccess.Interfaces
 {
     public interface ICourseRepository
     {
-        /// <summary>
-        /// Lấy tất cả khóa học (thường dùng để đổ dữ liệu vào DataGridView)
-        /// </summary>
-        Task<List<Course>> GetAllAsync();
-
-        /// <summary>
-        /// Lấy danh sách khóa học kèm trạng thái đăng ký + tiến trình cho user (derived fields)
-        /// </summary>
+        // --- COURSE ---
+        Task<List<Course>> GetAllAsync(string search = null, string level = null);
         Task<List<Course>> GetListHasEnrollAsync(Guid userId);
-
-        /// <summary>
-        /// Tìm kiếm khóa học theo từ khóa (Title) và lọc theo Level (Beginner/Intermediate/Advanced)
-        /// </summary>
-        Task<List<Course>> SearchAsync(string keyword, string level = null);
-                
-        /// <summary>
-        /// Lấy chi tiết khóa học theo ID
-        /// </summary>
         Task<Course> GetByIdAsync(Guid id);
-
-        /// <summary>
-        /// Thêm mới một khóa học
-        /// </summary>
-        Task AddAsync(Course course);
-
-        /// <summary>
-        /// Cập nhật thông tin khóa học
-        /// </summary>
-        Task UpdateAsync(Course course);
-
-        /// <summary>
-        /// Xóa khóa học (Thường là Soft Delete: set IsDeleted = true)
-        /// </summary>
-        Task DeleteAsync(Guid id);
-
-        /// <summary>
-        /// Kiểm tra trùng tên khóa học (để validate trên form)
-        /// </summary>
         Task<bool> ExistsByTitleAsync(string title, Guid? excludeId = null);
+        Task<bool> ExistsBySlugAsync(string slug);
 
-        /// <summary>
-        /// Thống kê nhanh (Ví dụ: đếm số lượng khóa học) - Dùng cho Dashboard
-        /// </summary>
-        Task<int> CountAsync();
+        // CRUD Course
+        Task AddAsync(Course course);
+        Task UpdateAsync(Course course);
+        Task DeleteAsync(Guid id); // Soft Delete
+
+        // --- MODULES ---
+        Task<List<Module>> GetModulesByCourseIdAsync(Guid courseId);
+        Task AddModuleAsync(Module module);
+        Task UpdateModuleAsync(Module module);
+        Task DeleteModuleAsync(Guid moduleId);
+
+        // --- LESSONS ---
+        Task<List<Lesson>> GetLessonsByModuleIdAsync(Guid moduleId);
+        Task AddLessonAsync(Lesson lesson);
+        Task UpdateLessonAsync(Lesson lesson);
+        Task DeleteLessonAsync(Guid lessonId);
+
+        // --- CONTENT (Video, Text...) ---
+        Task<LessonVideo> GetVideoByLessonIdAsync(Guid lessonId);
+        Task AddOrUpdateVideoAsync(LessonVideo video);
+
+        Task AddOrUpdateTextAsync(Guid lessonId, string content);
+
+        Task RemoveContentAsync(Guid lessonId, string lessonType);
+        Task<ProblemDto?> GetCodingProblemAsync(Guid lessonId);
+        Task<LessonQuizDto?> GetQuizContentAsync(Guid lessonId);
+        Task<LessonTextDto?> GetTextContentAsync(Guid lessonId);
+        Task<LessonVideoDto?> GetVideoContentAsync(Guid lessonId);
     }
 }

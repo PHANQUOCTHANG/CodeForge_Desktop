@@ -37,7 +37,19 @@ namespace CodeForge_Desktop.Config
                 return cmd.ExecuteNonQuery();
             }
         }
+        // --- THÊM HÀM NÀY ĐỂ LẤY SỐ LƯỢNG (COUNT) ---
+        public static object ExecuteScalar(string sql, params SqlParameter[] parameters)
+        {
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                conn.Open();
+                if (parameters != null) cmd.Parameters.AddRange(parameters);
 
+                // ExecuteScalar trả về giá trị ô đầu tiên của dòng đầu tiên
+                return cmd.ExecuteScalar();
+            }
+        }
         // Hàm kiểm tra kết nối
         public static bool TestConnection(out string message)
         {
@@ -56,6 +68,7 @@ namespace CodeForge_Desktop.Config
                 return false;
             }
         }
+
     }
 }
     

@@ -1,21 +1,20 @@
 using CodeForge_Desktop.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.DataAccess.Interfaces
 {
     public interface ICourseReviewRepository
     {
-        // CRUD
-        CourseReview GetById(Guid id);
-        List<CourseReview> GetByCourseId(Guid courseId);
-        CourseReview GetByUserAndCourse(Guid userId, Guid courseId);
-        int Add(CourseReview review);
-        int Update(CourseReview review);
-        int Delete(Guid id); // Soft delete
+        // Read
+        Task<List<CourseReview>> GetReviewsByCourseIdAsync(Guid courseId);
+        Task<CourseReview> GetReviewByUserAndCourseAsync(Guid userId, Guid courseId);
+        Task<CourseReview> GetByIdAsync(Guid reviewId);
 
-        // Queries
-        double GetAverageRating(Guid courseId);
-        int GetReviewCount(Guid courseId);
+        // Write
+        Task<CourseReview> AddAsync(CourseReview review);
+        Task<CourseReview> UpdateAsync(CourseReview review);
+        Task<bool> DeleteAsync(Guid reviewId);
     }
 }

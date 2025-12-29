@@ -105,7 +105,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             SetActiveButton(btnDanhSachKhoaHoc);
             LoadUserControl(new ucCourseList());
         }
-
+        private void btnMyCourse_Click(object sender, EventArgs e)
+        {
+            SetActiveButton(btnMyCourse);
+            LoadUserControl(new ucMyCourses());
+        }
         private void btnCaiDat_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnCaiDat);
@@ -163,5 +167,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
             
         }
+
+       
     }
 }
