@@ -34,17 +34,17 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblSummary = new System.Windows.Forms.Label();
             this.dgvProblemList = new System.Windows.Forms.DataGridView();
+            this.colHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colProblemName = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.colDifficulty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TagProblem = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlFilters = new System.Windows.Forms.Panel();
             this.cmbDifficulty = new System.Windows.Forms.ComboBox();
             this.lblDifficultyFilter = new System.Windows.Forms.Label();
             this.pnlSearchContainer = new System.Windows.Forms.Panel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.picSearchIcon = new System.Windows.Forms.PictureBox();
-            this.colHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colProblemName = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.colDifficulty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TagProblem = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProblemList)).BeginInit();
             this.pnlFilters.SuspendLayout();
@@ -76,15 +76,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             // 
             // lblSummary
             // 
-            this.lblSummary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSummary.BackColor = System.Drawing.Color.WhiteSmoke;
             this.lblSummary.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblSummary.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblSummary.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblSummary.Location = new System.Drawing.Point(9, 434);
+            this.lblSummary.Location = new System.Drawing.Point(0, 542);
             this.lblSummary.Name = "lblSummary";
             this.lblSummary.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.lblSummary.Size = new System.Drawing.Size(819, 24);
+            this.lblSummary.Size = new System.Drawing.Size(838, 24);
             this.lblSummary.TabIndex = 1;
             this.lblSummary.Text = "Tổng số 8 bài tập | Đã nộp: 2 | Chưa nộp: 6";
             this.lblSummary.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -111,8 +110,52 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.dgvProblemList.RowHeadersVisible = false;
             this.dgvProblemList.RowHeadersWidth = 51;
             this.dgvProblemList.RowTemplate.Height = 40;
-            this.dgvProblemList.Size = new System.Drawing.Size(819, 325);
+            this.dgvProblemList.Size = new System.Drawing.Size(819, 433);
             this.dgvProblemList.TabIndex = 2;
+            // 
+            // colHash
+            // 
+            this.colHash.FillWeight = 11.02F;
+            this.colHash.HeaderText = "#";
+            this.colHash.MinimumWidth = 6;
+            this.colHash.Name = "colHash";
+            this.colHash.ReadOnly = true;
+            this.colHash.Visible = false;
+            // 
+            // colProblemName
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.colProblemName.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colProblemName.FillWeight = 53.78963F;
+            this.colProblemName.HeaderText = "Tên bài tập";
+            this.colProblemName.MinimumWidth = 6;
+            this.colProblemName.Name = "colProblemName";
+            this.colProblemName.ReadOnly = true;
+            this.colProblemName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colProblemName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // colDifficulty
+            // 
+            this.colDifficulty.FillWeight = 35.84239F;
+            this.colDifficulty.HeaderText = "Độ khó";
+            this.colDifficulty.MinimumWidth = 6;
+            this.colDifficulty.Name = "colDifficulty";
+            this.colDifficulty.ReadOnly = true;
+            // 
+            // TagProblem
+            // 
+            this.TagProblem.FillWeight = 51.77662F;
+            this.TagProblem.HeaderText = "Dạng bài";
+            this.TagProblem.Name = "TagProblem";
+            this.TagProblem.ReadOnly = true;
+            // 
+            // colStatus
+            // 
+            this.colStatus.FillWeight = 17.57126F;
+            this.colStatus.HeaderText = "Trạng thái";
+            this.colStatus.MinimumWidth = 6;
+            this.colStatus.Name = "colStatus";
+            this.colStatus.ReadOnly = true;
             // 
             // pnlFilters
             // 
@@ -194,50 +237,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             this.picSearchIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picSearchIcon.TabIndex = 1;
             this.picSearchIcon.TabStop = false;
-            // 
-            // colHash
-            // 
-            this.colHash.FillWeight = 11.02F;
-            this.colHash.HeaderText = "#";
-            this.colHash.MinimumWidth = 6;
-            this.colHash.Name = "colHash";
-            this.colHash.ReadOnly = true;
-            this.colHash.Visible = false;
-            // 
-            // colProblemName
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.colProblemName.DefaultCellStyle = dataGridViewCellStyle2;
-            this.colProblemName.FillWeight = 53.78963F;
-            this.colProblemName.HeaderText = "Tên bài tập";
-            this.colProblemName.MinimumWidth = 6;
-            this.colProblemName.Name = "colProblemName";
-            this.colProblemName.ReadOnly = true;
-            this.colProblemName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colProblemName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // colDifficulty
-            // 
-            this.colDifficulty.FillWeight = 35.84239F;
-            this.colDifficulty.HeaderText = "Độ khó";
-            this.colDifficulty.MinimumWidth = 6;
-            this.colDifficulty.Name = "colDifficulty";
-            this.colDifficulty.ReadOnly = true;
-            // 
-            // TagProblem
-            // 
-            this.TagProblem.FillWeight = 51.77662F;
-            this.TagProblem.HeaderText = "Dạng bài";
-            this.TagProblem.Name = "TagProblem";
-            this.TagProblem.ReadOnly = true;
-            // 
-            // colStatus
-            // 
-            this.colStatus.FillWeight = 17.57126F;
-            this.colStatus.HeaderText = "Trạng thái";
-            this.colStatus.MinimumWidth = 6;
-            this.colStatus.Name = "colStatus";
-            this.colStatus.ReadOnly = true;
             // 
             // ucProblemList
             // 

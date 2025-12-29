@@ -131,6 +131,7 @@
             this.btnCaiDat.Text = "⚙  Cài đặt";
             this.btnCaiDat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnCaiDat.UseVisualStyleBackColor = true;
+            this.btnCaiDat.Visible = false;
             this.btnCaiDat.Click += new System.EventHandler(this.btnCaiDat_Click);
             // 
             // btnSystemLogs

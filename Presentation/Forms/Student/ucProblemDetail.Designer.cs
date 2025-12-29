@@ -18,7 +18,6 @@
         private void InitializeComponent()
         {
             this.pnlHeader = new System.Windows.Forms.Panel();
-            this.lblDeadline = new System.Windows.Forms.Label();
             this.btnBack = new System.Windows.Forms.Button();
             this.pnlToolbar = new System.Windows.Forms.Panel();
             this.cmbLanguage = new System.Windows.Forms.ComboBox();
@@ -56,7 +55,6 @@
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
             this.pnlHeader.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlHeader.Controls.Add(this.lblDeadline);
             this.pnlHeader.Controls.Add(this.btnBack);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
@@ -64,18 +62,6 @@
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(10);
             this.pnlHeader.Size = new System.Drawing.Size(1200, 50);
             this.pnlHeader.TabIndex = 0;
-            // 
-            // lblDeadline
-            // 
-            this.lblDeadline.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblDeadline.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblDeadline.ForeColor = System.Drawing.Color.Gray;
-            this.lblDeadline.Location = new System.Drawing.Point(988, 10);
-            this.lblDeadline.Name = "lblDeadline";
-            this.lblDeadline.Size = new System.Drawing.Size(200, 28);
-            this.lblDeadline.TabIndex = 2;
-            this.lblDeadline.Text = "Deadline: 2025-11-20";
-            this.lblDeadline.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // btnBack
             // 
@@ -120,7 +106,6 @@
             this.cmbLanguage.Name = "cmbLanguage";
             this.cmbLanguage.Size = new System.Drawing.Size(120, 23);
             this.cmbLanguage.TabIndex = 4;
-            this.cmbLanguage.SelectedIndex = 0;
             this.cmbLanguage.SelectedIndexChanged += new System.EventHandler(this.cmbLanguage_SelectedIndexChanged);
             // 
             // lblLanguageLabel
@@ -130,7 +115,7 @@
             this.lblLanguageLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.lblLanguageLabel.Location = new System.Drawing.Point(320, 15);
             this.lblLanguageLabel.Name = "lblLanguageLabel";
-            this.lblLanguageLabel.Size = new System.Drawing.Size(74, 15);
+            this.lblLanguageLabel.Size = new System.Drawing.Size(65, 15);
             this.lblLanguageLabel.TabIndex = 3;
             this.lblLanguageLabel.Text = "Ngôn ngữ:";
             // 
@@ -362,7 +347,6 @@
 
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Button btnBack;
-        private System.Windows.Forms.Label lblDeadline;
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.Button btnSave;

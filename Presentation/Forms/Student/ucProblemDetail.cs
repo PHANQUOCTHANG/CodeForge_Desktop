@@ -16,6 +16,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
     {
         private ICodingProblemService _problemService;
         private ITestCaseService _testCaseService;
+        private ISubmissionService _submissionService;
         private ProblemRunnerService _runnerService;
         public event EventHandler BackButtonClicked;
         private Guid _problemId;
@@ -33,6 +34,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         {
             _problemService = new CodingProblemService();
             _testCaseService = new TestCaseService();
+            _submissionService = new SubmissionService();
             _runnerService = new ProblemRunnerService();
             InitializeComponent();
 
@@ -374,7 +376,48 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         /// </summary>
         private void SaveCode()
         {
-            MessageBox.Show("Chức năng lưu sẽ được triển khai sau!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (_currentProblem == null)
+            {
+                MessageBox.Show("Vui lòng tải bài tập trước!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(scintillaEditor.Text))
+                {
+                    MessageBox.Show("Code không được để trống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Tạo submission entity
+                var submission = new Submission
+                {
+                    SubmissionID = Guid.NewGuid(),
+                    UserID = GetCurrentUserId(),
+                    ProblemID = _problemId,
+                    Code = scintillaEditor.Text,
+                    Language = _currentLanguage.ToLower(),
+                    Status = "Saved",
+                    SubmitTime = DateTime.Now
+                };
+
+                // Lưu submission
+                bool result = _submissionService.SaveSubmission(submission);
+
+                if (result)
+                {
+                    MessageBox.Show("✓ Lưu code thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("❌ Lưu code thất bại. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Lỗi khi lưu code: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -393,13 +436,13 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 btnSubmit.Enabled = false;
                 ShowLoadingPanel("Đang submit code");
 
-                // Lấy tất cả test cases (không chỉ visible)
-                //var testCases = _testCaseService.GetByProblemId(_problemId);
-                //var testCaseIds = new List<Guid>();
-                //foreach (var tc in testCases)
-                //{
-                //    testCaseIds.Add(tc.TestCaseID);
-                //}
+                //Lấy tất cả test cases(không chỉ visible)
+                var testCases = _testCaseService.GetByProblemId(_problemId);
+                var testCaseIds = new List<Guid>();
+                foreach (var tc in testCases)
+                {
+                    testCaseIds.Add(tc.TestCaseID);
+                }
 
                 // Tạo request
                 var submitRequest = new RunProblem
@@ -408,7 +451,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     ProblemId = _problemId,
                     Code = scintillaEditor.Text,
                     Language = _currentLanguage.ToLower(),
-                    FunctionName = _currentProblem.FunctionName   
+                    FunctionName = _currentProblem.FunctionName,
+                    TestCases = testCaseIds
                 };
 
                 // Gửi request
@@ -417,6 +461,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 // Hiển thị kết quả
                 HideLoadingPanel();
                 DisplaySubmitResult(result);
+
+                // ✅ LƯU SUBMISSION NGAY SAU KHI SUBMIT XONG
+                if (result.IsSuccess && result.Data != null)
+                {
+                    SaveSubmissionAfterSubmit(result.Data);
+                }
             }
             catch (Exception ex)
             {
@@ -544,6 +594,47 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             pnlFooter.Controls.Add(lblFooter);
 
             pnlContainer.Controls.Add(pnlFooter);
+        }
+
+        /// <summary>
+        /// Lưu submission sau khi submit thành công
+        /// </summary>
+        private void SaveSubmissionAfterSubmit(SubmitData submitData)
+        {
+            try
+            {
+                var submission = new Submission
+                {
+                    SubmissionID = Guid.NewGuid(),
+                    UserID = GetCurrentUserId(),
+                    ProblemID = _problemId,
+                    Code = scintillaEditor.Text,
+                    Language = _currentLanguage.ToLower(),
+                    Status = submitData.Status, // "Accepted" hoặc "Failed"
+                    SubmitTime = DateTime.Now,
+                    ExecutionTime = (int)Math.Round(submitData.Time * 1000), // Convert từ giây sang millisecond
+                    MemoryUsed = (int)Math.Round(submitData.Memory / 1024.0), // Convert từ byte sang MB
+                    QuantityTestPassed = submitData.TestCasePass,
+                    QuantityTest = submitData.TotalTestCase
+                };
+
+                bool saveResult = _submissionService.SaveSubmission(submission);
+
+                if (saveResult)
+                {
+                    // Không hiển thị thông báo thêm, chỉ log nếu cần
+                    System.Diagnostics.Debug.WriteLine("✓ Submission đã được lưu thành công!");
+                }
+                else
+                {
+                    MessageBox.Show("⚠️ Không thể lưu submission. Vui lòng thử lại!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Lỗi khi lưu submission: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"Error saving submission: {ex.Message}");
+            }
         }
 
         /// <summary>

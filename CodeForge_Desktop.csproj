@@ -14,8 +14,7 @@
     <Deterministic>true</Deterministic>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,6 +38,9 @@
   <ItemGroup>
     <Reference Include="BCrypt.Net-Core, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d63bfbfdfd3c6e4, processorArchitecture=MSIL">
       <HintPath>packages\BCrypt.Net-Core.1.6.0\lib\net452\BCrypt.Net-Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.20.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>packages\DocumentFormat.OpenXml.2.20.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
       <HintPath>packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
@@ -100,6 +102,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\DTOs\Admin\CreateCourseDto.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="Business\DTOs\ProblemDto.cs" />
     <Compile Include="Business\Helpers\AppLogger.cs" />
     <Compile Include="Business\Helpers\HtmlRenderHelper.cs" />
+    <Compile Include="Business\Helpers\OtpHelper.cs" />
     <Compile Include="Business\Helpers\ProgressNotifier.cs" />
     <Compile Include="Business\Helpers\CodeEditorHelper.cs" />
     <Compile Include="Business\Helpers\InputParser.cs" />
@@ -118,6 +122,7 @@
     <Compile Include="Business\Helpers\JsonConverter.cs" />
     <Compile Include="Business\Helpers\LanguageConverter.cs" />
     <Compile Include="Business\Helpers\PasswordHasher.cs" />
+    <Compile Include="Business\Helpers\WordParsingHelper.cs" />
     <Compile Include="Business\Interfaces\IAuthService.cs" />
     <Compile Include="Business\Interfaces\ICodingProblemService.cs" />
     <Compile Include="Business\Interfaces\ICourseReviewService.cs" />
@@ -141,6 +146,7 @@
     <Compile Include="Business\Services\SubmissionService.cs" />
     <Compile Include="Business\Services\TestCaseService.cs" />
     <Compile Include="Business\Services\UserService.cs" />
+    <Compile Include="Business\Services\WordImportService.cs" />
     <Compile Include="Business\Validators\CourseValidator.cs" />
     <Compile Include="Config\DbContext.cs" />
     <Compile Include="DataAccess\Entities\ActivityLog.cs" />
@@ -199,6 +205,12 @@
     <Compile Include="Presentation\Forms\Admin\AddEditUserForm.Designer.cs">
       <DependentUpon>AddEditUserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\Forms\Admin\ImportWordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ImportWordForm.Designer.cs">
+      <DependentUpon>ImportWordForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Forms\Admin\CourseCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -252,6 +264,12 @@
     </Compile>
     <Compile Include="Presentation\Forms\Admin\ucUserManagement.Designer.cs">
       <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\ForgotPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\ForgotPassword.Designer.cs">
+      <DependentUpon>ForgotPassword.cs</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Forms\Login.cs">
       <SubType>Form</SubType>
@@ -414,6 +432,7 @@
   <ItemGroup>
     <None Include=".env" />
     <None Include="packages.config" />
+    <None Include="Program.cs %28chỉ phần cần thêm%29" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

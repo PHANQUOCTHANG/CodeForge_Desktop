@@ -2,15 +2,8 @@
 {
     partial class ucProblemManagement
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,6 @@
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -34,6 +21,7 @@
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchIcon = new System.Windows.Forms.Label();
             this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnImportWord = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnDuplicate = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
@@ -54,9 +42,7 @@
             this.pnlBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAssignments)).BeginInit();
             this.SuspendLayout();
-            // 
-            // pnlTop
-            // 
+
             this.pnlTop.BackColor = System.Drawing.Color.WhiteSmoke;
             this.pnlTop.Controls.Add(this.pnlSearchContainer);
             this.pnlTop.Controls.Add(this.pnlButtons);
@@ -67,23 +53,19 @@
             this.pnlTop.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.pnlTop.Size = new System.Drawing.Size(825, 49);
             this.pnlTop.TabIndex = 0;
-            // 
-            // pnlSearchContainer
-            // 
+
             this.pnlSearchContainer.BackColor = System.Drawing.Color.White;
             this.pnlSearchContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlSearchContainer.Controls.Add(this.txtSearch);
             this.pnlSearchContainer.Controls.Add(this.lblSearchIcon);
             this.pnlSearchContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlSearchContainer.Location = new System.Drawing.Point(300, 8);
+            this.pnlSearchContainer.Location = new System.Drawing.Point(410, 8);
             this.pnlSearchContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlSearchContainer.Name = "pnlSearchContainer";
             this.pnlSearchContainer.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pnlSearchContainer.Size = new System.Drawing.Size(517, 33);
+            this.pnlSearchContainer.Size = new System.Drawing.Size(407, 33);
             this.pnlSearchContainer.TabIndex = 1;
-            // 
-            // txtSearch
-            // 
+
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
@@ -92,12 +74,10 @@
             this.txtSearch.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtSearch.Multiline = true;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(485, 23);
+            this.txtSearch.Size = new System.Drawing.Size(375, 23);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.Text = "Tìm kiếm assignment...";
-            // 
-            // lblSearchIcon
-            // 
+
             this.lblSearchIcon.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblSearchIcon.Font = new System.Drawing.Font("Segoe UI Emoji", 12F);
             this.lblSearchIcon.Location = new System.Drawing.Point(4, 4);
@@ -107,9 +87,8 @@
             this.lblSearchIcon.TabIndex = 0;
             this.lblSearchIcon.Text = "🔍";
             this.lblSearchIcon.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // pnlButtons
-            // 
+
+            this.pnlButtons.Controls.Add(this.btnImportWord);
             this.pnlButtons.Controls.Add(this.btnDelete);
             this.pnlButtons.Controls.Add(this.btnDuplicate);
             this.pnlButtons.Controls.Add(this.btnEdit);
@@ -118,62 +97,65 @@
             this.pnlButtons.Location = new System.Drawing.Point(8, 8);
             this.pnlButtons.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(292, 33);
+            this.pnlButtons.Size = new System.Drawing.Size(402, 33);
             this.pnlButtons.TabIndex = 0;
-            // 
-            // btnDelete
-            // 
+
+            this.btnImportWord.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
+            this.btnImportWord.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImportWord.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(162)))), ((int)(((byte)(184)))));
+            this.btnImportWord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnImportWord.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnImportWord.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(162)))), ((int)(((byte)(184)))));
+            this.btnImportWord.Location = new System.Drawing.Point(320, 2);
+            this.btnImportWord.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnImportWord.Name = "btnImportWord";
+            this.btnImportWord.Size = new System.Drawing.Size(80, 28);
+            this.btnImportWord.TabIndex = 4;
+            this.btnImportWord.Text = "📥 Import";
+            this.btnImportWord.UseVisualStyleBackColor = false;
+
             this.btnDelete.BackColor = System.Drawing.Color.White;
             this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDelete.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
             this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
-            this.btnDelete.Image = global::CodeForge_Desktop.Properties.Resources.user_interface;
-            this.btnDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDelete.Location = new System.Drawing.Point(208, 2);
+            this.btnDelete.Location = new System.Drawing.Point(240, 2);
             this.btnDelete.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(80, 28);
+            this.btnDelete.Size = new System.Drawing.Size(75, 28);
             this.btnDelete.TabIndex = 3;
-            this.btnDelete.Text = " Delete";
-            this.btnDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDelete.Text = "🗑 Delete";
             this.btnDelete.UseVisualStyleBackColor = false;
-            // 
-            // btnDuplicate
-            // 
+
             this.btnDuplicate.BackColor = System.Drawing.Color.White;
             this.btnDuplicate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDuplicate.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
             this.btnDuplicate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDuplicate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnDuplicate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
-            this.btnDuplicate.Location = new System.Drawing.Point(140, 2);
+            this.btnDuplicate.Location = new System.Drawing.Point(168, 2);
             this.btnDuplicate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDuplicate.Name = "btnDuplicate";
-            this.btnDuplicate.Size = new System.Drawing.Size(64, 28);
+            this.btnDuplicate.Size = new System.Drawing.Size(68, 28);
             this.btnDuplicate.TabIndex = 2;
-            this.btnDuplicate.Text = "📄 Duplicate";
+            this.btnDuplicate.Text = "📄 Dup";
             this.btnDuplicate.UseVisualStyleBackColor = false;
-            // 
-            // btnEdit
-            // 
+
             this.btnEdit.BackColor = System.Drawing.Color.White;
             this.btnEdit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnEdit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(110)))), ((int)(((byte)(253)))));
             this.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEdit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnEdit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(110)))), ((int)(((byte)(253)))));
-            this.btnEdit.Location = new System.Drawing.Point(68, 2);
+            this.btnEdit.Location = new System.Drawing.Point(96, 2);
             this.btnEdit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(68, 28);
             this.btnEdit.TabIndex = 1;
             this.btnEdit.Text = "📝 Edit";
             this.btnEdit.UseVisualStyleBackColor = false;
-            // 
-            // btnAdd
-            // 
+
             this.btnAdd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(255)))), ((int)(((byte)(235)))));
             this.btnAdd.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAdd.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
@@ -183,13 +165,11 @@
             this.btnAdd.Location = new System.Drawing.Point(0, 2);
             this.btnAdd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(60, 28);
+            this.btnAdd.Size = new System.Drawing.Size(92, 28);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "➕ Add";
             this.btnAdd.UseVisualStyleBackColor = false;
-            // 
-            // pnlBottom
-            // 
+
             this.pnlBottom.BackColor = System.Drawing.Color.WhiteSmoke;
             this.pnlBottom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlBottom.Controls.Add(this.lblSummary);
@@ -199,9 +179,7 @@
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.Size = new System.Drawing.Size(825, 33);
             this.pnlBottom.TabIndex = 1;
-            // 
-            // lblSummary
-            // 
+
             this.lblSummary.AutoSize = true;
             this.lblSummary.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblSummary.ForeColor = System.Drawing.Color.Gray;
@@ -210,10 +188,8 @@
             this.lblSummary.Name = "lblSummary";
             this.lblSummary.Size = new System.Drawing.Size(359, 15);
             this.lblSummary.TabIndex = 0;
-            this.lblSummary.Text = "Tổng số: 7 assignments | Active: 5 | Draft: 2 | Total submissions: 145";
-            // 
-            // dgvAssignments
-            // 
+            this.lblSummary.Text = "Tổng số: 0 assignments";
+
             this.dgvAssignments.AllowUserToAddRows = false;
             this.dgvAssignments.AllowUserToDeleteRows = false;
             this.dgvAssignments.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -250,63 +226,47 @@
             this.dgvAssignments.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvAssignments.Size = new System.Drawing.Size(825, 487);
             this.dgvAssignments.TabIndex = 2;
-            // 
-            // colCheck
-            // 
+
             this.colCheck.FillWeight = 30F;
             this.colCheck.HeaderText = "";
             this.colCheck.MinimumWidth = 6;
             this.colCheck.Name = "colCheck";
-            // 
-            // colName
-            // 
+
             this.colName.FillWeight = 200F;
             this.colName.HeaderText = "Tên bài tập";
             this.colName.MinimumWidth = 6;
             this.colName.Name = "colName";
             this.colName.ReadOnly = true;
-            // 
-            // colDifficulty
-            // 
+
             this.colDifficulty.FillWeight = 80F;
             this.colDifficulty.HeaderText = "Độ khó";
             this.colDifficulty.MinimumWidth = 6;
             this.colDifficulty.Name = "colDifficulty";
             this.colDifficulty.ReadOnly = true;
-            // 
-            // colStatus
-            // 
+
             this.colStatus.FillWeight = 80F;
             this.colStatus.HeaderText = "Tags";
             this.colStatus.MinimumWidth = 6;
             this.colStatus.Name = "colStatus";
             this.colStatus.ReadOnly = true;
-            // 
-            // colCategory
-            // 
+
             this.colCategory.HeaderText = "Danh mục";
             this.colCategory.MinimumWidth = 6;
             this.colCategory.Name = "colCategory";
             this.colCategory.ReadOnly = true;
-            // 
-            // colSubmissions
-            // 
+
             this.colSubmissions.FillWeight = 80F;
             this.colSubmissions.HeaderText = "Submissions";
             this.colSubmissions.MinimumWidth = 6;
             this.colSubmissions.Name = "colSubmissions";
             this.colSubmissions.ReadOnly = true;
-            // 
-            // colActions
-            // 
+
             this.colActions.FillWeight = 60F;
             this.colActions.HeaderText = "Actions";
             this.colActions.MinimumWidth = 6;
             this.colActions.Name = "colActions";
             this.colActions.ReadOnly = true;
-            // 
-            // ucProblemManagement
-            // 
+
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dgvAssignments);
@@ -323,10 +283,9 @@
             this.pnlBottom.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAssignments)).EndInit();
             this.ResumeLayout(false);
-
         }
 
-        #endregion
+
 
         private System.Windows.Forms.Panel pnlTop;
         private System.Windows.Forms.Panel pnlButtons;
@@ -334,6 +293,7 @@
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnDuplicate;
+        private System.Windows.Forms.Button btnImportWord;
         private System.Windows.Forms.Panel pnlSearchContainer;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchIcon;

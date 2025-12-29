@@ -215,7 +215,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             colId.Name = "colId";
             colId.HeaderText = "ID";
             colId.Width = 40;
-            colId.Visible = true; // Hoặc false nếu muốn ẩn
+            colId.Visible = false; // Hoặc false nếu muốn ẩn
             dgvUsers.Columns.Add(colId);
 
             // 3. Username

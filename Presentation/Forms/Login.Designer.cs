@@ -38,6 +38,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnLogin = new System.Windows.Forms.Button();
             this.lblRegisterLink = new System.Windows.Forms.Label();
+            this.btnTogglePassword = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblLogo
@@ -113,8 +114,22 @@
             this.txtPassword.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(425, 32);
+            this.txtPassword.Size = new System.Drawing.Size(387, 32);
             this.txtPassword.TabIndex = 6;
+            // 
+            // btnTogglePassword
+            // 
+            this.btnTogglePassword.BackColor = System.Drawing.Color.White;
+            this.btnTogglePassword.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+            this.btnTogglePassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTogglePassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTogglePassword.Location = new System.Drawing.Point(440, 302);
+            this.btnTogglePassword.Name = "btnTogglePassword";
+            this.btnTogglePassword.Size = new System.Drawing.Size(38, 32);
+            this.btnTogglePassword.TabIndex = 13;
+            this.btnTogglePassword.Text = "👁️";
+            this.btnTogglePassword.UseVisualStyleBackColor = false;
+            this.btnTogglePassword.Click += new System.EventHandler(this.btnTogglePassword_Click);
             // 
             // btnCancel
             // 
@@ -151,7 +166,7 @@
             this.lblRegisterLink.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblRegisterLink.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRegisterLink.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(141)))), ((int)(((byte)(215)))));
-            this.lblRegisterLink.Location = new System.Drawing.Point(211, 457);
+            this.lblRegisterLink.Location = new System.Drawing.Point(211, 437);
             this.lblRegisterLink.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblRegisterLink.Name = "lblRegisterLink";
             this.lblRegisterLink.Size = new System.Drawing.Size(84, 28);
@@ -164,7 +179,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(533, 492);
+            this.ClientSize = new System.Drawing.Size(533, 495);
+            this.Controls.Add(this.btnTogglePassword);
             this.Controls.Add(this.lblRegisterLink);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.btnCancel);
@@ -187,10 +203,8 @@
 
         }
 
-      
         #endregion
 
-        // Khai báo các biến Controls
         private System.Windows.Forms.Label lblLogo;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblSubtitle;
@@ -198,8 +212,9 @@
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.Button btnCancel; // Khôi phục khai báo nút Hủy
+        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnLogin;
-        private System.Windows.Forms.Label lblRegisterLink; // Khai báo liên kết Đăng ký
+        private System.Windows.Forms.Label lblRegisterLink;
+        private System.Windows.Forms.Button btnTogglePassword;
     }
 }
