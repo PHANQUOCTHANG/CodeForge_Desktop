@@ -15,6 +15,7 @@ namespace CodeForge_Desktop.Business.Services
         public AuthService()
         {
             _userRepository = new UserRepository();
+           
         }
 
         // Logic Đăng nhập

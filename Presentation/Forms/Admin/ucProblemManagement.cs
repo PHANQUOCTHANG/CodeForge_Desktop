@@ -1,11 +1,12 @@
-﻿using System;
+﻿        using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeForge_Desktop.Business.Interfaces;
 using CodeForge_Desktop.Business.Services;
 using CodeForge_Desktop.DataAccess.Entities;
-
+using CodeForge_Desktop.DataAccess.Repositories;
+using CodeForge_Desktop.DataAccess.Interfaces;
 
 namespace CodeForge_Desktop.Presentation.Forms.Admin
 {
@@ -13,6 +14,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
     {
         private ICodingProblemService _problemService;
         private ITestCaseService _testCaseService;
+        private ICodingProblemRepository _problemRepository;
+        private ITestCaseRepository _testCaseRepository;
+        private WordImportService _wordImportService;
 
         private const int ButtonWidth = 30;
         private const int ButtonHeight = 30;
@@ -23,11 +27,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
         {
             InitializeComponent();
 
-            // --- SỬA LỖI KHỞI TẠO SERVICE ---
-            // Vì Service của bạn cần Repository, ta phải tạo Repository trước
-           
+            // Khởi tạo repositories
+            _problemRepository = new CodingProblemRepository();
+            _testCaseRepository = new TestCaseRepository();
+
+            // Khởi tạo services
             _problemService = new CodingProblemService();
             _testCaseService = new TestCaseService();
+            _wordImportService = new WordImportService(_problemRepository, _testCaseRepository);
 
             SetupDataGridView();
             LoadData();
@@ -38,6 +45,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
+            btnImportWord.Click += BtnImportWord_Click; // ✅ Thêm event cho nút Import
 
             SetupSearchBox();
         }
@@ -53,33 +61,26 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
         private void SetupDataGridView()
         {
-            // 1. Cấu hình chung cho toàn bộ bảng
             dgvAssignments.DefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 245, 255);
             dgvAssignments.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgvAssignments.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
 
-            // 2. Cấu hình an toàn cho từng cột (Check null trước khi truy cập)
-
-            // Cột Deadline
             if (dgvAssignments.Columns["colDeadline"] != null)
             {
                 dgvAssignments.Columns["colDeadline"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             }
 
-            // Cột Status
             if (dgvAssignments.Columns["colStatus"] != null)
             {
                 dgvAssignments.Columns["colStatus"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             }
 
-            // Cột Actions (Quan trọng để vẽ nút)
             if (dgvAssignments.Columns["colActions"] != null)
             {
                 dgvAssignments.Columns["colActions"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 dgvAssignments.Columns["colActions"].Width = 100;
             }
 
-            // Cột Submissions (nếu có)
             if (dgvAssignments.Columns.Contains("colSubmissions") && dgvAssignments.Columns["colSubmissions"] != null)
             {
                 dgvAssignments.Columns["colSubmissions"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -93,26 +94,23 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
             if (string.IsNullOrWhiteSpace(keyword) || keyword == "Tìm kiếm assignment...")
             {
-                // SỬA LỖI TÊN HÀM: Dùng GetAll() thay vì GetAllProblems()
                 list = _problemService.GetAll();
             }
             else
             {
-                // SỬA LỖI TÌM KIẾM: Nếu Service chưa có SearchProblems, ta gọi GetAll rồi lọc thủ công tại đây
                 var all = _problemService.GetAll();
                 list = all.FindAll(p => p.Title.ToLower().Contains(keyword.ToLower()));
             }
 
             foreach (var p in list)
             {
-                // Map dữ liệu
                 int rowIndex = dgvAssignments.Rows.Add(
                     false,
                     p.Title,
                     p.Difficulty,
                     p.Tags, 
-                    "", // Deadline chưa có thì để trống
-                    0 // Submissions chưa có thì để 0  
+                    "",
+                    0
                 );
 
                 dgvAssignments.Rows[rowIndex].Tag = p.ProblemID;
@@ -122,10 +120,54 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             dgvAssignments.ClearSelection();
         }
 
+        /// <summary>
+        /// ✅ Event handler cho nút Import Word
+        /// </summary>
+        private void BtnImportWord_Click(object sender, EventArgs e)
+        {
+            // Mở dialog chọn file
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Word Documents (*.docx)|*.docx|All Files (*.*)|*.*";
+                ofd.Title = "Chọn file Word chứa bài lập trình";
+
+                ImportWordFile(ofd.FileName);
+
+                //if (ofd.ShowDialog() == DialogResult.OK)
+                //{
+                //    ImportWordFile(ofd.FileName);
+                //}
+            }
+        }
+
+        /// <summary>
+        /// ✅ Thực hiện import file Word
+        /// </summary>
+        private void ImportWordFile(string filePath)
+        {
+            try
+            {
+                // Hiển thị form import với log chi tiết
+                using (var importForm = new ImportWordForm(_wordImportService))
+                {
+                    //bool isConfirmed = importForm.ShowDialog() == DialogResult.OK;
+                    if (importForm.ShowDialog() == DialogResult.OK)
+                    {
+                        // Reload dữ liệu sau khi import thành công
+                        LoadData();
+                        MessageBox.Show("Import hoàn tất! Danh sách bài tập đã được cập nhật.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi import: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void BtnAdd_Click(object sender, EventArgs e)
         {
-            // Đảm bảo AddEditProblemForm có constructor nhận service
-            var form = new AddEditProblemForm(_problemService , _testCaseService);
+            var form = new AddEditProblemForm(_problemService, _testCaseService);
             if (form.ShowDialog() == DialogResult.OK) LoadData();
         }
 
@@ -134,8 +176,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             if (dgvAssignments.SelectedRows.Count > 0)
             {
                 Guid id = (Guid)dgvAssignments.SelectedRows[0].Tag;
-                // Đảm bảo AddEditProblemForm có constructor nhận service và ID
-                var form = new AddEditProblemForm(_problemService,_testCaseService ,id);
+                var form = new AddEditProblemForm(_problemService, _testCaseService, id);
                 if (form.ShowDialog() == DialogResult.OK) LoadData();
             }
             else
@@ -170,7 +211,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
             if (MessageBox.Show($"Bạn có chắc muốn xóa {idsToDelete.Count} bài tập đã chọn?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                // SỬA LỖI GỌI HÀM XÓA: Bạn cần tự viết vòng lặp gọi Delete
                 bool success = true;
                 foreach (var id in idsToDelete)
                 {
@@ -190,7 +230,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             }
         }
 
-        // --- Giữ nguyên phần Painting và Click ---
         private void DgvAssignments_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -248,14 +287,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
                 if (rectEdit.Contains(e.Location))
                 {
-                    var form = new AddEditProblemForm(_problemService, _testCaseService ,problemId);
+                    var form = new AddEditProblemForm(_problemService, _testCaseService, problemId);
                     if (form.ShowDialog() == DialogResult.OK) LoadData();
                 }
                 else if (rectDel.Contains(e.Location))
                 {
                     if (MessageBox.Show($"Xóa bài tập: {title}?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        if (_problemService.Delete(problemId)) // Dùng hàm Delete của bạn
+                        if (_problemService.Delete(problemId))
                         {
                             LoadData();
                         }

@@ -1,11 +1,13 @@
-
-using CodeForge_Desktop.Config;
+﻿using CodeForge_Desktop.Config;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CodeForge_Desktop.DataAccess.Repositories
 {
@@ -38,6 +40,59 @@ namespace CodeForge_Desktop.DataAccess.Repositories
             };
         }
 
+        /// <summary>
+        /// Chuyển đổi tiêu đề bài toán thành tên hàm (PascalCase, không dấu)
+        /// Ví dụ: "Tìm số lớn nhất" -> "TimSoLonNhat"
+        /// </summary>
+        private string GenerateFunctionName(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+                return "Function";
+
+            // Loại bỏ dấu tiếng Việt
+            string normalized = RemoveDiacritics(title);
+
+            // Chỉ giữ lại chữ cái và số
+            string cleaned = Regex.Replace(normalized, @"[^a-zA-Z0-9\s]", "");
+
+            // Tách thành các từ
+            string[] words = cleaned.Split(new[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+            // Chuyển mỗi từ thành PascalCase
+            StringBuilder result = new StringBuilder();
+            foreach (var word in words)
+            {
+                if (word.Length > 0)
+                {
+                    result.Append(char.ToUpper(word[0]));
+                    if (word.Length > 1)
+                        result.Append(word.Substring(1).ToLower());
+                }
+            }
+
+            return result.Length > 0 ? result.ToString() : "Function";
+        }
+
+        /// <summary>
+        /// Loại bỏ dấu tiếng Việt từ chuỗi
+        /// </summary>
+        private string RemoveDiacritics(string text)
+        {
+            string normalized = text.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+
+            foreach (char c in normalized)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
+        }
+
         public CodingProblem GetById(Guid id)
         {
             string sql = "SELECT * FROM CodingProblems WHERE ProblemID = @id AND IsDeleted = 0";
@@ -54,8 +109,6 @@ namespace CodeForge_Desktop.DataAccess.Repositories
             foreach (DataRow r in dt.Rows) list.Add(MapToCodingProblem(r));
             return list;
         }
-
-        
 
         public List<CodingProblem> GetByLessonId(Guid? lessonId)
         {
@@ -89,6 +142,12 @@ namespace CodeForge_Desktop.DataAccess.Repositories
 
         public int Add(CodingProblem problem)
         {
+            // Tự động sinh FunctionName từ Title nếu không có
+            if (string.IsNullOrWhiteSpace(problem.FunctionName))
+            {
+                problem.FunctionName = GenerateFunctionName(problem.Title);
+            }
+
             string sql = @"
                 INSERT INTO CodingProblems
                 (ProblemID, LessonID, Title, Slug, Difficulty, Status, Description, Tags, FunctionName, Parameters, ReturnType, Notes, Constraints, TimeLimit, MemoryLimit, CreatedAt, UpdatedAt, IsDeleted)

@@ -55,7 +55,7 @@
             this.numMemoryLimit = new System.Windows.Forms.NumericUpDown();
             this.lblTimeLimit = new System.Windows.Forms.Label();
             this.numTimeLimit = new System.Windows.Forms.NumericUpDown();
-            this.txtReturnType = new System.Windows.Forms.TextBox();
+            this.cboReturnType = new System.Windows.Forms.ComboBox();
             this.lblReturnType = new System.Windows.Forms.Label();
             this.txtParameters = new System.Windows.Forms.TextBox();
             this.lblParameters = new System.Windows.Forms.Label();
@@ -273,6 +273,8 @@
             // 
             // tabCodeSettings
             // 
+            // tabCodeSettings
+            // 
             this.tabCodeSettings.AutoScroll = true;
             this.tabCodeSettings.Controls.Add(this.txtNotes);
             this.tabCodeSettings.Controls.Add(this.lblNotes);
@@ -284,7 +286,7 @@
             this.tabCodeSettings.Controls.Add(this.numMemoryLimit);
             this.tabCodeSettings.Controls.Add(this.lblTimeLimit);
             this.tabCodeSettings.Controls.Add(this.numTimeLimit);
-            this.tabCodeSettings.Controls.Add(this.txtReturnType);
+            this.tabCodeSettings.Controls.Add(this.cboReturnType);
             this.tabCodeSettings.Controls.Add(this.lblReturnType);
             this.tabCodeSettings.Controls.Add(this.txtParameters);
             this.tabCodeSettings.Controls.Add(this.lblParameters);
@@ -362,12 +364,30 @@
             0,
             0});
             // 
-            // txtReturnType
+            // cboReturnType
             // 
-            this.txtReturnType.Location = new System.Drawing.Point(17, 157);
-            this.txtReturnType.Name = "txtReturnType";
-            this.txtReturnType.Size = new System.Drawing.Size(538, 25);
-            this.txtReturnType.TabIndex = 5;
+            this.cboReturnType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboReturnType.FormattingEnabled = true;
+            this.cboReturnType.Items.AddRange(new object[] {
+            "int",
+            "double",
+            "float",
+            "string",
+            "bool",
+            "long long",
+            "char",
+            "long double",
+            "vector<int>",
+            "vector<double>",
+            "vector<string>",
+            "vector<bool>",
+            "vector<int>",
+            "vector<string>",
+            "map<string, int>"});
+            this.cboReturnType.Location = new System.Drawing.Point(17, 157);
+            this.cboReturnType.Name = "cboReturnType";
+            this.cboReturnType.Size = new System.Drawing.Size(538, 25);
+            this.cboReturnType.TabIndex = 5;
             // 
             // lblReturnType
             // 
@@ -375,9 +395,9 @@
             this.lblReturnType.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
             this.lblReturnType.Location = new System.Drawing.Point(13, 135);
             this.lblReturnType.Name = "lblReturnType";
-            this.lblReturnType.Size = new System.Drawing.Size(179, 19);
+            this.lblReturnType.Size = new System.Drawing.Size(131, 19);
             this.lblReturnType.TabIndex = 4;
-            this.lblReturnType.Text = "Kiểu trả về (VD: int, string):";
+            this.lblReturnType.Text = "Kiểu trả về:";
             // 
             // txtParameters
             // 
@@ -662,7 +682,7 @@
         private System.Windows.Forms.Label lblFunctionName;
         private System.Windows.Forms.TextBox txtParameters;
         private System.Windows.Forms.Label lblParameters;
-        private System.Windows.Forms.TextBox txtReturnType;
+        private System.Windows.Forms.ComboBox cboReturnType;
         private System.Windows.Forms.Label lblReturnType;
         private System.Windows.Forms.NumericUpDown numTimeLimit;
         private System.Windows.Forms.Label lblTimeLimit;

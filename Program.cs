@@ -1,10 +1,12 @@
-﻿using CodeForge_Desktop.Business.Interfaces;
+﻿using CodeForge_Desktop.Business.Helpers;
+using CodeForge_Desktop.Business.Interfaces;
 using CodeForge_Desktop.Business.Services;
+using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
 using CodeForge_Desktop.DataAccess.Repositories;
 using CodeForge_Desktop.Presentation.Forms;
-using CodeForge_Desktop.Presentation.Forms.Student;
 using CodeForge_Desktop.Presentation.Forms.Admin;
+using CodeForge_Desktop.Presentation.Forms.Student;
 using System;
 using System.Windows.Forms;
 
@@ -13,7 +15,7 @@ namespace CodeForge_Desktop
     internal static class Program
     {
         [STAThread]
-        static void Main()
+        static void Main() 
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -36,6 +38,17 @@ namespace CodeForge_Desktop
             
             // NEW: Course Review Service (for submitting & retrieving reviews)
             CourseReviewService courseReviewService = new CourseReviewService(courseReviewRepository, enrollmentRepository);
+
+
+            // Thêm tài khoản Admin .
+            //AuthService authService = new AuthService();
+            //authService.Register(new User
+            //{
+            //    Username = "admin",
+            //    Email = "admin@gmail.com",
+
+            //    Role = "Admin",
+            //}, "admin123");
 
             Application.Run(new Login());
             //Application.Run(new MainFormAdmin());
