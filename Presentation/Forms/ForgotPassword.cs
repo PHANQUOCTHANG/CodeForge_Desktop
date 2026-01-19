@@ -151,17 +151,25 @@ namespace CodeForge_Desktop.Presentation.Forms
 
                 if (emailSent)
                 {
-                    MessageBox.Show($"✓ Mã OTP đã được gửi tới:\n{_currentUser.Email}\n\nVui lòng kiểm tra email của bạn để lấy mã OTP.",
-                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // ✅ Hiển thị notification 2 giây rồi tự động tắt
+                    ShowTemporaryNotification($"✓ Mã OTP đã được gửi tới:\n{_currentUser.Email}", "Thành công");
+                    
+                    // Chuyển sang panel OTP sau 0.5 giây
+                    System.Windows.Forms.Timer transitionTimer = new System.Windows.Forms.Timer { Interval = 500 };
+                    transitionTimer.Tick += (s, e) =>
+                    {
+                        transitionTimer.Stop();
+                        pnlEmailVerification.Enabled = false;
+                        pnlOtpVerification.Visible = true;
+                        lblStepInfo.Text = "🔐 Bước 2: Xác thực mã OTP";
+                        txtOtp.Clear();
+                        txtOtp.Focus();
 
-                    pnlEmailVerification.Enabled = false;
-                    pnlOtpVerification.Visible = true;
-                    lblStepInfo.Text = "🔐 Bước 2: Xác thực mã OTP";
-                    txtOtp.Clear();
-                    txtOtp.Focus();
-
-                    _otpCountdown = OTP_EXPIRATION_SECONDS;
-                    _otpTimer.Start();
+                        _otpCountdown = OTP_EXPIRATION_SECONDS;
+                        _otpTimer.Start();
+                        transitionTimer.Dispose();
+                    };
+                    transitionTimer.Start();
                 }
                 else
                 {
@@ -408,6 +416,47 @@ namespace CodeForge_Desktop.Presentation.Forms
         {
             txtConfirmPassword.PasswordChar = txtConfirmPassword.PasswordChar == '*' ? '\0' : '*';
             txtConfirmPassword.Focus();
+        }
+
+        /// <summary>
+        /// Hiển thị thông báo tạm thời (2 giây) rồi tự động biến mất
+        /// </summary>
+        private void ShowTemporaryNotification(string message, string title)
+        {
+            var notificationForm = new Form
+            {
+                Text = title,
+                Width = 400,
+                Height = 120,
+                StartPosition = FormStartPosition.CenterScreen,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                BackColor = System.Drawing.Color.FromArgb(76, 175, 80),
+                TopMost = true
+            };
+
+            var label = new Label
+            {
+                Text = message,
+                Dock = DockStyle.Fill,
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                ForeColor = System.Drawing.Color.White,
+                Font = new System.Drawing.Font("Segoe UI", 11, System.Drawing.FontStyle.Bold)
+            };
+
+            notificationForm.Controls.Add(label);
+
+            var timer = new System.Windows.Forms.Timer { Interval = 2000 };
+            timer.Tick += (s, e) =>
+            {
+                timer.Stop();
+                notificationForm.Close();
+                notificationForm.Dispose();
+            };
+            timer.Start();
+
+            notificationForm.Show();
         }
     }
 }
