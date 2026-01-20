@@ -1,112 +1,136 @@
-using CodeForge_Desktop.Config;
+﻿using CodeForge_Desktop.Config;
 using CodeForge_Desktop.DataAccess.Entities;
 using CodeForge_Desktop.DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.DataAccess.Repositories
 {
     public class CourseReviewRepository : ICourseReviewRepository
     {
+        // Helper SafeGet
+        private T SafeGet<T>(DataRow row, string colName, T defaultValue = default)
+        {
+            if (!row.Table.Columns.Contains(colName)) return defaultValue;
+            object value = row[colName];
+            if (value == DBNull.Value || value == null) return defaultValue;
+            try
+            {
+                if (typeof(T) == typeof(Guid)) return (T)(object)Guid.Parse(value.ToString());
+                return (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch { return defaultValue; }
+        }
+
         private CourseReview MapToReview(DataRow row)
         {
             return new CourseReview
             {
-                ReviewID = row.Table.Columns.Contains("ReviewID") && row["ReviewID"] != DBNull.Value ? (Guid)row["ReviewID"] : Guid.Empty,
-                UserID = row.Table.Columns.Contains("UserID") && row["UserID"] != DBNull.Value ? (Guid)row["UserID"] : Guid.Empty,
-                CourseID = row.Table.Columns.Contains("CourseID") && row["CourseID"] != DBNull.Value ? (Guid)row["CourseID"] : Guid.Empty,
-                Rating = row.Table.Columns.Contains("Rating") && row["Rating"] != DBNull.Value ? (int)row["Rating"] : 0,
-                Comment = row.Table.Columns.Contains("Comment") ? row["Comment"]?.ToString() : null,
-                CreatedAt = row.Table.Columns.Contains("CreatedAt") && row["CreatedAt"] != DBNull.Value ? (DateTime)row["CreatedAt"] : default(DateTime),
-                UpdatedAt = row.Table.Columns.Contains("UpdatedAt") && row["UpdatedAt"] != DBNull.Value ? (DateTime)row["UpdatedAt"] : default(DateTime)
+                ReviewID = SafeGet<Guid>(row, "ReviewID"),
+                CourseID = SafeGet<Guid>(row, "CourseID"),
+                UserID = SafeGet<Guid>(row, "UserID"),
+                Rating = SafeGet<int>(row, "Rating"),
+                Comment = SafeGet<string>(row, "Comment"),
+                CreatedAt = SafeGet<DateTime>(row, "CreatedAt"),
+                UpdatedAt = SafeGet<DateTime>(row, "UpdatedAt"),
+
+                // Map thêm User Name nếu query có join
+                User = row.Table.Columns.Contains("Username") ? new User { Username = SafeGet<string>(row, "Username") } : null
             };
         }
 
-        public CourseReview GetById(Guid id)
+        public async Task<List<CourseReview>> GetReviewsByCourseIdAsync(Guid courseId)
         {
-            string sql = "SELECT TOP 1 ReviewID, UserID, CourseID, Rating, Comment, CreatedAt, UpdatedAt FROM CourseReviews WHERE ReviewID = @id";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@id", id));
-            return dt != null && dt.Rows.Count > 0 ? MapToReview(dt.Rows[0]) : null;
-        }
-
-        public List<CourseReview> GetByCourseId(Guid courseId)
-        {
-            var list = new List<CourseReview>();
-            string sql = "SELECT ReviewID, UserID, CourseID, Rating, Comment, CreatedAt, UpdatedAt FROM CourseReviews WHERE CourseID = @courseId ORDER BY CreatedAt DESC";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@courseId", courseId));
-            if (dt != null)
+            return await Task.Run(() =>
             {
-                foreach (DataRow row in dt.Rows)
-                    list.Add(MapToReview(row));
-            }
-            return list;
+                // Join với bảng Users để lấy tên người review
+                string sql = @"
+                    SELECT cr.*, u.Username 
+                    FROM CourseReviews cr
+                    LEFT JOIN Users u ON cr.UserID = u.UserID
+                    WHERE cr.CourseID = @CId 
+                    ORDER BY cr.CreatedAt DESC";
+
+                DataTable dt = DbContext.Query(sql, new SqlParameter("@CId", courseId));
+                var list = new List<CourseReview>();
+                if (dt != null) foreach (DataRow r in dt.Rows) list.Add(MapToReview(r));
+                return list;
+            });
         }
 
-        public CourseReview GetByUserAndCourse(Guid userId, Guid courseId)
+        public async Task<CourseReview> GetReviewByUserAndCourseAsync(Guid userId, Guid courseId)
         {
-            string sql = "SELECT TOP 1 ReviewID, UserID, CourseID, Rating, Comment, CreatedAt, UpdatedAt FROM CourseReviews WHERE UserID = @userId AND CourseID = @courseId ORDER BY CreatedAt DESC";
-            DataTable dt = DbContext.Query(sql,
-                new SqlParameter("@userId", userId),
-                new SqlParameter("@courseId", courseId));
-            return dt != null && dt.Rows.Count > 0 ? MapToReview(dt.Rows[0]) : null;
+            return await Task.Run(() =>
+            {
+                string sql = "SELECT TOP 1 * FROM CourseReviews WHERE UserID = @UId AND CourseID = @CId";
+                DataTable dt = DbContext.Query(sql, new SqlParameter("@UId", userId), new SqlParameter("@CId", courseId));
+                if (dt != null && dt.Rows.Count > 0) return MapToReview(dt.Rows[0]);
+                return null;
+            });
         }
 
-        public int Add(CourseReview review)
+        public async Task<CourseReview> GetByIdAsync(Guid reviewId)
         {
-            if (review.ReviewID == Guid.Empty) review.ReviewID = Guid.NewGuid();
-            if (review.CreatedAt == default(DateTime)) review.CreatedAt = DateTime.UtcNow;
-            if (review.UpdatedAt == default(DateTime)) review.UpdatedAt = review.CreatedAt;
-
-            string sql = @"
-                INSERT INTO CourseReviews (ReviewID, UserID, CourseID, Rating, Comment, CreatedAt, UpdatedAt)
-                VALUES (@ReviewID, @UserID, @CourseID, @Rating, @Comment, @CreatedAt, @UpdatedAt)";
-            return DbContext.Execute(sql,
-                new SqlParameter("@ReviewID", review.ReviewID),
-                new SqlParameter("@UserID", review.UserID),
-                new SqlParameter("@CourseID", review.CourseID),
-                new SqlParameter("@Rating", review.Rating),
-                new SqlParameter("@Comment", (object)review.Comment ?? DBNull.Value),
-                new SqlParameter("@CreatedAt", review.CreatedAt),
-                new SqlParameter("@UpdatedAt", review.UpdatedAt));
+            return await Task.Run(() =>
+            {
+                string sql = "SELECT TOP 1 * FROM CourseReviews WHERE ReviewID = @Id";
+                DataTable dt = DbContext.Query(sql, new SqlParameter("@Id", reviewId));
+                if (dt != null && dt.Rows.Count > 0) return MapToReview(dt.Rows[0]);
+                return null;
+            });
         }
 
-        public int Update(CourseReview review)
+        public async Task<CourseReview> AddAsync(CourseReview r)
         {
-            review.UpdatedAt = DateTime.UtcNow;
-            string sql = @"
-                UPDATE CourseReviews 
-                SET Rating = @Rating, Comment = @Comment, UpdatedAt = @UpdatedAt
-                WHERE ReviewID = @ReviewID";
-            return DbContext.Execute(sql,
-                new SqlParameter("@ReviewID", review.ReviewID),
-                new SqlParameter("@Rating", review.Rating),
-                new SqlParameter("@Comment", (object)review.Comment ?? DBNull.Value),
-                new SqlParameter("@UpdatedAt", review.UpdatedAt));
+            await Task.Run(() =>
+            {
+                if (r.ReviewID == Guid.Empty) r.ReviewID = Guid.NewGuid();
+                if (r.CreatedAt == DateTime.MinValue) r.CreatedAt = DateTime.Now;
+                r.UpdatedAt = DateTime.Now;
+
+                string sql = @"INSERT INTO CourseReviews (ReviewID, CourseID, UserID, Rating, Comment, CreatedAt, UpdatedAt) 
+                               VALUES (@Id, @CId, @UId, @Rating, @Comm, @Created, @Updated)";
+
+                DbContext.Execute(sql,
+                    new SqlParameter("@Id", r.ReviewID),
+                    new SqlParameter("@CId", r.CourseID),
+                    new SqlParameter("@UId", r.UserID),
+                    new SqlParameter("@Rating", r.Rating),
+                    new SqlParameter("@Comm", (object)r.Comment ?? DBNull.Value),
+                    new SqlParameter("@Created", r.CreatedAt),
+                    new SqlParameter("@Updated", r.UpdatedAt)
+                );
+            });
+            return r;
         }
 
-        public int Delete(Guid id)
+        public async Task<CourseReview> UpdateAsync(CourseReview r)
         {
-            // Your schema does not have soft-delete for CourseReviews; perform hard delete.
-            string sql = "DELETE FROM CourseReviews WHERE ReviewID = @id";
-            return DbContext.Execute(sql, new SqlParameter("@id", id));
+            await Task.Run(() =>
+            {
+                r.UpdatedAt = DateTime.Now;
+                string sql = "UPDATE CourseReviews SET Rating = @Rating, Comment = @Comm, UpdatedAt = @Updated WHERE ReviewID = @Id";
+
+                DbContext.Execute(sql,
+                    new SqlParameter("@Rating", r.Rating),
+                    new SqlParameter("@Comm", (object)r.Comment ?? DBNull.Value),
+                    new SqlParameter("@Updated", r.UpdatedAt),
+                    new SqlParameter("@Id", r.ReviewID)
+                );
+            });
+            return r;
         }
 
-        public double GetAverageRating(Guid courseId)
+        public async Task<bool> DeleteAsync(Guid reviewId)
         {
-            string sql = "SELECT AVG(CAST(Rating AS FLOAT)) FROM CourseReviews WHERE CourseID = @courseId";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@courseId", courseId));
-            if (dt != null && dt.Rows.Count > 0 && dt.Rows[0][0] != DBNull.Value)
-                return Convert.ToDouble(dt.Rows[0][0]);
-            return 0;
-        }
-
-        public int GetReviewCount(Guid courseId)
-        {
-            string sql = "SELECT COUNT(*) FROM CourseReviews WHERE CourseID = @courseId";
-            DataTable dt = DbContext.Query(sql, new SqlParameter("@courseId", courseId));
-            return dt != null && dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
+            return await Task.Run(() =>
+            {
+                int rows = DbContext.Execute("DELETE FROM CourseReviews WHERE ReviewID = @Id", new SqlParameter("@Id", reviewId));
+                return rows > 0;
+            });
         }
     }
 }

@@ -14,8 +14,7 @@
     <Deterministic>true</Deterministic>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,20 +39,23 @@
     <Reference Include="BCrypt.Net-Core, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d63bfbfdfd3c6e4, processorArchitecture=MSIL">
       <HintPath>packages\BCrypt.Net-Core.1.6.0\lib\net452\BCrypt.Net-Core.dll</HintPath>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.20.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>packages\DocumentFormat.OpenXml.2.20.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
       <HintPath>packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.10.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.3595.46, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Web.WebView2.1.0.3595.46\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.3650.58, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.3650.58\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.3595.46, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Web.WebView2.1.0.3595.46\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.3650.58, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.3650.58\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.3595.46, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Web.WebView2.1.0.3595.46\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.3650.58, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.3650.58\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -100,10 +102,19 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\DTOs\Admin\CreateCourseDto.cs" />
+    <Compile Include="Business\DTOs\Admin\UpdateCourseDto.cs" />
+    <Compile Include="Business\DTOs\CourseDto.cs" />
+    <Compile Include="Business\DTOs\CourseReviewDto.cs" />
+    <Compile Include="Business\DTOs\LessonDto.cs" />
+    <Compile Include="Business\DTOs\ModuleDto.cs" />
+    <Compile Include="Business\DTOs\ProblemDto.cs" />
     <Compile Include="Business\Helpers\AppLogger.cs" />
     <Compile Include="Business\Helpers\HtmlRenderHelper.cs" />
+    <Compile Include="Business\Helpers\OtpHelper.cs" />
     <Compile Include="Business\Helpers\ProgressNotifier.cs" />
     <Compile Include="Business\Helpers\CodeEditorHelper.cs" />
     <Compile Include="Business\Helpers\InputParser.cs" />
@@ -111,6 +122,7 @@
     <Compile Include="Business\Helpers\JsonConverter.cs" />
     <Compile Include="Business\Helpers\LanguageConverter.cs" />
     <Compile Include="Business\Helpers\PasswordHasher.cs" />
+    <Compile Include="Business\Helpers\WordParsingHelper.cs" />
     <Compile Include="Business\Interfaces\IAuthService.cs" />
     <Compile Include="Business\Interfaces\ICodingProblemService.cs" />
     <Compile Include="Business\Interfaces\ICourseReviewService.cs" />
@@ -122,6 +134,8 @@
     <Compile Include="Business\Interfaces\ICourseService.cs" />
     <Compile Include="Business\Models\Response.cs" />
     <Compile Include="Business\Models\RunProblem.cs" />
+    <Compile Include="Business\Services\Admin\AdminCourseService.cs" />
+    <Compile Include="Business\Services\AIService.cs" />
     <Compile Include="Business\Services\AuthSerivce.cs" />
     <Compile Include="Business\Services\CodingProblemService.cs" />
     <Compile Include="Business\Services\CourseReviewService.cs" />
@@ -132,6 +146,8 @@
     <Compile Include="Business\Services\SubmissionService.cs" />
     <Compile Include="Business\Services\TestCaseService.cs" />
     <Compile Include="Business\Services\UserService.cs" />
+    <Compile Include="Business\Services\WordImportService.cs" />
+    <Compile Include="Business\Validators\CourseValidator.cs" />
     <Compile Include="Config\DbContext.cs" />
     <Compile Include="DataAccess\Entities\ActivityLog.cs" />
     <Compile Include="DataAccess\Entities\Badge.cs" />
@@ -189,11 +205,29 @@
     <Compile Include="Presentation\Forms\Admin\AddEditUserForm.Designer.cs">
       <DependentUpon>AddEditUserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\Forms\Admin\ImportWordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ImportWordForm.Designer.cs">
+      <DependentUpon>ImportWordForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\CourseCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Presentation\Forms\Admin\MainFormAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Presentation\Forms\Admin\MainFormAdmin.Designer.cs">
       <DependentUpon>MainFormAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminCourseCreation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminCourseCreation.Designer.cs">
+      <DependentUpon>ucAdminCourseCreation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Admin\ucAdminCourseCreation.Helpers.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Presentation\Forms\Admin\ucAdminDashboard.cs">
       <SubType>UserControl</SubType>
@@ -230,6 +264,12 @@
     </Compile>
     <Compile Include="Presentation\Forms\Admin\ucUserManagement.Designer.cs">
       <DependentUpon>ucUserManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\ForgotPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\ForgotPassword.Designer.cs">
+      <DependentUpon>ForgotPassword.cs</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Forms\Login.cs">
       <SubType>Form</SubType>
@@ -270,6 +310,12 @@
     <Compile Include="Presentation\Forms\Student\ucCourseList.Designer.cs">
       <DependentUpon>ucCourseList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\Forms\Student\ucMyCourses.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\ucMyCourses.Designer.cs">
+      <DependentUpon>ucMyCourses.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Forms\Student\ucProblemDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -299,6 +345,12 @@
     </Compile>
     <Compile Include="Presentation\Forms\Student\ucSubmissions.Designer.cs">
       <DependentUpon>ucSubmissions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\UserControls\ucAIChat.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Student\UserControls\ucCourseLearning.AIIntegration.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -381,6 +433,7 @@
   <ItemGroup>
     <None Include=".env" />
     <None Include="packages.config" />
+    <None Include="Program.cs %28chỉ phần cần thêm%29" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -413,7 +466,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
-    <Error Condition="!Exists('packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('packages\Microsoft.Web.WebView2.1.0.3650.58\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Web.WebView2.1.0.3650.58\build\Microsoft.Web.WebView2.targets'))" />
   </Target>
-  <Import Project="packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets" Condition="Exists('packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets')" />
+  <Import Project="packages\Microsoft.Web.WebView2.1.0.3650.58\build\Microsoft.Web.WebView2.targets" Condition="Exists('packages\Microsoft.Web.WebView2.1.0.3650.58\build\Microsoft.Web.WebView2.targets')" />
 </Project>

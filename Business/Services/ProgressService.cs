@@ -1,52 +1,37 @@
-using System;
-using CodeForge_Desktop.DataAccess.Interfaces;
-using CodeForge_Desktop.Business.Interfaces;
+﻿using CodeForge_Desktop.DataAccess.Interfaces;
 using CodeForge_Desktop.DataAccess.Repositories;
-using CodeForge_Desktop.Business.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CodeForge_Desktop.Business.Services
 {
-    public class ProgressService : IProgressService
+    public class ProgressService
     {
-        private readonly IProgressRepository _progressRepository;
+        private readonly IProgressRepository _repo;
 
-        public ProgressService(IProgressRepository progressRepository)
+        // Constructor Injection hoặc Default
+        public ProgressService(IProgressRepository repo)
         {
-            _progressRepository = progressRepository ?? throw new ArgumentNullException(nameof(progressRepository));
+            _repo = repo ?? new ProgressRepository();
+        }
+
+        public async Task<bool> MarkLessonCompletedAsync(Guid userId, Guid lessonId)
+        {
+            // Có thể thêm logic kiểm tra Enrollment tại đây nếu muốn chặt chẽ hơn
+            return await _repo.MarkCompletedAsync(userId, lessonId);
+        }
+
+        public async Task<List<Guid>> GetCompletedLessonsAsync(Guid userId, Guid courseId)
+        {
+            return await _repo.GetCompletedLessonsAsync(userId, courseId);
         }
 
         public double GetProgressPercentage(Guid userId, Guid courseId)
         {
-            return _progressRepository.GetProgressPercentage(userId, courseId);
-        }
-
-        public int GetCompletedLessonCount(Guid userId, Guid courseId)
-        {
-            return _progressRepository.GetCompletedLessonCount(userId, courseId);
-        }
-
-        public int GetTotalLessonCount(Guid courseId)
-        {
-            return _progressRepository.GetTotalLessonCount(courseId);
-        }
-
-        public int RecalculateProgress(Guid userId, Guid courseId)
-        {
-            int completed = _progressRepository.GetCompletedLessonCount(userId, courseId);
-            int total = _progressRepository.GetTotalLessonCount(courseId);
-            int pct = total > 0 ? (int)Math.Round((double)completed / total * 100) : 0;
-
-            // notify UI layers that progress changed (subscribers can refresh single course or entire list)
-            try
-            {
-                ProgressNotifier.RaiseProgressUpdated(userId, courseId, pct);
-            }
-            catch
-            {
-                // swallow notification errors to avoid breaking business logic
-            }
-
-            return pct;
+            // Hàm này có thể chạy Sync hoặc Async tùy nhu cầu UI
+            // Ở đây mình wrap lại task result cho tiện gọi từ UI Event
+            return _repo.GetProgressPercentageAsync(userId, courseId).Result;
         }
     }
 }

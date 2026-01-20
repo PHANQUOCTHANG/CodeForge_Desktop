@@ -15,24 +15,13 @@ namespace CodeForge_Desktop.Presentation.Forms
     public partial class Login : Form
     {
         private IAuthService _authService;
+        // ✅ Biến để theo dõi trạng thái hiển thị mật khẩu
+        private bool isPasswordVisible = false;
         
         public Login()
         {
             _authService = new AuthService();
             InitializeComponent();
-
-            // Gán sự kiện cho liên kết Đăng ký
-            //this.lblRegisterLink.Click += lblRegisterLink_Click;
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện khi người dùng nhấn liên kết Đăng ký.
-        /// </summary>
-        private void lblRegisterLink_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            Registration registrationForm = new Registration();
-            registrationForm.Show();
         }
 
         private void Login_Load(object sender, EventArgs e)
@@ -114,6 +103,30 @@ namespace CodeForge_Desktop.Presentation.Forms
             return true;
         }
 
+        /// <summary>
+        /// ✅ Toggle hiển thị/ẩn mật khẩu
+        /// </summary>
+        private void btnTogglePassword_Click(object sender, EventArgs e)
+        {
+            if (isPasswordVisible)
+            {
+                // Ẩn mật khẩu
+                txtPassword.PasswordChar = '*';
+                btnTogglePassword.Text = "👁️";
+                isPasswordVisible = false;
+            }
+            else
+            {
+                // Hiển thị mật khẩu
+                txtPassword.PasswordChar = '\0';
+                btnTogglePassword.Text = "👁️‍🗨️";
+                isPasswordVisible = true;
+            }
+
+            // Focus vào txtPassword sau khi toggle
+            txtPassword.Focus();
+        }
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
             string username = txtUsername.Text.Trim();
@@ -135,7 +148,7 @@ namespace CodeForge_Desktop.Presentation.Forms
                     User user = response.Data;
                     GlobalStore.user = user;
 
-                    if (user.Role == "admin")
+                    if (user.Role == "Admin" || user.Role == "admin")
                     {
                         MainFormAdmin mainFormAdmin = new MainFormAdmin();
                         mainFormAdmin.Show();
@@ -179,6 +192,14 @@ namespace CodeForge_Desktop.Presentation.Forms
             Application.Exit();
         }
 
-        // ... các phương thức khác ...
+        /// <summary>
+        /// Xử lý sự kiện khi người dùng nhấn liên kết Đăng ký.
+        /// </summary>
+        private void lblRegisterLink_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Registration registrationForm = new Registration();
+            registrationForm.Show();
+        }
     }
 }

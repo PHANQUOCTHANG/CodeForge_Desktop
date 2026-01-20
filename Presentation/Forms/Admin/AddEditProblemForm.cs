@@ -30,6 +30,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             // Setup Defaults
             cboDifficulty.SelectedIndex = 0;
             cboCategory.SelectedIndex = 0;
+            cboReturnType.SelectedIndex = 0;
 
             if (_problemId.HasValue)
             {
@@ -275,7 +276,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
                     txtFunctionName.Text = p.FunctionName;
                     txtParameters.Text = p.Parameters;
-                    txtReturnType.Text = p.ReturnType;
+                    cboReturnType.Text = p.ReturnType;
                     numTimeLimit.Value = p.TimeLimit > 0 ? p.TimeLimit : 1000;
                     numMemoryLimit.Value = p.MemoryLimit > 0 ? p.MemoryLimit : 256;
                     txtTags.Text = p.Tags;
@@ -333,7 +334,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
                     Description = txtDescription.Text.Trim(),
                     FunctionName = txtFunctionName.Text.Trim(),
                     Parameters = txtParameters.Text.Trim(),
-                    ReturnType = txtReturnType.Text.Trim(),
+                    ReturnType = cboReturnType.Text,
                     Constraints = txtConstraints.Text.Trim(),
                     Notes = txtNotes.Text.Trim(),
                     TimeLimit = (int)numTimeLimit.Value,
@@ -378,7 +379,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
                     p.Description = txtDescription.Text.Trim();
                     p.FunctionName = txtFunctionName.Text.Trim();
                     p.Parameters = txtParameters.Text.Trim();
-                    p.ReturnType = txtReturnType.Text.Trim();
+                    p.ReturnType = cboReturnType.Text;
                     p.Constraints = txtConstraints.Text.Trim();
                     p.Notes = txtNotes.Text.Trim();
                     p.TimeLimit = (int)numTimeLimit.Value;
@@ -390,8 +391,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
 
                     if (success)
                     {
-                        // 2️⃣ Sau đó xử lý Test Cases
-                        HashSet<Guid> currentIds = new HashSet<Guid>(_testCases.Select(tc => tc.TestCaseID).Where(id => id != Guid.Empty));
+                              // 2️⃣ Sau đó xử lý Test Cases
+                        HashSet<Guid> currentIds = new HashSet<Guid>(_testCases.Where(tc => tc.TestCaseID != Guid.Empty).Select(tc => tc.TestCaseID));
 
                         foreach (var tc in _testCases)
                         {
@@ -512,19 +513,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(txtReturnType.Text))
+            if (cboReturnType.SelectedIndex == -1 || string.IsNullOrWhiteSpace(cboReturnType.Text))
             {
-                MessageBox.Show("Vui lòng nhập kiểu trả về.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn kiểu trả về.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 tabProblemInfo.SelectedIndex = 1;
-                txtReturnType.Focus();
-                return false;
-            }
-
-            if (!IsValidReturnType(txtReturnType.Text.Trim()))
-            {
-                MessageBox.Show("Kiểu trả về không hợp lệ. Ví dụ: int, string, bool, int[]", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                tabProblemInfo.SelectedIndex = 1;
-                txtReturnType.Focus();
+                cboReturnType.Focus();
                 return false;
             }
 
@@ -580,13 +573,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
             return true;
         }
 
-        private bool IsValidReturnType(string returnType)
-        {
-            if (string.IsNullOrEmpty(returnType))
-                return false;
-            return Regex.IsMatch(returnType, @"^[a-zA-Z_][a-zA-Z0-9_\[\]]*$");
-        }
-
         private bool IsValidTags(string tags)
         {
             if (string.IsNullOrEmpty(tags))
@@ -600,8 +586,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Admin
                 if (string.IsNullOrEmpty(trimmedTag))
                     return false;
 
-                if (!Regex.IsMatch(trimmedTag, @"^[a-zA-Z0-9_\-]+$"))
-                    return false;
+                //if (!Regex.IsMatch(trimmedTag, @"^[a-zA-Z0-9_\-]+$"))
+                //    return false;
             }
 
             return true;

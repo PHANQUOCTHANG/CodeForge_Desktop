@@ -1,1264 +1,1038 @@
-﻿using CodeForge_Desktop.Config;
-using CodeForge_Desktop.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Text.Json;
+﻿using CodeForge_Desktop.Business.DTOs;
 using CodeForge_Desktop.Business.Helpers;
 using CodeForge_Desktop.Business.Services;
+using CodeForge_Desktop.DataAccess.Entities;
+using CodeForge_Desktop.DataAccess.Repositories;
+using Microsoft.Web.WebView2.WinForms;
+using Microsoft.Web.WebView2.Core;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student.UserControls
 {
     public partial class ucCourseLearning : UserControl
     {
-        private readonly Guid _courseId;
-        private readonly CourseRepository _courseRepository;
-        private List<ModuleDto> _modules; // ordered modules + lessons
+        private readonly Guid _courseID;
+        private readonly CourseService _courseService;
+        private readonly ProgressService _progressService;
+        private CourseDetailDto _courseData;
         private LessonDto _currentLesson;
-        private HashSet<Guid> _completedLessonIds = new HashSet<Guid>();
-        private bool _isQuizLoaded = false; // FIX 2: Track if quiz content is loaded
+        private List<LessonDto> _flatLessonList = new List<LessonDto>();
+        private WebView2 _currentWebView;
 
-        // runtime WebView2 instance if available (created via reflection)
-        private object _webView2Instance;
-        private Type _webView2Type;
+        // Quiz state for current loaded quiz
+        private Dictionary<Guid, int> _currentQuizSelections = new Dictionary<Guid, int>();
+        private List<GroupBox> _currentQuizQuestionBoxes = new List<GroupBox>();
+        private Panel _quizPanelContainer;
 
-        public ucCourseLearning(Guid courseId) : this(courseId, new CourseRepository())
+        public ucCourseLearning(Guid courseId)
         {
-        }
-
-        public ucCourseLearning(Guid courseId, CourseRepository courseRepository)
-        {
-            _courseId = courseId;
-            _courseRepository = courseRepository ?? new CourseRepository();
             InitializeComponent();
-            WireEvents();
-            InitTreeImageList();
-        }
+            _courseID = courseId;
 
-        private void WireEvents()
-        {
-            this.Load += UcCourseLearning_Load;
+            var repo = new CourseRepository();
+            var progRepo = new ProgressRepository();
+            _courseService = new CourseService(repo);
+            _progressService = new ProgressService(progRepo);
+
+            // Set sidebar styling
+            pnlRightContainer.BackColor = Color.FromArgb(248, 249, 250);
+            flpCurriculum.BackColor = Color.FromArgb(248, 249, 250);
+            pnlSidebarHeader.BackColor = Color.FromArgb(233, 236, 239);
+
+            this.Load += async (s, e) => await LoadDataAsync();
             btnBack.Click += (s, e) => MainFormStudent.Instance?.GoBack();
-            btnPrev.Click += BtnPrev_Click;
-            btnNext.Click += BtnNext_Click;
-            btnMarkCompleted.Click += BtnMarkCompleted_Click;
-            tvModulesLessons.AfterSelect += TvModulesLessons_AfterSelect;
-            btnSubmitQuiz.Click += BtnSubmitQuiz_Click;
-            flpQuizQuestions.AutoScroll = true;
-            lvCodingProblems.DoubleClick += LvCodingProblems_DoubleClick;
+            btnNext.Click += (s, e) => NavigateLesson(1);
+            btnPrev.Click += (s, e) => NavigateLesson(-1);
+            btnMarkCompleted.Click += async (s, e) => await MarkLessonCompleted();
+
+            splitMain.Panel2.SizeChanged += (s, e) => ResizeCurriculumItems();
         }
 
-        private void InitTreeImageList()
+        private async Task LoadDataAsync()
         {
             try
             {
-                var il = new ImageList { ImageSize = new Size(20, 20) };
-                il.Images.Add("module", GetModuleIcon(20));
-                il.Images.Add("video", GetVideoIcon(20));
-                il.Images.Add("text", GetTextIcon(20));
-                il.Images.Add("quiz", GetQuizIcon(20));
-                il.Images.Add("code", GetCodeIcon(20));
-                il.Images.Add("completed", GetCheckIcon(20, Color.FromArgb(76, 175, 80)));
-                tvModulesLessons.ImageList = il;
-            }
-            catch { /* ignore image issues */ }
-        }
-
-        // FIX 3: Improved icon designs
-        private Image GetModuleIcon(int size)
-        {
-            var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-            using (var brush = new SolidBrush(Color.FromArgb(63, 81, 181))) // Indigo
-            using (var borderPen = new Pen(Color.FromArgb(33, 150, 243), 2)) // Blue
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                var rect = new Rectangle(2, 2, size - 4, size - 4);
-                g.FillRectangle(brush, rect);
-                g.DrawRectangle(borderPen, rect);
-            }
-            return bmp;
-        }
-
-        private Image GetVideoIcon(int size)
-        {
-            var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-            using (var brush = new SolidBrush(Color.FromArgb(244, 67, 54))) // Red
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                // Draw rounded rectangle background
-                var rect = new Rectangle(1, 2, size - 2, size - 4);
-                var path = new System.Drawing.Drawing2D.GraphicsPath();
-                int radius = 3;
-                path.AddArc(rect.Left, rect.Top, radius, radius, 180, 90);
-                path.AddArc(rect.Right - radius, rect.Top, radius, radius, 270, 90);
-                path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90);
-                path.AddArc(rect.Left, rect.Bottom - radius, radius, radius, 90, 90);
-                path.CloseFigure();
-                g.FillPath(brush, path);
-
-                // Draw play triangle
-                var pts = new[] {
-                        new PointF(size * 0.35f, size * 0.3f),
-                        new PointF(size * 0.35f, size * 0.7f),
-                        new PointF(size * 0.65f, size * 0.5f)
-                    };
-                g.FillPolygon(Brushes.White, pts);
-            }
-            return bmp;
-        }
-
-        private Image GetTextIcon(int size)
-        {
-            var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-            using (var brush = new SolidBrush(Color.FromArgb(0, 150, 136))) // Teal
-            using (var linePen = new Pen(Color.White, 1.5f))
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                var rect = new Rectangle(2, 2, size - 4, size - 4);
-                g.FillRectangle(brush, rect);
-
-                // Draw lines representing text
-                int lineY = 6;
-                for (int i = 0; i < 3; i++)
+                _courseData = await _courseService.GetCourseDetailAsync(_courseID);
+                if (_courseData == null)
                 {
-                    g.DrawLine(linePen, 5, lineY, size - 5, lineY);
-                    lineY += 4;
+                    MessageBox.Show("Không thể tải dữ liệu khóa học.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
-            }
-            return bmp;
-        }
 
-        private Image GetQuizIcon(int size)
-        {
-            var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-            using (var brush = new SolidBrush(Color.FromArgb(255, 152, 0))) // Amber
-            using (var qPen = new Pen(Color.White, 2))
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                var rect = new Rectangle(2, 2, size - 4, size - 4);
-                g.FillEllipse(brush, rect);
+                lblCourseTitle.Text = _courseData.Title;
 
-                // Draw question mark
-                g.DrawString("?", new Font("Segoe UI", size * 0.6f, FontStyle.Bold), Brushes.White,
-                    size * 0.15f, size * 0.15f);
-            }
-            return bmp;
-        }
-
-        private Image GetCodeIcon(int size)
-        {
-            var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-            using (var brush = new SolidBrush(Color.FromArgb(76, 175, 80))) // Green
-            using (var linePen = new Pen(Color.White, 1.5f))
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                var rect = new Rectangle(2, 2, size - 4, size - 4);
-                g.FillRectangle(brush, rect);
-
-                // Draw angle brackets < >
-                g.DrawLine(linePen, size * 0.25f, size * 0.35f, size * 0.4f, size * 0.5f);
-                g.DrawLine(linePen, size * 0.4f, size * 0.5f, size * 0.25f, size * 0.65f);
-                g.DrawLine(linePen, size * 0.6f, size * 0.35f, size * 0.75f, size * 0.5f);
-                g.DrawLine(linePen, size * 0.75f, size * 0.5f, size * 0.6f, size * 0.65f);
-            }
-            return bmp;
-        }
-
-        private Image GetCheckIcon(int size, Color color)
-        {
-            var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-            using (var b = new SolidBrush(color))
-            using (var pen = new Pen(Color.White, 2.5f))
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                g.FillEllipse(b, 0, 0, size - 1, size - 1);
-                // draw check
-                var p1 = new PointF(size * 0.25f, size * 0.55f);
-                var p2 = new PointF(size * 0.45f, size * 0.75f);
-                var p3 = new PointF(size * 0.78f, size * 0.28f);
-                g.DrawLines(pen, new[] { p1, p2, p3 });
-            }
-            return bmp;
-        }
-
-        private async void UcCourseLearning_Load(object sender, EventArgs e)
-        {
-            await LoadModulesAndLessonsAsync();
-            await LoadCompletedSetAsync();
-            ApplyCompletedFlags();
-            PopulateTree(); // re-populate with completed info
-            var first = FindFirstLessonNode();
-            if (first != null) tvModulesLessons.SelectedNode = first;
-            UpdateCourseLessonInfo();
-            TryPrepareWebView2Type(); // preload WebView2 type if available
-        }
-
-        private async Task LoadModulesAndLessonsAsync()
-        {
-            try
-            {
-                _modules = await Task.Run(() => FetchModulesLessons(_courseId));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi tải chương trình học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private List<ModuleDto> FetchModulesLessons(Guid courseId)
-        {
-            var modules = new List<ModuleDto>();
-            try
-            {
-                string sqlModules = @"
-                        SELECT ModuleID, Title, OrderIndex
-                        FROM Modules
-                        WHERE CourseID = @CourseId AND IsDeleted = 0
-                        ORDER BY OrderIndex";
-                var dtModules = DbContext.Query(sqlModules, new SqlParameter("@CourseId", courseId));
-                if (dtModules == null) return modules;
-
-                foreach (DataRow mr in dtModules.Rows)
+                var user = GlobalStore.user;
+                List<Guid> completedLessonIds = new List<Guid>();
+                if (user != null)
                 {
-                    if (mr["ModuleID"] == DBNull.Value) continue;
-                    var mod = new ModuleDto
-                    {
-                        ModuleId = (Guid)mr["ModuleID"],
-                        Title = mr["Title"]?.ToString() ?? "Module"
-                    };
+                    completedLessonIds = await _progressService.GetCompletedLessonsAsync(user.UserID, _courseID);
+                }
 
-                    string sqlLessons = @"
-                            SELECT LessonID, Title, LessonType, Duration, OrderIndex
-                            FROM Lessons
-                            WHERE ModuleID = @ModuleId AND IsDeleted = 0
-                            ORDER BY OrderIndex";
-                    var dtLessons = DbContext.Query(sqlLessons, new SqlParameter("@ModuleId", mod.ModuleId));
-                    if (dtLessons != null)
+                foreach (var mod in _courseData.Modules)
+                {
+                    foreach (var les in mod.Lessons)
                     {
-                        foreach (DataRow lr in dtLessons.Rows)
-                        {
-                            if (lr["LessonID"] == DBNull.Value) continue;
-                            var lesson = new LessonDto
-                            {
-                                LessonId = (Guid)lr["LessonID"],
-                                Title = lr["Title"]?.ToString() ?? "Lesson",
-                                LessonType = lr.Table.Columns.Contains("LessonType") && lr["LessonType"] != DBNull.Value ? lr["LessonType"].ToString() : "text",
-                                Duration = lr.Table.Columns.Contains("Duration") && lr["Duration"] != DBNull.Value ? Convert.ToInt32(lr["Duration"]) : 0
-                            };
-                            mod.Lessons.Add(lesson);
-                        }
+                        if (completedLessonIds.Contains(les.LessonID))
+                            les.IsCompleted = true;
                     }
+                }
 
-                    modules.Add(mod);
+                _flatLessonList.Clear();
+                RenderSidebar(_courseData.Modules);
+                ResizeCurriculumItems();            // ensure item widths are calculated after rendering
+                flpCurriculum.PerformLayout();      // force layout update
+                UpdateProgressBar();
+
+                var nextLesson = _flatLessonList.FirstOrDefault(l => !l.IsCompleted) ?? _flatLessonList.FirstOrDefault();
+                if (nextLesson != null)
+                {
+                    await LoadLessonContentAsync(nextLesson);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("FetchModulesLessons: " + ex.Message);
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            return modules;
         }
 
-        private void PopulateTree()
+        // =========================================================
+        // RENDER SIDEBAR
+        // =========================================================
+        private void RenderSidebar(List<ModuleDto> modules)
         {
-            if (tvModulesLessons.InvokeRequired)
+            flpCurriculum.SuspendLayout();
+            flpCurriculum.Controls.Clear();
+
+            foreach (var mod in modules)
             {
-                tvModulesLessons.Invoke(new Action(PopulateTree));
-                return;
+                flpCurriculum.Controls.Add(CreateModuleWidget(mod));
             }
 
-            tvModulesLessons.BeginUpdate();
-            tvModulesLessons.Nodes.Clear();
+            flpCurriculum.ResumeLayout();
+        }
 
-            if (_modules == null || _modules.Count == 0)
-            {
-                tvModulesLessons.Nodes.Add(new TreeNode("Chưa có nội dung"));
-                tvModulesLessons.EndUpdate();
-                return;
-            }
+        // Replace CreateModuleWidget implementation with this improved version
+        private Control CreateModuleWidget(ModuleDto mod)
+        {
+            int width = flpCurriculum.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 10;
 
-            foreach (var m in _modules)
+            var pnlContainer = new Panel
             {
-                var mn = new TreeNode($"{m.Title}") { Tag = m, ImageKey = "module", SelectedImageKey = "module", NodeFont = new Font(tvModulesLessons.Font, FontStyle.Bold) };
-                foreach (var l in m.Lessons)
+                Width = width,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                BackColor = Color.Red,
+                Margin = new Padding(0, 0, 0, 2)
+            };
+
+            // Module header
+            var btnHeader = new Button
+            {
+                Text = $"▼  {mod.Title} ({(mod.Lessons?.Count ?? 0)} bài)",
+                TextAlign = ContentAlignment.MiddleLeft,
+                Dock = DockStyle.Top,
+                Height = 48,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.Red,
+                ForeColor = Color.FromArgb(33, 37, 41),
+                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Padding = new Padding(15, 0, 0, 0)
+            };
+            btnHeader.FlatAppearance.BorderSize = 0;
+            btnHeader.FlatAppearance.MouseOverBackColor = Color.FromArgb(233, 236, 239);
+
+            // Lessons panel (FlowLayoutPanel)
+            var pnlLessons = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                Visible = true,
+                Padding = new Padding(0),
+                Width = width,
+                BackColor = Color.White
+            };
+
+            if (mod.Lessons != null && mod.Lessons.Count > 0)
+            {
+                foreach (var les in mod.Lessons)
                 {
-                    var key = "text";
-                    if (!string.IsNullOrEmpty(l.LessonType))
-                    {
-                        switch (l.LessonType.ToLowerInvariant())
-                        {
-                            case "video": key = "video"; break;
-                            case "quiz": key = "quiz"; break;
-                            case "coding": key = "code"; break;
-                        }
-                    }
-                    // prefer lesson.IsCompleted flag (set from progress) to determine icon
-                    var ln = new TreeNode(l.Title) { Tag = l, ImageKey = l.IsCompleted ? "completed" : key, SelectedImageKey = l.IsCompleted ? "completed" : key };
-                    mn.Nodes.Add(ln);
+                    _flatLessonList.Add(les);
+                    pnlLessons.Controls.Add(CreateLessonItem(les, width));
                 }
-                tvModulesLessons.Nodes.Add(mn);
             }
 
-            // Replace previous EndUpdate with calls that also refresh icons
-            tvModulesLessons.EndUpdate();
-            RefreshTreeNodeCompletionIcons();
+            // Add lessons first then header so header docks at top and lessons appear under it
+            pnlContainer.Controls.Add(pnlLessons);
+            pnlContainer.Controls.Add(btnHeader);
+
+            btnHeader.Click += (s, e) =>
+            {
+                pnlLessons.Visible = !pnlLessons.Visible;
+                btnHeader.Text = (pnlLessons.Visible ? "▼" : "▶") + $"  {mod.Title} ({(mod.Lessons?.Count ?? 0)} bài)";
+            };
+
+            return pnlContainer;
         }
 
-        // Add this helper near PopulateTree / ApplyCompletedFlags (inside the class)
-        private void RefreshTreeNodeCompletionIcons()
+        private Control CreateLessonItem(LessonDto les, int width)
         {
-            if (tvModulesLessons.InvokeRequired)
-            {
-                tvModulesLessons.Invoke(new Action(RefreshTreeNodeCompletionIcons));
-                return;
-            }
+            string icon = les.IsCompleted ? "✓" : (les.LessonType?.ToLower() == "video" ? "▶" : "📄");
 
-            try
+            var btn = new Button
             {
-                tvModulesLessons.BeginUpdate();
-                foreach (TreeNode m in tvModulesLessons.Nodes)
+                Text = $"   {icon}   {les.Title}",
+                TextAlign = ContentAlignment.MiddleLeft,
+                Width = width,
+                Height = 40,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.White,
+                ForeColor = les.IsCompleted ? Color.FromArgb(40, 167, 69) : Color.FromArgb(73, 80, 87),
+                Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
+                Cursor = Cursors.Hand,
+                Padding = new Padding(45, 0, 10, 0),
+                Tag = les,
+                Margin = new Padding(0)
+            };
+            btn.FlatAppearance.BorderSize = 0;
+            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(233, 236, 239);
+            btn.Click += async (s, e) => await LoadLessonContentAsync(les);
+
+            btn.MouseEnter += (s, e) => {
+                if (_currentLesson != les)
+                    btn.BackColor = Color.FromArgb(233, 236, 239);
+            };
+            btn.MouseLeave += (s, e) => {
+                if (_currentLesson != les)
+                    btn.BackColor = Color.White;
+            };
+
+            return btn;
+        }
+
+        private void ResizeCurriculumItems()
+        {
+            int w = flpCurriculum.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 10;
+            foreach (Control c in flpCurriculum.Controls)
+            {
+                c.Width = w;
+                if (c is Panel pnlMod)
                 {
-                    foreach (TreeNode lnode in m.Nodes)
+                    foreach (Control child in pnlMod.Controls)
                     {
-                        var lesson = lnode.Tag as LessonDto;
-                        if (lesson == null) continue;
-
-                        string key = "text";
-                        if (!string.IsNullOrEmpty(lesson.LessonType))
+                        child.Width = w;
+                        if (child is FlowLayoutPanel flp)
                         {
-                            switch (lesson.LessonType.ToLowerInvariant())
+                            foreach (Control btn in flp.Controls)
                             {
-                                case "video": key = "video"; break;
-                                case "quiz": key = "quiz"; break;
-                                case "coding": key = "code"; break;
+                                btn.Width = w;
                             }
                         }
-
-                        var imageKey = lesson.IsCompleted ? "completed" : key;
-                        lnode.ImageKey = imageKey;
-                        lnode.SelectedImageKey = imageKey;
                     }
                 }
             }
-            finally
-            {
-                tvModulesLessons.EndUpdate();
-                tvModulesLessons.Refresh();
-            }
         }
 
-        private async Task LoadCompletedSetAsync()
+        // =========================================================
+        // LOAD LESSON CONTENT
+        // =========================================================
+        private async Task LoadLessonContentAsync(LessonDto lesson)
         {
-            try
+            _currentLesson = lesson;
+            HighlightCurrentLesson(lesson);
+            pnlVideoArea.Controls.Clear();
+            _currentWebView = null;
+            ClearQuizArea();
+
+            string type = (lesson.LessonType ?? "").ToLower();
+
+            if (type == "video" && lesson.VideoContent != null)
             {
-                var set = await Task.Run(() => FetchCompletedLessonIds(_courseId));
-                _completedLessonIds = set ?? new HashSet<Guid>();
+                await LoadVideoContent(lesson.VideoContent.VideoUrl);
             }
-            catch { _completedLessonIds = new HashSet<Guid>(); }
-        }
-
-        private HashSet<Guid> FetchCompletedLessonIds(Guid courseId)
-        {
-            try
+            else if (type == "text" && lesson.TextContent != null)
             {
-                var set = new HashSet<Guid>();
-                var currentUser = GlobalStore.user;
-                if (currentUser == null || currentUser.UserID == Guid.Empty) return set;
-
-                // Progress table in your schema does not have CourseID or IsCompleted columns.
-                // Join Progress -> Lessons -> Modules to filter by CourseID and check Status = 'completed'.
-                string sql = @"
-            SELECT DISTINCT p.LessonID
-            FROM Progress p
-            INNER JOIN Lessons l ON p.LessonID = l.LessonID
-            INNER JOIN Modules m ON l.ModuleID = m.ModuleID
-            WHERE m.CourseID = @CourseId
-              AND p.UserID = @UserId
-              AND ISNULL(p.Status,'') = 'completed'";
-
-                var dt = DbContext.Query(sql,
-                    new SqlParameter("@CourseId", courseId),
-                    new SqlParameter("@UserId", currentUser.UserID));
-
-                if (dt != null)
-                {
-                    foreach (DataRow r in dt.Rows)
-                    {
-                        if (r["LessonID"] != DBNull.Value)
-                            set.Add((Guid)r["LessonID"]);
-                    }
-                }
-                return set;
+                await LoadTextContent(lesson.TextContent.Content);
             }
-            catch (Exception ex)
+            else if (type == "quiz" && lesson.QuizContent != null)
             {
-                System.Diagnostics.Debug.WriteLine("FetchCompletedLessonIds: " + ex.Message);
-                return new HashSet<Guid>();
+                LoadQuizContent(lesson.QuizContent);
             }
-        }
-
-        private string FetchLessonText(Guid lessonId)
-        {
-            try
+            else if (type == "coding" && lesson.CodingProblem != null)
             {
-                // Table name in your DB is LessonTexts (plural)
-                var dt = DbContext.Query("SELECT TOP 1 Content FROM LessonTexts WHERE LessonID = @L", new SqlParameter("@L", lessonId));
-                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["Content"] != DBNull.Value)
-                    return dt.Rows[0]["Content"].ToString();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("FetchLessonText: " + ex.Message);
-            }
-            return null;
-        }
-
-        // apply _completedLessonIds into lesson DTOs so UI can rely on lesson.IsCompleted
-        private void ApplyCompletedFlags()
-        {
-            if (_modules == null || _completedLessonIds == null) return;
-            foreach (var m in _modules)
-            {
-                foreach (var l in m.Lessons)
-                {
-                    l.IsCompleted = _completedLessonIds.Contains(l.LessonId);
-                }
-            }
-        }
-
-        private async void TvModulesLessons_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            var tag = e.Node?.Tag as LessonDto;
-            if (tag == null)
-            {
-                // module node selected
-                return;
-            }
-            await DisplayLessonAsync(tag);
-        }
-
-        private async Task DisplayLessonAsync(LessonDto lesson)
-        {
-            _isQuizLoaded = false; // FIX 2: Reset quiz loaded flag
-
-            try
-            {
-                _currentLesson = lesson;
-                lblLessonTitle.Text = lesson.Title ?? "Lesson";
-                // hide all content panels first
-                rtbLessonText.Visible = false;
-                wbVideo.Visible = false;
-                pnlQuiz.Visible = false;
-                lvCodingProblems.Visible = false;
-                flpQuizQuestions.Controls.Clear();
-
-                switch ((lesson.LessonType ?? "text").ToLowerInvariant())
-                {
-                    case "video":
-                        await HandleVideoLessonAsync(lesson);
-                        break;
-
-                    case "quiz":
-                        pnlQuiz.Visible = true;
-                        var quiz = await Task.Run(() => FetchQuizQuestions(lesson.LessonId));
-                        if (quiz != null && quiz.Rows.Count > 0)
-                        {
-                            BuildQuizUi(quiz);
-                            _isQuizLoaded = true; // FIX 2: Mark quiz as loaded
-                        }
-                        else
-                        {
-                            flpQuizQuestions.Controls.Add(new Label { Text = "Không có câu hỏi.", AutoSize = true });
-                            _isQuizLoaded = true;
-                        }
-                        break;
-
-                    case "coding":
-                        var probs = await Task.Run(() => FetchCodingProblemsForLesson(lesson.LessonId));
-                        lvCodingProblems.Items.Clear();
-                        if (probs != null && probs.Rows.Count > 0)
-                        {
-                            foreach (DataRow pr in probs.Rows)
-                            {
-                                var title = pr.Table.Columns.Contains("Title") && pr["Title"] != DBNull.Value ? pr["Title"].ToString() : "(untitled)";
-                                var item = new ListViewItem(title) { Tag = pr };
-                                lvCodingProblems.Items.Add(item);
-                            }
-                            lvCodingProblems.Visible = true;
-                        }
-                        else
-                        {
-                            rtbLessonText.Visible = true;
-                            rtbLessonText.Text = "Coding lesson. No problems linked.";
-                        }
-                        break;
-
-                    default:
-                        var text = await Task.Run(() => FetchLessonText(lesson.LessonId));
-                        rtbLessonText.Visible = true;
-
-                        // debug: log returned text length/preview
-                        System.Diagnostics.Debug.WriteLine($"FetchLessonText: len={(text?.Length ?? 0)}, preview={(text?.Substring(0, Math.Min(200, text?.Length ?? 0)) ?? "<null>")}");
-
-                        // Render HTML content (await it so errors are not swallowed)
-                        if (!string.IsNullOrEmpty(text) && text.Contains("<"))
-                        {
-                            await RenderHtmlContent(text); // now returns Task and is awaited
-                        }
-                        else
-                        {
-                            rtbLessonText.Text = string.IsNullOrEmpty(text) ? "(No content)" : text;
-                        }
-
-                        // If rendering produced no visible browser, show raw HTML so user sees data
-                        bool webViewVisible = (_webView2Instance is Control wc && wc.Visible) || (wbVideo != null && wbVideo.Visible);
-                        if (!webViewVisible && !string.IsNullOrEmpty(text) && text.Contains("<"))
-                        {
-                            // show the raw HTML as a fallback so it is not completely blank
-                            rtbLessonText.Visible = true;
-                            rtbLessonText.Text = text;
-                        }
-                        break;
-                }
-
-                UpdateCourseLessonInfo();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi hiển thị bài học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // FIX 1: Improved video handling
-        private async Task HandleVideoLessonAsync(LessonDto lesson)
-        {
-            string vid = await Task.Run(() => FetchLessonVideoUrl(lesson.LessonId));
-
-            if (string.IsNullOrWhiteSpace(vid))
-            {
-                ShowErrorInPanel("Video URL not found or empty.");
-                return;
-            }
-
-            vid = vid.Trim();
-
-            if (!Uri.IsWellFormedUriString(vid, UriKind.Absolute) && File.Exists(vid))
-                vid = new Uri(Path.GetFullPath(vid)).AbsoluteUri;
-
-            if (!IsVideoUrl(vid))
-            {
-                ShowErrorInPanel("Video URL is not a supported video link.");
-                return;
-            }
-
-            if (IsEmbeddableVideoUrl(vid) && _webView2Type == null)
-            {
-                var openExtern = MessageBox.Show("This video may not play inside the app. Open in your browser instead?", "Open video", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (openExtern == DialogResult.Yes)
-                {
-                    try { Process.Start(new ProcessStartInfo { FileName = vid, UseShellExecute = true }); }
-                    catch (Exception ex) { ShowErrorInPanel("Unable to open external browser: " + ex.Message); }
-                }
-                else
-                {
-                    ShowErrorInPanel("Embedded playback requires WebView2. Please install WebView2 runtime or open externally.");
-                }
-                return;
-            }
-
-            string htmlContent = GenerateEmbedVideoHtml(vid);
-
-            // 1) Prefer WebView2 and ensure CoreWebView2 is initialized before NavigateToString
-            if (await TryUseWebView2NavigateAsync(htmlContent))
-            {
-                wbVideo.Visible = false;
-                rtbLessonText.Visible = false;
-                return;
-            }
-
-            // 2) Fallback: check URL accessibility and offer external open
-            bool accessible = await CheckUrlAccessibleAsync(vid);
-
-            if (!accessible)
-            {
-                var open = MessageBox.Show("Video link is inaccessible. Open in browser?", "Video inaccessible", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (open == DialogResult.Yes)
-                {
-                    try { Process.Start(new ProcessStartInfo { FileName = vid, UseShellExecute = true }); }
-                    catch (Exception ex) { ShowErrorInPanel("Unable to open external browser: " + ex.Message); }
-                }
-                else
-                {
-                    ShowErrorInPanel("Cannot play video in embedded player.");
-                }
-                return;
-            }
-
-            // 3) Final fallback: use WebBrowser control to render the embed HTML (may still fail for YouTube)
-            try
-            {
-                wbVideo.Visible = true;
-                rtbLessonText.Visible = false;
-                wbVideo.DocumentText = htmlContent;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("WebBrowser render failed: " + ex.Message);
-                var ask = MessageBox.Show("Embedded player failed. Open in external browser?", "Playback error", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (ask == DialogResult.Yes)
-                {
-                    try { Process.Start(new ProcessStartInfo { FileName = vid, UseShellExecute = true }); }
-                    catch { ShowErrorInPanel("Cannot open external browser."); }
-                }
-                else
-                {
-                    ShowErrorInPanel("Cannot play video in embedded player.");
-                }
-            }
-        }
-
-        // New helper: do a fast HEAD request to check URL accessibility
-        private async Task<bool> CheckUrlAccessibleAsync(string url)
-        {
-            try
-            {
-                using (var http = new HttpClient())
-                {
-                    http.Timeout = TimeSpan.FromSeconds(6);
-                    // Some servers don't accept HEAD; fall back to GET but request only headers
-                    var req = new HttpRequestMessage(HttpMethod.Head, url);
-                    var resp = await http.SendAsync(req);
-                    if (resp.IsSuccessStatusCode) return true;
-
-                    // fallback: try GET but do not download content fully
-                    req = new HttpRequestMessage(HttpMethod.Get, url);
-                    req.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 0);
-                    resp = await http.SendAsync(req);
-                    return resp.IsSuccessStatusCode;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task SubmitQuizAsync()
-        {
-            // FIX 2: Validate quiz is loaded before allowing submission
-            if (!_isQuizLoaded)
-            {
-                MessageBox.Show("Vui lòng chờ nội dung bài quiz được tải xong.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                int total = 0;
-                int correct = 0;
-
-                await Task.Run(() =>
-                {
-                    foreach (Control panel in flpQuizQuestions.Controls)
-                    {
-                        if (!(panel is Panel p)) continue;
-                        DataRow qRow = p.Tag as DataRow;
-                        int correctIndex = qRow != null && qRow.Table.Columns.Contains("CorrectIndex") && qRow["CorrectIndex"] != DBNull.Value ? Convert.ToInt32(qRow["CorrectIndex"]) : -1;
-
-                        int selectedIndex = -1;
-                        foreach (Control c in p.Controls)
-                        {
-                            if (c is FlowLayoutPanel opts)
-                            {
-                                foreach (Control rb in opts.Controls)
-                                {
-                                    if (rb is RadioButton r && r.Checked)
-                                    {
-                                        selectedIndex = r.Tag is int idx ? idx : -1;
-                                    }
-                                }
-                            }
-                        }
-
-                        total++;
-                        if (correctIndex >= 0 && correctIndex == selectedIndex) correct++;
-                    }
-                });
-
-                MessageBox.Show($"Bạn đạt {correct}/{total} câu đúng.", "Kết quả quiz", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi chấm quiz: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async Task RenderHtmlContentAsync(string htmlContent)
-        {
-            // Wrap HTML content in a complete HTML document
-            string wrappedHtml = $@"<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='UTF-8'>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 12px;
-            padding: 8px;
-            background: white;
-            color: #333;
-            line-height: 1.6;
-        }}
-        h1, h2, h3, h4, h5, h6 {{ margin: 12px 0 8px 0; color: #2c3e50; }}
-        p {{ margin: 8px 0; }}
-        a {{ color: #0078d4; text-decoration: none; }}
-        a:hover {{ text-decoration: underline; }}
-        code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }}
-        pre {{ background: #f4f4f4; padding: 12px; border-radius: 4px; overflow-x: auto; }}
-        blockquote {{ border-left: 4px solid #0078d4; padding-left: 12px; margin-left: 0; color: #666; }}
-        ul, ol {{ margin: 8px 0; padding-left: 24px; }}
-        li {{ margin: 4px 0; }}
-        table {{ border-collapse: collapse; width: 100%; margin: 12px 0; }}
-        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-        th {{ background: #f4f4f4; font-weight: bold; }}
-        img {{ max-width: 100%; height: auto; margin: 8px 0; }}
-    </style>
-</head>
-<body>
-    {htmlContent}
-</body>
-</html>";
-
-            try
-            {
-                // 1) If a WebView2 instance exists, try NavigateToString on it (reflection)
-                if (_webView2Instance != null)
-                {
-                    try
-                    {
-                        var instType = _webView2Instance.GetType();
-                        var nav = instType.GetMethod("NavigateToString", new[] { typeof(string) });
-                        if (nav != null)
-                        {
-                            // Invoke on UI thread
-                            if (this.InvokeRequired)
-                                this.Invoke(new Action(() => nav.Invoke(_webView2Instance, new object[] { wrappedHtml })));
-                            else
-                                nav.Invoke(_webView2Instance, new object[] { wrappedHtml });
-
-                            // ensure WebView2 control visible if it's a Control
-                            if (_webView2Instance is Control c)
-                            {
-                                if (this.InvokeRequired) this.Invoke(new Action(() => { c.Visible = true; c.BringToFront(); }));
-                                else { c.Visible = true; c.BringToFront(); }
-                            }
-
-                            rtbLessonText.Visible = false;
-                            return;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync: WebView2 navigate failed: " + ex.Message);
-                    }
-                }
-
-                // 2) Try to create/use WebView2 via helper (async)
-                if (_webView2Type != null)
-                {
-                    try
-                    {
-                        var used = await TryUseWebView2NavigateAsync(wrappedHtml);
-                        if (used)
-                        {
-                            rtbLessonText.Visible = false;
-                            return;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync: TryUseWebView2NavigateAsync failed: " + ex.Message);
-                    }
-                }
-
-                // 3) Fallback to legacy WebBrowser control (wbVideo)
-                Action setDoc = () =>
-                {
-                    try
-                    {
-                        // if wbVideo was removed from the visual tree earlier, re-add it to this control
-                        if (wbVideo.Parent == null)
-                        {
-                            // place it into the same container as rtbLessonText if available, otherwise onto this control
-                            var container = rtbLessonText.Parent ?? (Control)this;
-                            container.Controls.Add(wbVideo);
-                            wbVideo.Dock = DockStyle.Fill;
-                        }
-
-                        wbVideo.Visible = true;
-                        rtbLessonText.Visible = false;
-                        wbVideo.DocumentText = wrappedHtml;
-                        wbVideo.BringToFront();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync (WebBrowser) error: " + ex.Message);
-                        rtbLessonText.Visible = true;
-                        rtbLessonText.Text = "Cannot render HTML content. Raw:\n\n" + htmlContent;
-                    }
-                };
-
-                if (this.InvokeRequired) this.Invoke(setDoc);
-                else setDoc();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("RenderHtmlContentAsync error: " + ex.Message);
-                if (this.InvokeRequired)
-                    this.Invoke(new Action(() => { rtbLessonText.Visible = true; rtbLessonText.Text = "Cannot render HTML content. Raw:\n\n" + htmlContent; }));
-                else
-                {
-                    rtbLessonText.Visible = true;
-                    rtbLessonText.Text = "Cannot render HTML content. Raw:\n\n" + htmlContent;
-                }
-            }
-        }
-
-        private Task RenderHtmlContent(string htmlContent)
-        {
-            // forward to the existing async renderer so callers can await it and catch errors
-            return RenderHtmlContentAsync(htmlContent);
-        }
-
-        private void ShowErrorInPanel(string message)
-        {
-            rtbLessonText.Visible = true;
-            wbVideo.Visible = false;
-            pnlQuiz.Visible = false;
-            lvCodingProblems.Visible = false;
-            rtbLessonText.Text = message;
-        }
-
-        // DTOs
-        private class ModuleDto
-        {
-            public Guid ModuleId { get; set; }
-            public string Title { get; set; }
-            public List<LessonDto> Lessons { get; } = new List<LessonDto>();
-        }
-
-        private class LessonDto
-        {
-            public Guid LessonId { get; set; }
-            public string Title { get; set; }
-            public string LessonType { get; set; }
-            public int Duration { get; set; }
-            public string ExtraInfo { get; set; }
-            public List<CodingProblemInfo> CodingProblems { get; } = new List<CodingProblemInfo>();
-
-            // completion flag applied from Progress data
-            public bool IsCompleted { get; set; } = false;
-        }
-
-        private class CodingProblemInfo
-        {
-            public Guid ProblemID { get; set; }
-            public string Title { get; set; }
-            public string Difficulty { get; set; }
-        }
-
-        private string[] ParseJsonAnswers(string answersJson)
-        {
-            try
-            {
-                return JsonSerializer.Deserialize<string[]>(answersJson) ?? Array.Empty<string>();
-            }
-            catch
-            {
-                try
-                {
-                    var arr = JsonSerializer.Deserialize<List<JsonElement>>(answersJson);
-                    if (arr != null)
-                    {
-                        return arr.Select(e => e.ValueKind == JsonValueKind.String ? e.GetString() : e.ToString()).ToArray();
-                    }
-                }
-                catch { }
-                return Array.Empty<string>();
-            }
-        }
-
-        private void BtnPrev_Click(object sender, EventArgs e)
-        {
-            // TODO: Implement logic to navigate to the previous lesson.
-            MessageBox.Show("Previous button clicked. Implement navigation logic here.");
-        }
-
-        private void BtnNext_Click(object sender, EventArgs e)
-        {
-            // Navigate to next lesson node if available
-            var sel = tvModulesLessons.SelectedNode;
-            if (sel == null)
-            {
-                MessageBox.Show("No lesson selected.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // if a module node was selected, try to pick its first child
-            if (sel.Tag is ModuleDto)
-            {
-                if (sel.Nodes.Count > 0) { tvModulesLessons.SelectedNode = sel.Nodes[0]; return; }
-                return;
-            }
-
-            // lesson node -> move to next sibling, or next module's first child
-            var parent = sel.Parent;
-            if (parent == null) return;
-            int idx = parent.Nodes.IndexOf(sel);
-            if (idx >= 0 && idx + 1 < parent.Nodes.Count)
-            {
-                tvModulesLessons.SelectedNode = parent.Nodes[idx + 1];
-                return;
-            }
-
-            // move to next module's first lesson
-            var moduleIdx = tvModulesLessons.Nodes.IndexOf(parent);
-            if (moduleIdx >= 0 && moduleIdx + 1 < tvModulesLessons.Nodes.Count)
-            {
-                var nextModule = tvModulesLessons.Nodes[moduleIdx + 1];
-                if (nextModule.Nodes.Count > 0) tvModulesLessons.SelectedNode = nextModule.Nodes[0];
-            }
-        }
-
-        private void BtnMarkCompleted_Click(object sender, EventArgs e)
-        {
-            if (_currentLesson == null)
-            {
-                MessageBox.Show("No lesson selected.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // toggle local completion state; ideally you would persist via ProgressRepository/Service
-            _currentLesson.IsCompleted = !_currentLesson.IsCompleted;
-            if (_currentLesson.IsCompleted) _completedLessonIds.Add(_currentLesson.LessonId);
-            else _completedLessonIds.Remove(_currentLesson.LessonId);
-
-            RefreshTreeNodeCompletionIcons();
-            UpdateCourseLessonInfo();
-
-            // Optionally notify user; persistence to DB omitted here (call repository/service in real code)
-            MessageBox.Show(_currentLesson.IsCompleted ? "Marked completed." : "Marked not completed.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private async void BtnSubmitQuiz_Click(object sender, EventArgs e)
-        {
-            await SubmitQuizAsync();
-        }
-
-        private void LvCodingProblems_DoubleClick(object sender, EventArgs e)
-        {
-            if (lvCodingProblems.SelectedItems.Count == 0) return;
-            var item = lvCodingProblems.SelectedItems[0];
-            var row = item.Tag as DataRow;
-            if (row != null)
-            {
-                var id = row.Table.Columns.Contains("ProblemID") && row["ProblemID"] != DBNull.Value ? row["ProblemID"].ToString() : "(unknown)";
-                var title = row.Table.Columns.Contains("Title") && row["Title"] != DBNull.Value ? row["Title"].ToString() : item.Text;
-                MessageBox.Show($"Open coding problem:\n{title}\nID: {id}", "Coding problem", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private TreeNode FindFirstLessonNode()
-        {
-            foreach (TreeNode module in tvModulesLessons.Nodes)
-            {
-                foreach (TreeNode ln in module.Nodes)
-                {
-                    if (ln.Tag is LessonDto) return ln;
-                }
-            }
-            return null;
-        }
-
-        private void UpdateCourseLessonInfo()
-        {
-            // enable/disable nav buttons and update mark-completed caption
-            var sel = tvModulesLessons.SelectedNode;
-            bool hasPrev = false, hasNext = false;
-            if (sel != null && sel.Parent != null)
-            {
-                var parent = sel.Parent;
-                int idx = parent.Nodes.IndexOf(sel);
-                hasPrev = idx > 0 || tvModulesLessons.Nodes.IndexOf(parent) > 0;
-                hasNext = idx < parent.Nodes.Count - 1 || tvModulesLessons.Nodes.IndexOf(parent) < tvModulesLessons.Nodes.Count - 1;
-            }
-            btnPrev.Enabled = hasPrev;
-            btnNext.Enabled = hasNext;
-
-            if (_currentLesson != null)
-            {
-                btnMarkCompleted.Text = _currentLesson.IsCompleted ? "Unmark completed" : "Mark completed";
+                // Optional: load coding problem UI (not implemented here)
+                ShowCodingPlaceholder();
             }
             else
             {
-                btnMarkCompleted.Text = "Mark completed";
+                LoadEmptyContent();
             }
+
+            UpdateDescription(lesson);
+            UpdateNavButtons();
         }
 
-        private void TryPrepareWebView2Type()
+        private void ShowCodingPlaceholder()
         {
-            try
+            pnlVideoArea.BackColor = Color.FromArgb(248, 249, 250);
+            var lbl = new Label
             {
-                // Attempt to find WebView2 WinForms type by full type name
-                _webView2Type = Type.GetType("Microsoft.Web.WebView2.WinForms.WebView2, Microsoft.Web.WebView2.WinForms");
-            }
-            catch
-            {
-                _webView2Type = null;
-            }
+                Text = "🧩 Bài tập lập trình (coding) — tính năng tương tác đang được phát triển.",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.FromArgb(108, 117, 125),
+                Font = new Font("Segoe UI", 13f, FontStyle.Regular)
+            };
+            pnlVideoArea.Controls.Add(lbl);
         }
 
-        // Data access helpers (lightweight fallbacks that try to read from DB; adjust SQL to your schema)
-        private DataTable FetchQuizQuestions(Guid lessonId)
+        private async Task LoadVideoContent(string url)
         {
-            try
-            {
-                // Schema: QuizQuestions references LessonQuizzes via LessonQuizId and stores Answers (JSON).
-                string sql = @"
-            SELECT QuestionID,
-                   Question AS QuestionText,
-                   Answers AS OptionsJson,
-                   CorrectIndex
-            FROM QuizQuestions
-            WHERE LessonQuizId = @L
-            ORDER BY QuestionID";
-                var dt = DbContext.Query(sql, new SqlParameter("@L", lessonId));
-                return dt ?? new DataTable();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("FetchQuizQuestions: " + ex.Message);
-                return new DataTable();
-            }
-        }
+            pnlVideoArea.BackColor = Color.Black;
 
-        private string FetchLessonVideoUrl(Guid lessonId)
-        {
-            try
+            if (_currentWebView == null)
             {
-                // Video URL is stored in LessonVideos table per your DDL.
-                var dt = DbContext.Query("SELECT TOP 1 VideoUrl FROM LessonVideos WHERE LessonID = @L", new SqlParameter("@L", lessonId));
-                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["VideoUrl"] != DBNull.Value)
-                    return dt.Rows[0]["VideoUrl"].ToString();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("FetchLessonVideoUrl: " + ex.Message);
-            }
-            return null;
-        }
+                _currentWebView = new WebView2 { Dock = DockStyle.Fill };
+                pnlVideoArea.Controls.Add(_currentWebView);
 
-        private DataTable FetchCodingProblemsForLesson(Guid lessonId)
-        {
-            try
-            {
-                // In your schema CodingProblems has LessonID directly (no join table).
-                string sql = @"
-            SELECT ProblemID, Title, Difficulty
-            FROM CodingProblems
-            WHERE LessonID = @L AND IsDeleted = 0
-            ORDER BY Title";
-                var dt = DbContext.Query(sql, new SqlParameter("@L", lessonId));
-                return dt ?? new DataTable();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("FetchCodingProblemsForLesson: " + ex.Message);
-                return new DataTable();
-            }
-        }
-
-        private void BuildQuizUi(DataTable quiz)
-        {
-            if (flpQuizQuestions.InvokeRequired)
-            {
-                flpQuizQuestions.Invoke(new Action<DataTable>(BuildQuizUi), quiz);
-                return;
-            }
-
-            flpQuizQuestions.Controls.Clear();
-            int qIndex = 0;
-            foreach (DataRow r in quiz.Rows)
-            {
-                var panel = new Panel { AutoSize = true, Tag = r, Padding = new Padding(6), Margin = new Padding(6) };
-                string qText = r.Table.Columns.Contains("QuestionText") && r["QuestionText"] != DBNull.Value
-                    ? r["QuestionText"].ToString()
-                    : r.Table.Columns.Contains("Question") && r["Question"] != DBNull.Value
-                        ? r["Question"].ToString()
-                        : "(Question)";
-
-                var lbl = new Label { AutoSize = true, Text = $"{++qIndex}. {qText}", MaximumSize = new Size(Math.Max(100, flpQuizQuestions.Width - 40), 0) };
-                panel.Controls.Add(lbl);
-
-                var optsPanel = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false, Margin = new Padding(4) };
-                string optsJson = r.Table.Columns.Contains("OptionsJson") && r["OptionsJson"] != DBNull.Value
-                    ? r["OptionsJson"].ToString()
-                    : r.Table.Columns.Contains("Answers") && r["Answers"] != DBNull.Value
-                        ? r["Answers"].ToString()
-                        : null;
-
-                var options = ParseJsonAnswers(optsJson);
-                for (int i = 0; i < options.Length; i++)
+                try
                 {
-                    var rb = new RadioButton { AutoSize = true, Text = options[i], Tag = i, Margin = new Padding(2) };
-                    optsPanel.Controls.Add(rb);
+                    await _currentWebView.EnsureCoreWebView2Async(null);
                 }
-
-                panel.Controls.Add(optsPanel);
-                flpQuizQuestions.Controls.Add(panel);
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khởi tạo WebView2: {ex.Message}\n\nVui lòng cài đặt Microsoft Edge WebView2 Runtime.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
-
-            _isQuizLoaded = true;
-        }
-
-        private bool IsVideoUrl(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url)) return false;
-            if (Uri.TryCreate(url, UriKind.Absolute, out var u))
+            else
             {
-                var ext = Path.GetExtension(u.AbsolutePath)?.ToLowerInvariant();
-                if (!string.IsNullOrEmpty(ext) && (ext == ".mp4" || ext == ".webm" || ext == ".ogg")) return true;
-                var host = u.Host.ToLowerInvariant();
-                if (host.Contains("youtube.com") || host.Contains("youtu.be") || host.Contains("vimeo.com")) return true;
-                // treat other absolute http(s) urls as playable externally
-                return u.Scheme.StartsWith("http");
+                if (!pnlVideoArea.Controls.Contains(_currentWebView))
+                    pnlVideoArea.Controls.Add(_currentWebView);
             }
-            // allow local file path
-            return File.Exists(url);
-        }
 
-        private bool IsEmbeddableVideoUrl(string url)
-        {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var u)) return false;
-            var host = u.Host.ToLowerInvariant();
-            return host.Contains("youtube.com") || host.Contains("youtu.be") || host.Contains("vimeo.com");
-        }
-
-        private string GenerateEmbedVideoHtml(string url)
-        {
             try
             {
                 if (url.Contains("youtube.com") || url.Contains("youtu.be"))
                 {
-                    string id = null;
-                    try
+                    string videoId = ExtractYouTubeVideoId(url);
+                    if (!string.IsNullOrEmpty(videoId))
                     {
-                        var uri = new Uri(url);
-                        if (uri.Host.Contains("youtu.be"))
-                        {
-                            id = uri.AbsolutePath.Trim('/');
-                        }
-                        else
-                        {
-                            var q = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                            id = q["v"];
-                        }
+                        string embedUrl = $"https://www.youtube.com/embed/{videoId}?autoplay=1&modestbranding=1&rel=0";
+                        _currentWebView.CoreWebView2.Navigate(embedUrl);
                     }
-                    catch { /* ignore parse errors */ }
-
-                    if (string.IsNullOrEmpty(id))
-                        return $"<iframe width='100%' height='480' src='{url}' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>";
-
-                    var src = $"https://www.youtube-nocookie.com/embed/{id}?rel=0&modestbranding=1&enablejsapi=1";
-                    return $"<!DOCTYPE html><html><head><meta charset='utf-8'></head><body style='margin:0'><iframe src='{src}' width='100%' height='480' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe></body></html>";
+                    else
+                    {
+                        ShowErrorMessage("Không thể phát video YouTube. URL không hợp lệ.");
+                    }
                 }
-
-                if (url.Contains("vimeo.com"))
+                else
                 {
-                    return $"<!DOCTYPE html><html><head><meta charset='utf-8'></head><body style='margin:0'><iframe src='{url}' width='100%' height='480' frameborder='0' allow='autoplay; fullscreen' allowfullscreen></iframe></body></html>";
+                    string html = $@"
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <style>
+                                * {{ margin:0; padding:0; }}
+                                body {{ background:#000; display:flex; align-items:center; justify-content:center; height:100vh; }}
+                                video {{ max-width:100%; max-height:100%; }}
+                            </style>
+                        </head>
+                        <body>
+                            <video controls autoplay>
+                                <source src='{url}' type='video/mp4'>
+                                Trình duyệt không hỗ trợ định dạng video này.
+                            </video>
+                        </body>
+                        </html>";
+                    _currentWebView.CoreWebView2.NavigateToString(html);
                 }
-
-                // generic video tag fallback
-                return $"<!DOCTYPE html><html><head><meta charset='utf-8'></head><body style='margin:0'><video width='100%' height='480' controls><source src='{url}' type='video/mp4'>Your browser does not support the video tag.</video></body></html>";
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("GenerateEmbedVideoHtml: " + ex.Message);
-                return $"<p>Unable to generate embed for {url}</p>";
+                ShowErrorMessage($"Không thể tải video: {ex.Message}");
             }
         }
 
-        private async Task<bool> TryUseWebView2NavigateAsync(string html)
+        private async Task LoadTextContent(string content)
         {
-            if (_webView2Type == null) return false;
+            pnlVideoArea.BackColor = Color.White;
+
+            if (_currentWebView == null)
+            {
+                _currentWebView = new WebView2 { Dock = DockStyle.Fill };
+                pnlVideoArea.Controls.Add(_currentWebView);
+                await _currentWebView.EnsureCoreWebView2Async(null);
+            }
+            else
+            {
+                if (!pnlVideoArea.Controls.Contains(_currentWebView))
+                    pnlVideoArea.Controls.Add(_currentWebView);
+            }
+
+            string html = $@"
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset='utf-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1'>
+                    <style>
+                        * {{ box-sizing: border-box; }}
+                        body {{ 
+                            font-family: 'Segoe UI', system-ui, sans-serif; 
+                            padding: 40px 60px; 
+                            font-size: 16px; 
+                            color: #212529; 
+                            line-height: 1.75; 
+                            background: #fff;
+                            max-width: 900px;
+                            margin: 0 auto;
+                        }}
+                        h1 {{ color: #1a1a1a; font-size: 2em; margin: 1.5em 0 0.5em; font-weight: 700; }}
+                        h2 {{ color: #333; font-size: 1.5em; margin: 1.25em 0 0.5em; font-weight: 600; }}
+                        h3 {{ color: #444; font-size: 1.25em; margin: 1em 0 0.5em; font-weight: 600; }}
+                        p {{ margin: 0 0 1.25em; }}
+                        pre {{ 
+                            background: #f8f9fa; 
+                            padding: 1em; 
+                            border-radius: 6px; 
+                            border-left: 3px solid #0d6efd; 
+                            overflow-x: auto;
+                            font-size: 14px;
+                            line-height: 1.5;
+                        }}
+                        code {{ 
+                            font-family: 'Consolas', monospace; 
+                            background: #f1f3f5;
+                            padding: 2px 6px;
+                            border-radius: 3px;
+                            color: #d63384;
+                            font-size: 0.9em;
+                        }}
+                        pre code {{ background: transparent; padding: 0; color: inherit; }}
+                        img {{ 
+                            max-width: 100%; 
+                            height: auto; 
+                            display: block; 
+                            margin: 1.5em auto;
+                            border-radius: 8px;
+                        }}
+                        ul, ol {{ margin: 0 0 1.25em 1.5em; padding: 0; }}
+                        li {{ margin-bottom: 0.5em; }}
+                        blockquote {{
+                            border-left: 4px solid #dee2e6;
+                            padding-left: 1em;
+                            margin: 1.5em 0;
+                            color: #6c757d;
+                        }}
+                        a {{ color: #0d6efd; text-decoration: none; }}
+                        a:hover {{ text-decoration: underline; }}
+                    </style>
+                </head>
+                <body>{content}</body>
+                </html>";
+
+            _currentWebView.CoreWebView2.NavigateToString(html);
+        }
+
+        private void LoadEmptyContent()
+        {
+            _currentWebView = null;
+            pnlVideoArea.BackColor = Color.FromArgb(248, 249, 250);
+            var lbl = new Label
+            {
+                Text = "📝 Nội dung đang được cập nhật...",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.FromArgb(108, 117, 125),
+                Font = new Font("Segoe UI", 13f, FontStyle.Regular)
+            };
+            pnlVideoArea.Controls.Add(lbl);
+        }
+
+        private void ShowErrorMessage(string message)
+        {
+            pnlVideoArea.Controls.Clear();
+            pnlVideoArea.BackColor = Color.FromArgb(248, 249, 250);
+            var lbl = new Label
+            {
+                Text = $"⚠️ {message}",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.FromArgb(220, 53, 69),
+                Font = new Font("Segoe UI", 12f, FontStyle.Regular)
+            };
+            pnlVideoArea.Controls.Add(lbl);
+        }
+
+        // =========================
+        // QUIZ RENDER & EVALUATION
+        // =========================
+
+        private void ClearQuizArea()
+        {
+            _currentQuizSelections.Clear();
+            _currentQuizQuestionBoxes.Clear();
+            if (_quizPanelContainer != null)
+            {
+                if (pnlVideoArea.Controls.Contains(_quizPanelContainer))
+                    pnlVideoArea.Controls.Remove(_quizPanelContainer);
+                _quizPanelContainer.Dispose();
+                _quizPanelContainer = null;
+            }
+        }
+
+        private void LoadQuizContent(LessonQuizDto quiz)
+        {
+            // Prepare container
+            _quizPanelContainer = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                BackColor = Color.White
+            };
+            pnlVideoArea.Controls.Add(_quizPanelContainer);
+
+            int margin = 12;
+            int y = margin;
+
+            // Title
+            var lblTitle = new Label
+            {
+                Text = quiz.Title ?? "Quiz",
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(33, 37, 41),
+                AutoSize = true,
+                Location = new Point(margin, y)
+            };
+            _quizPanelContainer.Controls.Add(lblTitle);
+            y += lblTitle.Height + 6;
+
+            if (!string.IsNullOrWhiteSpace(quiz.Description))
+            {
+                var lblDesc = new Label
+                {
+                    Text = quiz.Description,
+                    Font = new Font("Segoe UI", 10F),
+                    ForeColor = Color.FromArgb(90, 90, 90),
+                    AutoSize = false,
+                    Size = new Size(_quizPanelContainer.ClientSize.Width - margin * 2, 0),
+                    MaximumSize = new Size(_quizPanelContainer.ClientSize.Width - margin * 2, 200),
+                    Location = new Point(margin, y)
+                };
+                lblDesc.AutoSize = true;
+                _quizPanelContainer.Controls.Add(lblDesc);
+                y += lblDesc.Height + 12;
+            }
+
+            // Questions
+            _currentQuizQuestionBoxes.Clear();
+            _currentQuizSelections.Clear();
+
+            int qIndex = 0;
+            foreach (var q in quiz.Questions ?? new List<QuizQuestionDto>())
+            {
+                var grp = new GroupBox
+                {
+                    Text = $"Câu {qIndex + 1}",
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Location = new Point(margin, y),
+                    Size = new Size(Math.Max(600, _quizPanelContainer.ClientSize.Width - margin * 2), 140),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                    BackColor = Color.White
+                };
+
+                var lblQ = new Label
+                {
+                    Text = q.Question,
+                    Font = new Font("Segoe UI", 10F),
+                    Location = new Point(8, 24),
+                    AutoSize = true,
+                    MaximumSize = new Size(grp.Width - 20, 0)
+                };
+                grp.Controls.Add(lblQ);
+
+                int rbY = lblQ.Bottom + 8;
+                int answerIndex = 0;
+                var answers = q.Answers ?? Array.Empty<string>();
+
+                foreach (var ans in answers)
+                {
+                    var rb = new RadioButton
+                    {
+                        Text = ans,
+                        Tag = new { QuestionId = q.QuestionID, AnswerIndex = answerIndex },
+                        Location = new Point(12, rbY),
+                        AutoSize = true,
+                        Font = new Font("Segoe UI", 9F),
+                        ForeColor = Color.FromArgb(73, 80, 87)
+                    };
+                    rb.CheckedChanged += QuizAnswer_CheckedChanged;
+                    grp.Controls.Add(rb);
+                    rbY += rb.Height + 6;
+                    answerIndex++;
+                }
+
+                // Placeholder explanation label (hidden initially) so we can expand cleanly later
+                var lblExpPlaceholder = new Label
+                {
+                    Name = "lblExp",
+                    Text = "",
+                    Font = new Font("Segoe UI", 9F, FontStyle.Italic),
+                    ForeColor = Color.FromArgb(90, 90, 90),
+                    AutoSize = true,
+                    Location = new Point(8, rbY + 6),
+                    MaximumSize = new Size(grp.ClientSize.Width - 16, 0),
+                    Visible = false,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                };
+                grp.Controls.Add(lblExpPlaceholder);
+
+                // Reserve a small space so explanation won't overlap
+                grp.Height = rbY + 12 + 6;
+                _quizPanelContainer.Controls.Add(grp);
+                _currentQuizQuestionBoxes.Add(grp);
+
+                y += grp.Height + 8;
+                qIndex++;
+            }
+
+            // Submit button
+            var btnSubmit = new Button
+            {
+                Text = "Nộp bài",
+                BackColor = Color.FromArgb(13, 110, 253),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Size = new Size(120, 40),
+                Location = new Point(margin, y)
+            };
+            btnSubmit.FlatAppearance.BorderSize = 0;
+            btnSubmit.Click += (s, e) => EvaluateQuiz(quiz);
+            _quizPanelContainer.Controls.Add(btnSubmit);
+
+            // Ensure layout updates
+            _quizPanelContainer.PerformLayout();
+        }
+
+        private void QuizAnswer_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!(sender is RadioButton rb)) return;
+            if (!rb.Checked) return;
+
+            // Tag contains QuestionId and AnswerIndex
+            dynamic tag = rb.Tag;
+            Guid qid = tag.QuestionId;
+            int ansIndex = tag.AnswerIndex;
+
+            if (_currentQuizSelections.ContainsKey(qid))
+                _currentQuizSelections[qid] = ansIndex;
+            else
+                _currentQuizSelections.Add(qid, ansIndex);
+        }
+
+        // Replace EvaluateQuiz implementation with this improved version
+        private void EvaluateQuiz(LessonQuizDto quiz)
+        {
+            if (quiz?.Questions == null || quiz.Questions.Count == 0)
+            {
+                MessageBox.Show("Không có câu hỏi để đánh giá.", "Thông tin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int total = quiz.Questions.Count;
+            int correct = 0;
+
+            // 1. Bảng màu chuẩn (Style giống Bootstrap/Web hiện đại)
+            var colorCorrectText = Color.FromArgb(25, 135, 84);   // Xanh lá đậm
+            var colorWrongText = Color.FromArgb(220, 53, 69);     // Đỏ đậm
+            var colorMutedText = Color.FromArgb(108, 117, 125);   // Xám
+
+            var colorCorrectBg = Color.FromArgb(209, 231, 221);   // Nền xanh nhạt
+            var colorWrongBg = Color.FromArgb(248, 215, 218);     // Nền đỏ nhạt
+            var colorSkippedBg = Color.FromArgb(255, 243, 205);   // Nền vàng nhạt (cho câu chưa làm)
+
+            GroupBox firstWrongQuestion = null; // Để scroll tới câu sai đầu tiên
+
+            foreach (var q in quiz.Questions)
+            {
+                // Lấy đáp án người dùng chọn (-1 là chưa chọn)
+                int selected = _currentQuizSelections.TryGetValue(q.QuestionID, out var s) ? s : -1;
+                bool isCorrect = selected == q.CorrectIndex;
+                bool isSkipped = selected == -1;
+
+                if (isCorrect) correct++;
+
+                // Tìm GroupBox tương ứng trên giao diện
+                var grp = _currentQuizQuestionBoxes.FirstOrDefault(g => g.Controls.OfType<Label>().Any(l => l.Text == q.Question));
+                if (grp == null) continue;
+
+                // Lưu câu sai đầu tiên để tí nữa scroll tới
+                if (!isCorrect && firstWrongQuestion == null) firstWrongQuestion = grp;
+
+                // 2. Cập nhật Status Label (Góc trên phải)
+                var lblStatus = grp.Controls.OfType<Label>().FirstOrDefault(l => l.Name == "lblStatus");
+                if (lblStatus == null)
+                {
+                    lblStatus = new Label
+                    {
+                        Name = "lblStatus",
+                        AutoSize = true,
+                        Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                        Anchor = AnchorStyles.Top | AnchorStyles.Right
+                    };
+                    grp.Controls.Add(lblStatus);
+                }
+
+                if (isSkipped)
+                {
+                    lblStatus.Text = "● Chưa làm";
+                    lblStatus.ForeColor = Color.FromArgb(102, 77, 3); // Màu nâu vàng
+                    grp.BackColor = colorSkippedBg;
+                }
+                else if (isCorrect)
+                {
+                    lblStatus.Text = "✓ Đúng";
+                    lblStatus.ForeColor = colorCorrectText;
+                    grp.BackColor = colorCorrectBg;
+                }
+                else
+                {
+                    lblStatus.Text = "✖ Sai";
+                    lblStatus.ForeColor = colorWrongText;
+                    grp.BackColor = colorWrongBg;
+                }
+
+                // Căn chỉnh vị trí label status
+                lblStatus.Left = Math.Max(8, grp.ClientSize.Width - lblStatus.PreferredWidth - 12);
+                lblStatus.Top = 6;
+
+                // 3. Tô màu các đáp án (RadioButtons)
+                foreach (var rb in grp.Controls.OfType<RadioButton>())
+                {
+                    dynamic tag = rb.Tag;
+                    int answerIndex = tag.AnswerIndex; // Index của dòng này
+
+                    // Khóa không cho chọn lại
+                    rb.Enabled = false;
+
+                    // Giữ nguyên trạng thái đã check
+                    rb.Checked = (answerIndex == selected);
+
+                    // Logic tô màu chi tiết:
+                    if (answerIndex == q.CorrectIndex)
+                    {
+                        // Đây là ĐÁP ÁN ĐÚNG -> Luôn tô xanh đậm + in đậm (để user biết đâu là đúng)
+                        rb.ForeColor = colorCorrectText;
+                        rb.Font = new Font(rb.Font, FontStyle.Bold);
+
+                        // Nếu user chọn sai, thêm hậu tố "(Đáp án đúng)" để nhấn mạnh
+                        if (!isCorrect) rb.Text += "  (Đáp án đúng)";
+                    }
+                    else if (answerIndex == selected && !isCorrect)
+                    {
+                        // Đây là ĐÁP ÁN SAI mà user ĐÃ CHỌN -> Tô đỏ + in đậm
+                        rb.ForeColor = colorWrongText;
+                        rb.Font = new Font(rb.Font, FontStyle.Bold);
+                    }
+                    else
+                    {
+                        // Các đáp án khác -> Màu xám mờ
+                        rb.ForeColor = colorMutedText;
+                        rb.Font = new Font(rb.Font, FontStyle.Regular);
+                    }
+                }
+
+                // 4. Hiển thị giải thích (Explanation)
+                var lblExp = grp.Controls.OfType<Label>().FirstOrDefault(l => l.Name == "lblExp");
+                if (lblExp != null)
+                {
+                    // Set nội dung và hiển thị
+                    lblExp.Text = string.IsNullOrWhiteSpace(q.Explanation)
+                        ? "(Không có giải thích chi tiết)"
+                        : $"💡 Giải thích: {q.Explanation}";
+
+                    lblExp.Visible = true;
+                    lblExp.AutoSize = true;
+
+                    // Tính toán vị trí: Nằm dưới cùng của list đáp án
+                    int bottomOfAnswers = 0;
+                    foreach (Control c in grp.Controls)
+                    {
+                        if (c is RadioButton) bottomOfAnswers = Math.Max(bottomOfAnswers, c.Bottom);
+                    }
+
+                    lblExp.Location = new Point(8, bottomOfAnswers + 10);
+                    lblExp.MaximumSize = new Size(grp.ClientSize.Width - 16, 0); // Word wrap
+
+                    // Resize GroupBox để chứa đủ phần giải thích
+                    grp.Height = lblExp.Bottom + 15;
+                }
+            }
+
+            // 5. Scroll tới câu sai đầu tiên (UX Improvement)
+            if (firstWrongQuestion != null)
+            {
+                _quizPanelContainer.ScrollControlIntoView(firstWrongQuestion);
+            }
+            else
+            {
+                // Nếu đúng hết thì scroll xuống cuối (chỗ nút nộp bài)
+                _quizPanelContainer.AutoScrollPosition = new Point(0, _quizPanelContainer.VerticalScroll.Maximum);
+            }
+
+            // 6. Tổng kết và lưu tiến độ
+            MessageBox.Show($"Bạn đúng {correct} / {total} câu.", "Kết quả Quiz", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            if (correct == total && _currentLesson != null)
+            {
+                var user = GlobalStore.user;
+                if (user != null)
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await _progressService.MarkLessonCompletedAsync(user.UserID, _currentLesson.LessonID);
+                        }
+                        catch { /* ignore */ }
+                    });
+                }
+            }
+        }
+
+        private void UpdateDescription(LessonDto lesson)
+        {
+            string type = (lesson.LessonType ?? "").ToLower();
+            string typeText = type == "video" ? "Video bài học" :
+                             type == "text" ? "Nội dung văn bản" :
+                             type == "quiz" ? "Bài kiểm tra" :
+                             "Bài học";
+
+            wbDescription.DocumentText = $@"
+                <html>
+                <head>
+                    <meta charset='utf-8'>
+                    <style>
+                        body {{ font-family:'Segoe UI'; padding:12px; color:#212529; margin:0; }}
+                        h3 {{ margin:0 0 8px 0; font-size:16px; }}
+                        p {{ color:#6c757d; margin:0; font-size:13px; }}
+                    </style>
+                </head>
+                <body>
+                    <h3>{lesson.Title}</h3>
+                    <p>{typeText}</p>
+                </body>
+                </html>";
+        }
+
+        private string ExtractYouTubeVideoId(string url)
+        {
+            try
+            {
+                // youtu.be format
+                if (url.Contains("youtu.be/"))
+                {
+                    var match = Regex.Match(url, @"youtu\.be/([a-zA-Z0-9_-]{11})");
+                    if (match.Success) return match.Groups[1].Value;
+                }
+
+                // youtube.com/watch format
+                if (url.Contains("youtube.com/watch"))
+                {
+                    var match = Regex.Match(url, @"[?&]v=([a-zA-Z0-9_-]{11})");
+                    if (match.Success) return match.Groups[1].Value;
+                }
+
+                // youtube.com/embed format
+                if (url.Contains("youtube.com/embed/"))
+                {
+                    var match = Regex.Match(url, @"embed/([a-zA-Z0-9_-]{11})");
+                    if (match.Success) return match.Groups[1].Value;
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
+        // =========================================================
+        // PROGRESS TRACKING
+        // =========================================================
+        private async Task MarkLessonCompleted()
+        {
+            if (_currentLesson == null) return;
+
+            var user = GlobalStore.user;
+            if (user == null)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để lưu tiến độ học tập.", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             try
             {
-                var instance = Activator.CreateInstance(_webView2Type);
-                if (instance == null) return false;
+                bool success = await _progressService.MarkLessonCompletedAsync(user.UserID, _currentLesson.LessonID);
 
-                if (!(instance is Control createdControl)) return false;
-
-                // call EnsureCoreWebView2Async if available (await so NavigateToString works)
-                var ensureMethod = _webView2Type.GetMethod("EnsureCoreWebView2Async", Type.EmptyTypes)
-                                   ?? _webView2Type.GetMethod("EnsureCoreWebView2Async", new[] { typeof(object) });
-
-                if (ensureMethod != null)
+                if (success)
                 {
-                    var taskObj = ensureMethod.GetParameters().Length == 0
-                        ? ensureMethod.Invoke(instance, null)
-                        : ensureMethod.Invoke(instance, new object[] { null });
+                    _currentLesson.IsCompleted = true;
+                    UpdateNavButtons();
+                    RefreshSidebar();
+                    UpdateProgressBar();
 
-                    if (taskObj is Task t) await t;
+                    int idx = _flatLessonList.IndexOf(_currentLesson);
+                    if (idx < _flatLessonList.Count - 1)
+                    {
+                        await Task.Delay(500);
+                        await LoadLessonContentAsync(_flatLessonList[idx + 1]);
+                    }
                     else
                     {
-                        try { await (dynamic)taskObj; } catch { /* best-effort */ }
+                        MessageBox.Show("🎉 Chúc mừng! Bạn đã hoàn thành khóa học này!", "Hoàn thành", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
-
-                var parent = wbVideo?.Parent;
-                if (parent != null)
+                else
                 {
-                    // insert WebView2 control and remove legacy WebBrowser
-                    createdControl.Dock = DockStyle.Fill;
-                    parent.Controls.Add(createdControl);
-                    parent.Controls.Remove(wbVideo);
-                }
-
-                var nav = _webView2Type.GetMethod("NavigateToString", new[] { typeof(string) });
-                if (nav != null)
-                {
-                    nav.Invoke(instance, new object[] { html });
-                    _webView2Instance = instance;
-                    return true;
+                    MessageBox.Show("Không thể cập nhật tiến độ. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("TryUseWebView2NavigateAsync: " + ex.Message);
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            return false;
         }
 
-        private void splitMain_SplitterMoved(object sender, SplitterEventArgs e)
+        private void UpdateProgressBar()
         {
+            if (_flatLessonList.Count == 0) return;
 
+            int completedCount = _flatLessonList.Count(l => l.IsCompleted);
+            int percent = (completedCount * 100) / _flatLessonList.Count;
+
+            pbProgress.Value = Math.Min(percent, 100);
+            lblProgress.Text = $"{completedCount}/{_flatLessonList.Count}";
+        }
+
+        private void RefreshSidebar()
+        {
+            foreach (Control c in flpCurriculum.Controls)
+            {
+                if (c is Panel pnlMod)
+                {
+                    foreach (Control child in pnlMod.Controls)
+                    {
+                        if (child is FlowLayoutPanel flp)
+                        {
+                            foreach (Control btn in flp.Controls)
+                            {
+                                if (btn is Button button && button.Tag is LessonDto les)
+                                {
+                                    string icon = les.IsCompleted ? "✓" : (les.LessonType?.ToLower() == "video" ? "▶" : "📄");
+                                    button.Text = $"   {icon}   {les.Title}";
+                                    button.ForeColor = les.IsCompleted ? Color.FromArgb(40, 167, 69) : Color.FromArgb(73, 80, 87);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void UpdateNavButtons()
+        {
+            if (_currentLesson == null) return;
+
+            int idx = _flatLessonList.IndexOf(_currentLesson);
+            btnPrev.Enabled = idx > 0;
+            btnNext.Enabled = idx < _flatLessonList.Count - 1;
+
+            if (_currentLesson.IsCompleted)
+            {
+                btnMarkCompleted.Text = "✓ Đã hoàn thành";
+                btnMarkCompleted.BackColor = Color.FromArgb(108, 117, 125);
+                btnMarkCompleted.Enabled = false;
+            }
+            else
+            {
+                btnMarkCompleted.Text = "✓ Hoàn thành bài";
+                btnMarkCompleted.BackColor = Color.FromArgb(40, 167, 69);
+                btnMarkCompleted.Enabled = true;
+            }
+        }
+
+        private void HighlightCurrentLesson(LessonDto current)
+        {
+            foreach (Control c in flpCurriculum.Controls)
+            {
+                if (c is Panel pnlMod)
+                {
+                    foreach (Control child in pnlMod.Controls)
+                    {
+                        if (child is FlowLayoutPanel flp)
+                        {
+                            bool foundInModule = false;
+
+                            foreach (Control btn in flp.Controls)
+                            {
+                                if (btn is Button button)
+                                {
+                                    if (button.Tag == current)
+                                    {
+                                        button.BackColor = Color.FromArgb(207, 226, 255);
+                                        button.Font = new Font("Segoe UI", 9.25f, FontStyle.Bold);
+                                        if (!current.IsCompleted)
+                                            button.ForeColor = Color.FromArgb(13, 110, 253);
+                                        foundInModule = true;
+                                    }
+                                    else if (button.Tag is LessonDto les)
+                                    {
+                                        button.BackColor = Color.White;
+                                        button.Font = new Font("Segoe UI", 9.25f, FontStyle.Regular);
+                                        button.ForeColor = les.IsCompleted ? Color.FromArgb(40, 167, 69) : Color.FromArgb(73, 80, 87);
+                                    }
+                                }
+                            }
+
+                            if (foundInModule && !flp.Visible)
+                            {
+                                flp.Visible = true;
+                                foreach (Control headerCtrl in pnlMod.Controls)
+                                {
+                                    if (headerCtrl is Button headerBtn && headerCtrl.Dock == DockStyle.Top)
+                                    {
+                                        string title = headerBtn.Text.Replace("▶", "").Replace("▼", "").Trim();
+                                        headerBtn.Text = "▼  " + title;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void NavigateLesson(int direction)
+        {
+            if (_currentLesson == null) return;
+
+            int idx = _flatLessonList.IndexOf(_currentLesson);
+            int newIdx = idx + direction;
+
+            if (newIdx >= 0 && newIdx < _flatLessonList.Count)
+            {
+                await LoadLessonContentAsync(_flatLessonList[newIdx]);
+            }
         }
     }
 }
