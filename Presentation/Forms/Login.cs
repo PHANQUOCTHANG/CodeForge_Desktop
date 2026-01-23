@@ -201,5 +201,18 @@ namespace CodeForge_Desktop.Presentation.Forms
             Registration registrationForm = new Registration();
             registrationForm.Show();
         }
+
+        private void lblQuenMKLink_Click(object sender, EventArgs e)
+        {
+            using (var forgotForm = new ForgotPassword())
+            {
+                forgotForm.StartPosition = FormStartPosition.CenterParent;
+                forgotForm.ShowDialog(this);
+            }
+
+            // After closing ForgotPassword, clear password field and focus username
+            txtPassword.Clear();
+            txtUsername.Focus();
+        }
     }
 }
