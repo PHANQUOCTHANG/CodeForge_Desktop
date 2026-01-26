@@ -2,370 +2,212 @@
 {
     partial class ucSystemLogs
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlTop = new System.Windows.Forms.Panel();
-            this.btnApply = new System.Windows.Forms.Button();
+            this.lblTotalLogs = new System.Windows.Forms.Label();
             this.cmbSource = new System.Windows.Forms.ComboBox();
             this.cmbLevel = new System.Windows.Forms.ComboBox();
+            this.btnFilter = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
-            this.pnlStats = new System.Windows.Forms.Panel();
-            this.tblStats = new System.Windows.Forms.TableLayoutPanel();
-            this.pnlTotal = new System.Windows.Forms.Panel();
-            this.lblValTotal = new System.Windows.Forms.Label();
-            this.lblTitleTotal = new System.Windows.Forms.Label();
-            this.pnlError = new System.Windows.Forms.Panel();
-            this.lblValError = new System.Windows.Forms.Label();
-            this.lblTitleError = new System.Windows.Forms.Label();
-            this.pnlWarning = new System.Windows.Forms.Panel();
-            this.lblValWarning = new System.Windows.Forms.Label();
-            this.lblTitleWarning = new System.Windows.Forms.Label();
-            this.pnlInfo = new System.Windows.Forms.Panel();
-            this.lblValInfo = new System.Windows.Forms.Label();
-            this.lblTitleInfo = new System.Windows.Forms.Label();
-            this.pnlGridContainer = new System.Windows.Forms.Panel();
             this.dgvLogs = new System.Windows.Forms.DataGridView();
             this.colTimestamp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSource = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colUser = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pnlFooter = new System.Windows.Forms.Panel();
-            this.lblFooterStatus = new System.Windows.Forms.Label();
-            this.btnExport = new System.Windows.Forms.Button();
+            this.colUser = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pnlBottom = new System.Windows.Forms.Panel();
+            this.pnlPagination = new System.Windows.Forms.Panel();
+            this.btnNext = new System.Windows.Forms.Button();
+            this.lblPageInfo = new System.Windows.Forms.Label();
+            this.btnPrev = new System.Windows.Forms.Button();
+            this.flowBadges = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblInfoBadge = new System.Windows.Forms.Label();
+            this.lblWarningBadge = new System.Windows.Forms.Label();
+            this.lblErrorBadge = new System.Windows.Forms.Label();
             this.pnlTop.SuspendLayout();
-            this.pnlStats.SuspendLayout();
-            this.tblStats.SuspendLayout();
-            this.pnlTotal.SuspendLayout();
-            this.pnlError.SuspendLayout();
-            this.pnlWarning.SuspendLayout();
-            this.pnlInfo.SuspendLayout();
-            this.pnlGridContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLogs)).BeginInit();
-            this.pnlFooter.SuspendLayout();
+            this.pnlBottom.SuspendLayout();
+            this.pnlPagination.SuspendLayout();
+            this.flowBadges.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlTop
             // 
-            this.pnlTop.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pnlTop.Controls.Add(this.btnApply);
+            this.pnlTop.BackColor = System.Drawing.Color.White;
+            this.pnlTop.Controls.Add(this.lblTotalLogs);
             this.pnlTop.Controls.Add(this.cmbSource);
             this.pnlTop.Controls.Add(this.cmbLevel);
+            this.pnlTop.Controls.Add(this.btnFilter);
             this.pnlTop.Controls.Add(this.btnExport);
             this.pnlTop.Controls.Add(this.btnRefresh);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(1100, 50);
+            this.pnlTop.Padding = new System.Windows.Forms.Padding(15);
+            this.pnlTop.Size = new System.Drawing.Size(1200, 60);
             this.pnlTop.TabIndex = 0;
             // 
-            // btnApply
+            // lblTotalLogs
             // 
-            this.btnApply.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnApply.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.btnApply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnApply.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnApply.Location = new System.Drawing.Point(345, 10);
-            this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(75, 30);
-            this.btnApply.TabIndex = 4;
-            this.btnApply.Text = "Lọc";
-            this.btnApply.UseVisualStyleBackColor = false;
+            this.lblTotalLogs.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblTotalLogs.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblTotalLogs.ForeColor = System.Drawing.Color.OrangeRed;
+            this.lblTotalLogs.Location = new System.Drawing.Point(1000, 15);
+            this.lblTotalLogs.Name = "lblTotalLogs";
+            this.lblTotalLogs.Size = new System.Drawing.Size(185, 30);
+            this.lblTotalLogs.TabIndex = 5;
+            this.lblTotalLogs.Text = "Total Logs: 0";
+            this.lblTotalLogs.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmbSource
             // 
-            this.cmbSource.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSource.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbSource.ForeColor = System.Drawing.Color.OrangeRed;
             this.cmbSource.FormattingEnabled = true;
             this.cmbSource.Items.AddRange(new object[] {
             "All Sources",
             "Auth",
             "System",
             "Database"});
-            this.cmbSource.Location = new System.Drawing.Point(235, 11);
+            this.cmbSource.Location = new System.Drawing.Point(326, 14);
             this.cmbSource.Name = "cmbSource";
-            this.cmbSource.Size = new System.Drawing.Size(100, 28);
+            this.cmbSource.Size = new System.Drawing.Size(100, 31);
             this.cmbSource.TabIndex = 3;
-            this.cmbSource.Text = "All Sources";
             // 
             // cmbLevel
             // 
-            this.cmbLevel.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbLevel.BackColor = System.Drawing.SystemColors.Window;
+            this.cmbLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLevel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbLevel.ForeColor = System.Drawing.Color.Tomato;
             this.cmbLevel.FormattingEnabled = true;
             this.cmbLevel.Items.AddRange(new object[] {
             "All Levels",
             "INFO",
             "WARNING",
             "ERROR"});
-            this.cmbLevel.Location = new System.Drawing.Point(125, 11);
+            this.cmbLevel.Location = new System.Drawing.Point(215, 14);
             this.cmbLevel.Name = "cmbLevel";
-            this.cmbLevel.Size = new System.Drawing.Size(100, 28);
+            this.cmbLevel.Size = new System.Drawing.Size(100, 31);
             this.cmbLevel.TabIndex = 2;
-            this.cmbLevel.Text = "All Levels";
+            // 
+            // btnFilter
+            // 
+            this.btnFilter.BackColor = System.Drawing.Color.White;
+            this.btnFilter.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnFilter.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.btnFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFilter.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnFilter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnFilter.Location = new System.Drawing.Point(440, 12);
+            this.btnFilter.Name = "btnFilter";
+            this.btnFilter.Size = new System.Drawing.Size(80, 36);
+            this.btnFilter.TabIndex = 4;
+            this.btnFilter.Text = "Filter";
+            this.btnFilter.UseVisualStyleBackColor = false;
+            // 
+            // btnExport
+            // 
+            this.btnExport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExport.FlatAppearance.BorderSize = 0;
+            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExport.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExport.ForeColor = System.Drawing.Color.White;
+            this.btnExport.Location = new System.Drawing.Point(115, 12);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(90, 36);
+            this.btnExport.TabIndex = 1;
+            this.btnExport.Text = "📥 Export";
+            this.btnExport.UseVisualStyleBackColor = false;
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.BackColor = System.Drawing.Color.White;
-            this.btnRefresh.FlatAppearance.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.btnRefresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(110)))), ((int)(((byte)(253)))));
+            this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRefresh.FlatAppearance.BorderSize = 0;
             this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnRefresh.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.btnRefresh.Location = new System.Drawing.Point(1005, 10);
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.btnRefresh.ForeColor = System.Drawing.Color.White;
+            this.btnRefresh.Location = new System.Drawing.Point(15, 12);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(80, 30);
+            this.btnRefresh.Size = new System.Drawing.Size(90, 36);
             this.btnRefresh.TabIndex = 0;
             this.btnRefresh.Text = "↻ Refresh";
             this.btnRefresh.UseVisualStyleBackColor = false;
-            // 
-            // pnlStats
-            // 
-            this.pnlStats.Controls.Add(this.tblStats);
-            this.pnlStats.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlStats.Location = new System.Drawing.Point(0, 50);
-            this.pnlStats.Name = "pnlStats";
-            this.pnlStats.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlStats.Size = new System.Drawing.Size(1100, 100);
-            this.pnlStats.TabIndex = 1;
-            // 
-            // tblStats
-            // 
-            this.tblStats.ColumnCount = 4;
-            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblStats.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblStats.Controls.Add(this.pnlTotal, 3, 0);
-            this.tblStats.Controls.Add(this.pnlError, 2, 0);
-            this.tblStats.Controls.Add(this.pnlWarning, 1, 0);
-            this.tblStats.Controls.Add(this.pnlInfo, 0, 0);
-            this.tblStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblStats.Location = new System.Drawing.Point(10, 10);
-            this.tblStats.Name = "tblStats";
-            this.tblStats.RowCount = 1;
-            this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblStats.Size = new System.Drawing.Size(1080, 80);
-            this.tblStats.TabIndex = 0;
-            // 
-            // pnlTotal
-            // 
-            this.pnlTotal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
-            this.pnlTotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlTotal.Controls.Add(this.lblValTotal);
-            this.pnlTotal.Controls.Add(this.lblTitleTotal);
-            this.pnlTotal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTotal.Location = new System.Drawing.Point(813, 3);
-            this.pnlTotal.Name = "pnlTotal";
-            this.pnlTotal.Size = new System.Drawing.Size(264, 74);
-            this.pnlTotal.TabIndex = 3;
-            // 
-            // lblValTotal
-            // 
-            this.lblValTotal.AutoSize = true;
-            this.lblValTotal.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblValTotal.ForeColor = System.Drawing.Color.DimGray;
-            this.lblValTotal.Location = new System.Drawing.Point(10, 30);
-            this.lblValTotal.Name = "lblValTotal";
-            this.lblValTotal.Size = new System.Drawing.Size(49, 37);
-            this.lblValTotal.TabIndex = 1;
-            this.lblValTotal.Text = "10";
-            // 
-            // lblTitleTotal
-            // 
-            this.lblTitleTotal.AutoSize = true;
-            this.lblTitleTotal.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblTitleTotal.ForeColor = System.Drawing.Color.Gray;
-            this.lblTitleTotal.Location = new System.Drawing.Point(10, 5);
-            this.lblTitleTotal.Name = "lblTitleTotal";
-            this.lblTitleTotal.Size = new System.Drawing.Size(42, 20);
-            this.lblTitleTotal.TabIndex = 0;
-            this.lblTitleTotal.Text = "Total";
-            // 
-            // pnlError
-            // 
-            this.pnlError.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
-            this.pnlError.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlError.Controls.Add(this.lblValError);
-            this.pnlError.Controls.Add(this.lblTitleError);
-            this.pnlError.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlError.Location = new System.Drawing.Point(543, 3);
-            this.pnlError.Name = "pnlError";
-            this.pnlError.Size = new System.Drawing.Size(264, 74);
-            this.pnlError.TabIndex = 2;
-            // 
-            // lblValError
-            // 
-            this.lblValError.AutoSize = true;
-            this.lblValError.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblValError.ForeColor = System.Drawing.Color.Crimson;
-            this.lblValError.Location = new System.Drawing.Point(10, 30);
-            this.lblValError.Name = "lblValError";
-            this.lblValError.Size = new System.Drawing.Size(33, 37);
-            this.lblValError.TabIndex = 1;
-            this.lblValError.Text = "2";
-            // 
-            // lblTitleError
-            // 
-            this.lblTitleError.AutoSize = true;
-            this.lblTitleError.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblTitleError.ForeColor = System.Drawing.Color.Gray;
-            this.lblTitleError.Location = new System.Drawing.Point(10, 5);
-            this.lblTitleError.Name = "lblTitleError";
-            this.lblTitleError.Size = new System.Drawing.Size(55, 20);
-            this.lblTitleError.TabIndex = 0;
-            this.lblTitleError.Text = "ERROR";
-            // 
-            // pnlWarning
-            // 
-            this.pnlWarning.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(250)))), ((int)(((byte)(240)))));
-            this.pnlWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlWarning.Controls.Add(this.lblValWarning);
-            this.pnlWarning.Controls.Add(this.lblTitleWarning);
-            this.pnlWarning.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlWarning.Location = new System.Drawing.Point(273, 3);
-            this.pnlWarning.Name = "pnlWarning";
-            this.pnlWarning.Size = new System.Drawing.Size(264, 74);
-            this.pnlWarning.TabIndex = 1;
-            // 
-            // lblValWarning
-            // 
-            this.lblValWarning.AutoSize = true;
-            this.lblValWarning.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblValWarning.ForeColor = System.Drawing.Color.Orange;
-            this.lblValWarning.Location = new System.Drawing.Point(10, 30);
-            this.lblValWarning.Name = "lblValWarning";
-            this.lblValWarning.Size = new System.Drawing.Size(33, 37);
-            this.lblValWarning.TabIndex = 1;
-            this.lblValWarning.Text = "2";
-            // 
-            // lblTitleWarning
-            // 
-            this.lblTitleWarning.AutoSize = true;
-            this.lblTitleWarning.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblTitleWarning.ForeColor = System.Drawing.Color.Gray;
-            this.lblTitleWarning.Location = new System.Drawing.Point(10, 5);
-            this.lblTitleWarning.Name = "lblTitleWarning";
-            this.lblTitleWarning.Size = new System.Drawing.Size(77, 20);
-            this.lblTitleWarning.TabIndex = 0;
-            this.lblTitleWarning.Text = "WARNING";
-            // 
-            // pnlInfo
-            // 
-            this.pnlInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(248)))), ((int)(((byte)(255)))));
-            this.pnlInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlInfo.Controls.Add(this.lblValInfo);
-            this.pnlInfo.Controls.Add(this.lblTitleInfo);
-            this.pnlInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlInfo.Location = new System.Drawing.Point(3, 3);
-            this.pnlInfo.Name = "pnlInfo";
-            this.pnlInfo.Size = new System.Drawing.Size(264, 74);
-            this.pnlInfo.TabIndex = 0;
-            // 
-            // lblValInfo
-            // 
-            this.lblValInfo.AutoSize = true;
-            this.lblValInfo.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblValInfo.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lblValInfo.Location = new System.Drawing.Point(10, 30);
-            this.lblValInfo.Name = "lblValInfo";
-            this.lblValInfo.Size = new System.Drawing.Size(33, 37);
-            this.lblValInfo.TabIndex = 1;
-            this.lblValInfo.Text = "6";
-            // 
-            // lblTitleInfo
-            // 
-            this.lblTitleInfo.AutoSize = true;
-            this.lblTitleInfo.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblTitleInfo.ForeColor = System.Drawing.Color.Gray;
-            this.lblTitleInfo.Location = new System.Drawing.Point(10, 5);
-            this.lblTitleInfo.Name = "lblTitleInfo";
-            this.lblTitleInfo.Size = new System.Drawing.Size(42, 20);
-            this.lblTitleInfo.TabIndex = 0;
-            this.lblTitleInfo.Text = "INFO";
-            // 
-            // pnlGridContainer
-            // 
-            this.pnlGridContainer.Controls.Add(this.dgvLogs);
-            this.pnlGridContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlGridContainer.Location = new System.Drawing.Point(0, 150);
-            this.pnlGridContainer.Name = "pnlGridContainer";
-            this.pnlGridContainer.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.pnlGridContainer.Size = new System.Drawing.Size(1100, 510);
-            this.pnlGridContainer.TabIndex = 2;
             // 
             // dgvLogs
             // 
             this.dgvLogs.AllowUserToAddRows = false;
             this.dgvLogs.AllowUserToDeleteRows = false;
-            this.dgvLogs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvLogs.BackgroundColor = System.Drawing.Color.White;
             this.dgvLogs.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvLogs.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dgvLogs.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvLogs.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            this.dgvLogs.ColumnHeadersHeight = 35;
+            this.dgvLogs.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            dataGridViewCellStyle7.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvLogs.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            this.dgvLogs.ColumnHeadersHeight = 45;
             this.dgvLogs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvLogs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colTimestamp,
             this.colLevel,
             this.colSource,
-            this.colUser,
-            this.colMessage});
+            this.colMessage,
+            this.colUser});
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            dataGridViewCellStyle8.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLogs.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvLogs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvLogs.EnableHeadersVisualStyles = false;
-            this.dgvLogs.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dgvLogs.Location = new System.Drawing.Point(10, 0);
+            this.dgvLogs.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.dgvLogs.Location = new System.Drawing.Point(0, 60);
             this.dgvLogs.Name = "dgvLogs";
             this.dgvLogs.ReadOnly = true;
             this.dgvLogs.RowHeadersVisible = false;
             this.dgvLogs.RowHeadersWidth = 51;
-            this.dgvLogs.RowTemplate.Height = 30;
+            this.dgvLogs.RowTemplate.Height = 45;
             this.dgvLogs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvLogs.Size = new System.Drawing.Size(1080, 510);
+            this.dgvLogs.Size = new System.Drawing.Size(1200, 630);
             this.dgvLogs.TabIndex = 0;
             // 
             // colTimestamp
             // 
-            this.colTimestamp.FillWeight = 20F;
             this.colTimestamp.HeaderText = "Timestamp";
             this.colTimestamp.MinimumWidth = 6;
             this.colTimestamp.Name = "colTimestamp";
             this.colTimestamp.ReadOnly = true;
+            this.colTimestamp.Width = 160;
             // 
             // colLevel
             // 
-            this.colLevel.FillWeight = 10F;
             this.colLevel.HeaderText = "Level";
             this.colLevel.MinimumWidth = 6;
             this.colLevel.Name = "colLevel";
@@ -373,93 +215,153 @@
             // 
             // colSource
             // 
-            this.colSource.FillWeight = 15F;
             this.colSource.HeaderText = "Source";
             this.colSource.MinimumWidth = 6;
             this.colSource.Name = "colSource";
             this.colSource.ReadOnly = true;
-            // 
-            // colUser
-            // 
-            this.colUser.FillWeight = 15F;
-            this.colUser.HeaderText = "User";
-            this.colUser.MinimumWidth = 6;
-            this.colUser.Name = "colUser";
-            this.colUser.ReadOnly = true;
+            this.colSource.Width = 120;
             // 
             // colMessage
             // 
-            this.colMessage.FillWeight = 40F;
+            this.colMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colMessage.HeaderText = "Message";
             this.colMessage.MinimumWidth = 6;
             this.colMessage.Name = "colMessage";
             this.colMessage.ReadOnly = true;
             // 
-            // pnlFooter
+            // colUser
             // 
-            this.pnlFooter.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pnlFooter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlFooter.Controls.Add(this.lblFooterStatus);
-            this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlFooter.Location = new System.Drawing.Point(0, 660);
-            this.pnlFooter.Name = "pnlFooter";
-            this.pnlFooter.Size = new System.Drawing.Size(1100, 40);
-            this.pnlFooter.TabIndex = 3;
+            this.colUser.HeaderText = "User";
+            this.colUser.MinimumWidth = 6;
+            this.colUser.Name = "colUser";
+            this.colUser.ReadOnly = true;
+            this.colUser.Width = 120;
             // 
-            // lblFooterStatus
+            // pnlBottom
             // 
-            this.lblFooterStatus.AutoSize = true;
-            this.lblFooterStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblFooterStatus.ForeColor = System.Drawing.Color.Gray;
-            this.lblFooterStatus.Location = new System.Drawing.Point(10, 10);
-            this.lblFooterStatus.Name = "lblFooterStatus";
-            this.lblFooterStatus.Size = new System.Drawing.Size(227, 20);
-            this.lblFooterStatus.TabIndex = 0;
-            this.lblFooterStatus.Text = "Hiển thị 10 logs | Last updated: ...";
+            this.pnlBottom.BackColor = System.Drawing.Color.White;
+            this.pnlBottom.Controls.Add(this.pnlPagination);
+            this.pnlBottom.Controls.Add(this.flowBadges);
+            this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlBottom.Location = new System.Drawing.Point(0, 690);
+            this.pnlBottom.Name = "pnlBottom";
+            this.pnlBottom.Padding = new System.Windows.Forms.Padding(15, 10, 15, 10);
+            this.pnlBottom.Size = new System.Drawing.Size(1200, 60);
+            this.pnlBottom.TabIndex = 2;
             // 
-            // btnExport
+            // pnlPagination
             // 
-            this.btnExport.BackColor = System.Drawing.Color.White;
-            this.btnExport.FlatAppearance.BorderColor = System.Drawing.Color.SeaGreen;
-            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExport.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnExport.ForeColor = System.Drawing.Color.SeaGreen;
-            this.btnExport.Image = global::CodeForge_Desktop.Properties.Resources.export;
-            this.btnExport.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnExport.Location = new System.Drawing.Point(15, 10);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(88, 30);
-            this.btnExport.TabIndex = 1;
-            this.btnExport.Text = "   Export";
-            this.btnExport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnExport.UseVisualStyleBackColor = false;
+            this.pnlPagination.Controls.Add(this.btnNext);
+            this.pnlPagination.Controls.Add(this.lblPageInfo);
+            this.pnlPagination.Controls.Add(this.btnPrev);
+            this.pnlPagination.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlPagination.Location = new System.Drawing.Point(885, 10);
+            this.pnlPagination.Name = "pnlPagination";
+            this.pnlPagination.Size = new System.Drawing.Size(300, 40);
+            this.pnlPagination.TabIndex = 1;
+            // 
+            // btnNext
+            // 
+            this.btnNext.BackColor = System.Drawing.Color.Transparent;
+            this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNext.ForeColor = System.Drawing.Color.Chartreuse;
+            this.btnNext.Location = new System.Drawing.Point(205, 5);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(75, 30);
+            this.btnNext.TabIndex = 0;
+            this.btnNext.Text = "Next >";
+            this.btnNext.UseVisualStyleBackColor = false;
+            // 
+            // lblPageInfo
+            // 
+            this.lblPageInfo.AutoSize = true;
+            this.lblPageInfo.Location = new System.Drawing.Point(125, 12);
+            this.lblPageInfo.Name = "lblPageInfo";
+            this.lblPageInfo.Size = new System.Drawing.Size(67, 16);
+            this.lblPageInfo.TabIndex = 1;
+            this.lblPageInfo.Text = "Page 1 / 1";
+            // 
+            // btnPrev
+            // 
+            this.btnPrev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPrev.ForeColor = System.Drawing.Color.Goldenrod;
+            this.btnPrev.Location = new System.Drawing.Point(40, 5);
+            this.btnPrev.Name = "btnPrev";
+            this.btnPrev.Size = new System.Drawing.Size(75, 30);
+            this.btnPrev.TabIndex = 2;
+            this.btnPrev.Text = "< Prev";
+            // 
+            // flowBadges
+            // 
+            this.flowBadges.Controls.Add(this.lblInfoBadge);
+            this.flowBadges.Controls.Add(this.lblWarningBadge);
+            this.flowBadges.Controls.Add(this.lblErrorBadge);
+            this.flowBadges.Dock = System.Windows.Forms.DockStyle.Left;
+            this.flowBadges.Location = new System.Drawing.Point(15, 10);
+            this.flowBadges.Name = "flowBadges";
+            this.flowBadges.Size = new System.Drawing.Size(400, 40);
+            this.flowBadges.TabIndex = 0;
+            this.flowBadges.WrapContents = false;
+            // 
+            // lblInfoBadge
+            // 
+            this.lblInfoBadge.AutoSize = true;
+            this.lblInfoBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(245)))), ((int)(((byte)(254)))));
+            this.lblInfoBadge.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblInfoBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(169)))), ((int)(((byte)(244)))));
+            this.lblInfoBadge.Location = new System.Drawing.Point(0, 5);
+            this.lblInfoBadge.Margin = new System.Windows.Forms.Padding(0, 5, 15, 0);
+            this.lblInfoBadge.Name = "lblInfoBadge";
+            this.lblInfoBadge.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+            this.lblInfoBadge.Size = new System.Drawing.Size(78, 30);
+            this.lblInfoBadge.TabIndex = 0;
+            this.lblInfoBadge.Text = "INFO 0";
+            // 
+            // lblWarningBadge
+            // 
+            this.lblWarningBadge.AutoSize = true;
+            this.lblWarningBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(248)))), ((int)(((byte)(225)))));
+            this.lblWarningBadge.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblWarningBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
+            this.lblWarningBadge.Location = new System.Drawing.Point(93, 5);
+            this.lblWarningBadge.Margin = new System.Windows.Forms.Padding(0, 5, 15, 0);
+            this.lblWarningBadge.Name = "lblWarningBadge";
+            this.lblWarningBadge.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+            this.lblWarningBadge.Size = new System.Drawing.Size(117, 30);
+            this.lblWarningBadge.TabIndex = 1;
+            this.lblWarningBadge.Text = "WARNING 0";
+            // 
+            // lblErrorBadge
+            // 
+            this.lblErrorBadge.AutoSize = true;
+            this.lblErrorBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(238)))));
+            this.lblErrorBadge.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblErrorBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(233)))), ((int)(((byte)(30)))), ((int)(((byte)(99)))));
+            this.lblErrorBadge.Location = new System.Drawing.Point(225, 5);
+            this.lblErrorBadge.Margin = new System.Windows.Forms.Padding(0, 5, 15, 0);
+            this.lblErrorBadge.Name = "lblErrorBadge";
+            this.lblErrorBadge.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+            this.lblErrorBadge.Size = new System.Drawing.Size(91, 30);
+            this.lblErrorBadge.TabIndex = 2;
+            this.lblErrorBadge.Text = "ERROR 0";
             // 
             // ucSystemLogs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.pnlGridContainer);
-            this.Controls.Add(this.pnlFooter);
-            this.Controls.Add(this.pnlStats);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.Controls.Add(this.dgvLogs);
+            this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.pnlTop);
             this.Name = "ucSystemLogs";
-            this.Size = new System.Drawing.Size(1100, 700);
+            this.Size = new System.Drawing.Size(1200, 750);
             this.pnlTop.ResumeLayout(false);
-            this.pnlStats.ResumeLayout(false);
-            this.tblStats.ResumeLayout(false);
-            this.pnlTotal.ResumeLayout(false);
-            this.pnlTotal.PerformLayout();
-            this.pnlError.ResumeLayout(false);
-            this.pnlError.PerformLayout();
-            this.pnlWarning.ResumeLayout(false);
-            this.pnlWarning.PerformLayout();
-            this.pnlInfo.ResumeLayout(false);
-            this.pnlInfo.PerformLayout();
-            this.pnlGridContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvLogs)).EndInit();
-            this.pnlFooter.ResumeLayout(false);
-            this.pnlFooter.PerformLayout();
+            this.pnlBottom.ResumeLayout(false);
+            this.pnlPagination.ResumeLayout(false);
+            this.pnlPagination.PerformLayout();
+            this.flowBadges.ResumeLayout(false);
+            this.flowBadges.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -469,31 +371,27 @@
         private System.Windows.Forms.Panel pnlTop;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.Button btnFilter;
         private System.Windows.Forms.ComboBox cmbLevel;
         private System.Windows.Forms.ComboBox cmbSource;
-        private System.Windows.Forms.Button btnApply;
-        private System.Windows.Forms.Panel pnlStats;
-        private System.Windows.Forms.TableLayoutPanel tblStats;
-        private System.Windows.Forms.Panel pnlTotal;
-        private System.Windows.Forms.Label lblValTotal;
-        private System.Windows.Forms.Label lblTitleTotal;
-        private System.Windows.Forms.Panel pnlError;
-        private System.Windows.Forms.Label lblValError;
-        private System.Windows.Forms.Label lblTitleError;
-        private System.Windows.Forms.Panel pnlWarning;
-        private System.Windows.Forms.Label lblValWarning;
-        private System.Windows.Forms.Label lblTitleWarning;
-        private System.Windows.Forms.Panel pnlInfo;
-        private System.Windows.Forms.Label lblValInfo;
-        private System.Windows.Forms.Label lblTitleInfo;
-        private System.Windows.Forms.Panel pnlGridContainer;
+        private System.Windows.Forms.Label lblTotalLogs;
+
         private System.Windows.Forms.DataGridView dgvLogs;
-        private System.Windows.Forms.Panel pnlFooter;
-        private System.Windows.Forms.Label lblFooterStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTimestamp;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLevel;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colUser;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMessage;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUser;
+
+        private System.Windows.Forms.Panel pnlBottom;
+        private System.Windows.Forms.FlowLayoutPanel flowBadges;
+        private System.Windows.Forms.Label lblInfoBadge;
+        private System.Windows.Forms.Label lblWarningBadge;
+        private System.Windows.Forms.Label lblErrorBadge;
+
+        private System.Windows.Forms.Panel pnlPagination;
+        private System.Windows.Forms.Button btnPrev;
+        private System.Windows.Forms.Button btnNext;
+        private System.Windows.Forms.Label lblPageInfo;
     }
 }
