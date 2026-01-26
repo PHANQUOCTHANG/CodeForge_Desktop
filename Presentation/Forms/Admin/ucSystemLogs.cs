@@ -1,106 +1,211 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
 
 namespace CodeForge_Desktop.Presentation.Forms.Admin
 {
     public partial class ucSystemLogs : UserControl
     {
+        // Class dữ liệu
+        private class LogItem
+        {
+            public DateTime Timestamp { get; set; }
+            public string Level { get; set; }
+            public string Source { get; set; }
+            public string User { get; set; }
+            public string Message { get; set; }
+        }
+
+        private List<LogItem> _allLogs = new List<LogItem>();
+        private List<LogItem> _filteredLogs = new List<LogItem>();
+
+        // Phân trang
+        private int _currentPage = 1;
+        private const int _pageSize = 15;
+
         public ucSystemLogs()
         {
             InitializeComponent();
             SetupDataGridView();
             LoadMockData();
 
-            // Gắn sự kiện vẽ ô để tạo Badges cho cột Level
+            // Gắn sự kiện
             dgvLogs.CellPainting += DgvLogs_CellPainting;
 
-            // Cập nhật thời gian last updated
-            lblFooterStatus.Text = $"Hiển thị 10 logs | Last updated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+            // Toolbar Events
+            btnRefresh.Click += (s, e) => { LoadMockData(); };
+            btnExport.Click += BtnExport_Click;
+            btnFilter.Click += BtnFilter_Click;
+
+            // Pagination Events
+            btnPrev.Click += (s, e) => ChangePage(-1);
+            btnNext.Click += (s, e) => ChangePage(1);
+
+            // Combobox Default
+            cmbLevel.SelectedIndex = 0;
+            cmbSource.SelectedIndex = 0;
         }
 
         private void SetupDataGridView()
         {
-            // Cấu hình hiển thị Grid
-            dgvLogs.DefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 245, 255);
-            dgvLogs.DefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvLogs.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-
             dgvLogs.Columns["colLevel"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvLogs.Columns["colUser"].DefaultCellStyle.ForeColor = Color.FromArgb(13, 110, 253);
         }
 
         private void LoadMockData()
         {
-            // Dữ liệu giả giống hình ảnh
-            dgvLogs.Rows.Add("2025-11-16 14:30:25", "INFO", "Auth", "student_01", "User student_01 logged in successfully");
-            dgvLogs.Rows.Add("2025-11-16 14:28:15", "INFO", "Submission", "student_02", "New submission received for Assignment #3");
-            dgvLogs.Rows.Add("2025-11-16 14:25:10", "WARNING", "System", "system", "High memory usage detected (85%)");
-            dgvLogs.Rows.Add("2025-11-16 14:20:05", "ERROR", "Database", "system", "Connection timeout to backup database");
-            dgvLogs.Rows.Add("2025-11-16 14:15:00", "INFO", "Admin", "admin_01", "New assignment created: Bài 9 - Đồ thị");
-            dgvLogs.Rows.Add("2025-11-16 14:10:30", "INFO", "Auth", "admin_01", "User admin_01 logged in successfully");
-            dgvLogs.Rows.Add("2025-11-16 14:05:20", "WARNING", "Security", "unknown", "Multiple failed login attempts detected");
-            dgvLogs.Rows.Add("2025-11-16 14:00:00", "INFO", "System", "system", "Automated backup completed successfully");
-            dgvLogs.Rows.Add("2025-11-16 13:55:45", "ERROR", "Submission", "student_03", "Code execution timeout for submission #1234");
-            dgvLogs.Rows.Add("2025-11-16 13:50:30", "INFO", "User", "student_04", "User profile updated");
+            _allLogs.Clear();
+            var rand = new Random();
+            string[] levels = { "INFO", "INFO", "INFO", "WARNING", "ERROR" };
+            string[] sources = { "Auth", "System", "Database", "Submission", "Admin" };
+            string[] users = { "student_01", "student_02", "admin_01", "system", "unknown" };
 
-            dgvLogs.ClearSelection();
+            // Tạo giả 50 logs
+            for (int i = 0; i < 50; i++)
+            {
+                _allLogs.Add(new LogItem
+                {
+                    Timestamp = DateTime.Now.AddMinutes(-i * 10),
+                    Level = levels[rand.Next(levels.Length)],
+                    Source = sources[rand.Next(sources.Length)],
+                    User = users[rand.Next(users.Length)],
+                    Message = $"System log entry generated for testing purposes. ID: {i + 1}"
+                });
+            }
+
+            // Mặc định hiển thị tất cả
+            ApplyFilter();
         }
 
+        private void ApplyFilter()
+        {
+            string lv = cmbLevel.Text == "All Levels" ? "" : cmbLevel.Text;
+            string src = cmbSource.Text == "All Sources" ? "" : cmbSource.Text;
+
+            // Lọc dữ liệu
+            _filteredLogs = _allLogs.Where(x =>
+                (string.IsNullOrEmpty(lv) || x.Level == lv) &&
+                (string.IsNullOrEmpty(src) || x.Source == src)
+            ).ToList();
+
+            // Reset về trang 1
+            _currentPage = 1;
+            RenderGrid();
+            UpdateStats();
+        }
+
+        private void RenderGrid()
+        {
+            dgvLogs.Rows.Clear();
+
+            int totalRecords = _filteredLogs.Count;
+            int totalPages = (int)Math.Ceiling((double)totalRecords / _pageSize);
+            if (totalPages < 1) totalPages = 1;
+
+            if (_currentPage < 1) _currentPage = 1;
+            if (_currentPage > totalPages) _currentPage = totalPages;
+
+            // Cắt dữ liệu theo trang
+            var pageData = _filteredLogs.Skip((_currentPage - 1) * _pageSize).Take(_pageSize).ToList();
+
+            foreach (var log in pageData)
+            {
+                dgvLogs.Rows.Add(
+                    log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss"),
+                    log.Level,
+                    log.Source,
+                    log.Message,
+                    log.User
+                );
+            }
+            dgvLogs.ClearSelection();
+
+            // Cập nhật UI
+            lblPageInfo.Text = $"Page {_currentPage} / {totalPages}";
+            btnPrev.Enabled = _currentPage > 1;
+            btnNext.Enabled = _currentPage < totalPages;
+            lblTotalLogs.Text = $"Total Logs: {totalRecords}"; // Highlight Total
+        }
+
+        private void ChangePage(int delta)
+        {
+            _currentPage += delta;
+            RenderGrid();
+        }
+
+        private void BtnFilter_Click(object sender, EventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void UpdateStats()
+        {
+            // Tính toán trên dữ liệu đã lọc
+            int info = _filteredLogs.Count(x => x.Level == "INFO");
+            int warning = _filteredLogs.Count(x => x.Level == "WARNING");
+            int error = _filteredLogs.Count(x => x.Level == "ERROR");
+
+            lblInfoBadge.Text = $"INFO {info}";
+            lblWarningBadge.Text = $"WARNING {warning}";
+            lblErrorBadge.Text = $"ERROR {error}";
+        }
+
+        private void BtnExport_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "CSV File|*.csv";
+                sfd.FileName = $"SystemLogs_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (StreamWriter sw = new StreamWriter(sfd.FileName))
+                        {
+                            sw.WriteLine("Timestamp,Level,Source,User,Message");
+                            foreach (var log in _filteredLogs)
+                            {
+                                sw.WriteLine($"{log.Timestamp},{log.Level},{log.Source},{log.User},\"{log.Message}\"");
+                            }
+                        }
+                        MessageBox.Show("Export thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi export: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        // --- Custom Painting (Giữ nguyên) ---
         private void DgvLogs_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
-            // 1. Vẽ Badge cho cột Level (Index = 1)
             if (e.ColumnIndex == dgvLogs.Columns["colLevel"].Index && e.Value != null)
             {
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
-
                 string level = e.Value.ToString();
-                Color backColor = Color.Gray;
-                Color foreColor = Color.White; // Hoặc màu đậm hơn nếu nền nhạt
+                Color back = Color.Gray, fore = Color.White;
 
-                // Chọn màu dựa trên Level
-                if (level == "INFO")
-                {
-                    backColor = Color.FromArgb(225, 245, 254); // Xanh nhạt
-                    foreColor = Color.FromArgb(3, 169, 244);   // Xanh đậm
-                }
-                else if (level == "WARNING")
-                {
-                    backColor = Color.FromArgb(255, 248, 225); // Vàng nhạt
-                    foreColor = Color.FromArgb(255, 160, 0);   // Cam đậm
-                }
-                else if (level == "ERROR")
-                {
-                    backColor = Color.FromArgb(255, 235, 238); // Đỏ nhạt
-                    foreColor = Color.FromArgb(233, 30, 99);   // Đỏ hồng đậm
-                }
+                if (level == "INFO") { back = Color.FromArgb(225, 245, 254); fore = Color.FromArgb(3, 169, 244); }
+                else if (level == "WARNING") { back = Color.FromArgb(255, 248, 225); fore = Color.FromArgb(255, 160, 0); }
+                else if (level == "ERROR") { back = Color.FromArgb(255, 235, 238); fore = Color.FromArgb(233, 30, 99); }
 
-                // Tính toán hình chữ nhật cho Badge (nhỏ hơn ô một chút)
-                var badgeRect = new Rectangle(e.CellBounds.X + 10, e.CellBounds.Y + 5, e.CellBounds.Width - 20, e.CellBounds.Height - 10);
-
-                // Vẽ nền Badge
-                using (Brush brush = new SolidBrush(backColor))
-                {
-                    e.Graphics.FillRectangle(brush, badgeRect);
-                }
-
-                // Vẽ Text căn giữa Badge
-                TextRenderer.DrawText(e.Graphics, level, new Font("Segoe UI", 8, FontStyle.Bold), badgeRect, foreColor, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-
+                var rect = new Rectangle(e.CellBounds.X + 15, e.CellBounds.Y + 8, e.CellBounds.Width - 30, e.CellBounds.Height - 16);
+                using (Brush b = new SolidBrush(back)) e.Graphics.FillRectangle(b, rect);
+                TextRenderer.DrawText(e.Graphics, level, new Font("Segoe UI", 8, FontStyle.Bold), rect, fore, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
                 e.Handled = true;
             }
 
-            // 2. Tô màu xanh cho cột Source (Index = 2) - Giống đường link
             if (e.ColumnIndex == dgvLogs.Columns["colSource"].Index && e.Value != null)
             {
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
-                string source = e.Value.ToString();
-
-                // Màu xanh dương giống link
-                Color linkColor = Color.FromArgb(0, 120, 215);
-
-                TextRenderer.DrawText(e.Graphics, source, e.CellStyle.Font, e.CellBounds, linkColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+                TextRenderer.DrawText(e.Graphics, e.Value.ToString(), e.CellStyle.Font, e.CellBounds, Color.FromArgb(0, 120, 215), TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
                 e.Handled = true;
             }
         }
