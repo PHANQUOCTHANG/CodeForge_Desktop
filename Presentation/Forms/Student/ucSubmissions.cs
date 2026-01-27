@@ -421,21 +421,40 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         /// </summary>
         private void SetupDataGridViewStyles()
         {
+            // QUAN TRỌNG: Tắt style mặc định để áp dụng màu custom
             dgvSubmissions.EnableHeadersVisualStyles = false;
-            dgvSubmissions.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(52, 73, 94);
-            dgvSubmissions.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvSubmissions.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            dgvSubmissions.ColumnHeadersDefaultCellStyle.Padding = new Padding(0, 5, 0, 5);
-            dgvSubmissions.ColumnHeadersHeight = 40;
 
+            // --- HEADER STYLE ---
+            // Màu nền header (Trắng hoặc Xám rất nhạt F8F9FA cho đẹp)
+            dgvSubmissions.ColumnHeadersDefaultCellStyle.BackColor = Color.White; // Hoặc Color.FromArgb(248, 249, 250)
+            dgvSubmissions.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black; // Chữ màu đen
+            dgvSubmissions.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold); // Font đậm
+            dgvSubmissions.ColumnHeadersDefaultCellStyle.Padding = new Padding(0, 8, 0, 8);
+            dgvSubmissions.ColumnHeadersHeight = 40;
+            dgvSubmissions.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single; // Viền đơn
+
+            // --- CELL STYLE ---
             dgvSubmissions.BorderStyle = BorderStyle.None;
             dgvSubmissions.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvSubmissions.DefaultCellStyle.Font = new Font("Segoe UI", 10);
+            dgvSubmissions.GridColor = Color.FromArgb(230, 230, 230); // Màu đường kẻ mờ
+
+            dgvSubmissions.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
             dgvSubmissions.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
-            dgvSubmissions.DefaultCellStyle.SelectionBackColor = Color.FromArgb(52, 152, 219);
-            dgvSubmissions.DefaultCellStyle.SelectionForeColor = Color.White;
-            dgvSubmissions.RowTemplate.Height = 35;
-            dgvSubmissions.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 249, 249);
+            dgvSubmissions.DefaultCellStyle.Padding = new Padding(5, 3, 5, 3);
+
+            // Selection Style
+            dgvSubmissions.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvSubmissions.MultiSelect = false;
+            dgvSubmissions.DefaultCellStyle.SelectionBackColor = Color.FromArgb(235, 245, 255); // Xanh nhạt khi chọn
+            dgvSubmissions.DefaultCellStyle.SelectionForeColor = Color.Black;
+
+            dgvSubmissions.RowTemplate.Height = 40;
+
+            // Căn lề các cột cụ thể
+            dgvSubmissions.Columns["colStatus"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvSubmissions.Columns["colScore"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvSubmissions.Columns["colView"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvSubmissions.Columns["colView"].Width = 100;
         }
 
         private void SetupComboBoxes()

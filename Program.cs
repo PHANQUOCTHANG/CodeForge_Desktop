@@ -44,12 +44,12 @@ namespace CodeForge_Desktop
             //AuthService authService = new AuthService();
             //authService.Register(new User
             //{
-            //    Username = "admin",
-            //    Email = "admin@gmail.com",
+            //    Username = "admintest",
+            //    Email = "admintest@gmail.com",
 
             //    Role = "Admin",
-            //}, "admin123");
-
+            //}, "admin123456");
+              
             Application.Run(new Login());
             //Application.Run(new MainFormAdmin());
         }
