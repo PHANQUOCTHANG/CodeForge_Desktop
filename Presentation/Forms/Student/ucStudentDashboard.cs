@@ -30,6 +30,17 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             _submissionService = new SubmissionService();
             _problemService = new CodingProblemService();
 
+            // Set greeting text (show logged-in user)
+            try
+            {
+                var username = GlobalStore.user?.Username ?? "Người dùng";
+                lblGreeting.Text = $"Xin chào, {username}";
+            }
+            catch
+            {
+                lblGreeting.Text = "Xin chào";
+            }
+
             // Load tất cả dữ liệu
             LoadDashboardStatistics();
             LoadRecentSubmissions();
@@ -328,6 +339,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         public void RefreshData()
         {
             System.Diagnostics.Debug.WriteLine("🔄 Refreshing dashboard data...");
+
+            // Update greeting in case user changed
+            try
+            {
+                var username = GlobalStore.user?.Username ?? "Người dùng";
+                lblGreeting.Text = $"Xin chào, {username}";
+            }
+            catch { lblGreeting.Text = "Xin chào"; }
+
             LoadDashboardStatistics();
             LoadRecentSubmissions();
         }

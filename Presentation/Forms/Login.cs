@@ -210,5 +210,17 @@ namespace CodeForge_Desktop.Presentation.Forms
             ForgotPassword forgotPasswordForm = new ForgotPassword();
             forgotPasswordForm.ShowDialog();
         }
+        private void lblQuenMKLink_Click(object sender, EventArgs e)
+        {
+            using (var forgotForm = new ForgotPassword())
+            {
+                forgotForm.StartPosition = FormStartPosition.CenterParent;
+                forgotForm.ShowDialog(this);
+            }
+
+            // After closing ForgotPassword, clear password field and focus username
+            txtPassword.Clear();
+            txtUsername.Focus();
+        }
     }
 }
