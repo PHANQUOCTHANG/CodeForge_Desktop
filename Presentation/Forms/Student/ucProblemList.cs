@@ -120,7 +120,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 }
 
                 // Cập nhật summary text
-                string summary = $"📊 Hiển thị {filteredProblems.Count} bài tập";
+                string summary = $"📊 Tổng cộng: {filteredProblems.Count} bài tập";
 
                 if (!string.IsNullOrWhiteSpace(_currentSearchText))
                 {
