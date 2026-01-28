@@ -8,7 +8,7 @@ namespace CodeForge_Desktop.DataAccess.Entities
         public Guid UserID { get; set; }
         public Guid CourseID { get; set; }
         public decimal Amount { get; set; }
-        public string Currency { get; set; } = "USD";
+        public string Currency { get; set; } = "VND";
         public string PaymentMethod { get; set; }
         public string Status { get; set; } = "pending";
         public DateTime? PaidAt { get; set; }

@@ -40,7 +40,7 @@ namespace CodeForge_Desktop
             CourseReviewService courseReviewService = new CourseReviewService(courseReviewRepository, enrollmentRepository);
 
 
-            // Thêm tài khoản Admin .
+            //// Thêm tài khoản Admin .
             //AuthService authService = new AuthService();
             //authService.Register(new User
             //{
