@@ -20,7 +20,7 @@ namespace CodeForge_Desktop.Presentation.Controls
 
         public TestResultPanel(TestCaseResult testResult, int testNumber)
         {
-            _testResult = testResult;
+            _testResult = testResult ?? throw new ArgumentNullException(nameof(testResult));
             _testNumber = testNumber;
             
             this.BackColor = Color.White;
@@ -36,7 +36,7 @@ namespace CodeForge_Desktop.Presentation.Controls
         {
             // Header Panel
             Panel pnlHeader = new Panel();
-            pnlHeader.BackColor = _testResult.Passed ? Color.FromArgb(232, 245, 233) : Color.FromArgb(255, 235, 238);
+            pnlHeader.BackColor = _testResult.Passed ? Color.FromArgb(245, 250, 245) : Color.FromArgb(255, 245, 245);
             pnlHeader.Height = 60;
             pnlHeader.Dock = DockStyle.Top;
             this.Controls.Add(pnlHeader);
@@ -44,65 +44,67 @@ namespace CodeForge_Desktop.Presentation.Controls
             // Status Icon + Number
             lblStatus = new Label();
             lblStatus.Text = _testResult.Passed ? "✓" : "✗";
-            lblStatus.ForeColor = _testResult.Passed ? Color.FromArgb(76, 175, 80) : Color.FromArgb(244, 67, 54);
-            lblStatus.Font = new Font("Arial", 16, FontStyle.Bold);
+            lblStatus.ForeColor = _testResult.Passed ? Color.FromArgb(70, 140, 70) : Color.FromArgb(200, 50, 50);
+            lblStatus.Font = new Font("Arial", 14, FontStyle.Bold);
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(15, 18);
+            lblStatus.Location = new Point(12, 18);
             pnlHeader.Controls.Add(lblStatus);
 
             // Test Number
             lblTestNumber = new Label();
-            lblTestNumber.Text = $"Test Case #{_testNumber}";
-            lblTestNumber.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblTestNumber.Text = $"Bài kiểm tra #{_testNumber}";
+            lblTestNumber.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             lblTestNumber.ForeColor = Color.FromArgb(50, 50, 50);
             lblTestNumber.AutoSize = true;
-            lblTestNumber.Location = new Point(45, 10);
+            lblTestNumber.Location = new Point(40, 12);
             pnlHeader.Controls.Add(lblTestNumber);
 
             // Status Text
             Label lblStatusText = new Label();
-            lblStatusText.Text = _testResult.Passed ? "Accepted" : "Wrong Answer";
+            lblStatusText.Text = _testResult.Passed ? "Vượt qua" : "Thất bại";
             lblStatusText.Font = new Font("Segoe UI", 9);
-            lblStatusText.ForeColor = _testResult.Passed ? Color.FromArgb(76, 175, 80) : Color.FromArgb(244, 67, 54);
+            lblStatusText.ForeColor = _testResult.Passed ? Color.FromArgb(70, 140, 70) : Color.FromArgb(200, 50, 50);
             lblStatusText.AutoSize = true;
-            lblStatusText.Location = new Point(45, 28);
+            lblStatusText.Location = new Point(40, 30);
             pnlHeader.Controls.Add(lblStatusText);
 
             // Time Info
             lblTime = new Label();
-            lblTime.Text = $"⏱️  {_testResult.Time}s";
+            lblTime.Text = $"Thời gian: {_testResult.Time ?? "0"}s";
             lblTime.Font = new Font("Segoe UI", 9);
-            lblTime.ForeColor = Color.FromArgb(100, 100, 100);
+            lblTime.ForeColor = Color.FromArgb(120, 120, 120);
             lblTime.AutoSize = true;
-            lblTime.Location = new Point(200, 18);
+            lblTime.Location = new Point(220, 18);
             pnlHeader.Controls.Add(lblTime);
 
             // Memory Info
             lblMemory = new Label();
-            lblMemory.Text = $"💾 {_testResult.Memory / 1024.0:F2} MB";
+            int memoryValue = _testResult.Memory ?? 0;
+            lblMemory.Text = $"Bộ nhớ: {memoryValue / 1024.0:F1} MB";
             lblMemory.Font = new Font("Segoe UI", 9);
-            lblMemory.ForeColor = Color.FromArgb(100, 100, 100);
+            lblMemory.ForeColor = Color.FromArgb(120, 120, 120);
             lblMemory.AutoSize = true;
-            lblMemory.Location = new Point(310, 18);
+            lblMemory.Location = new Point(220, 38);
             pnlHeader.Controls.Add(lblMemory);
 
             // Expand Button
             btnExpand = new Button();
             btnExpand.Text = "▼";
-            btnExpand.Width = 35;
-            btnExpand.Height = 35;
+            btnExpand.Width = 30;
+            btnExpand.Height = 30;
             btnExpand.FlatStyle = FlatStyle.Flat;
             btnExpand.FlatAppearance.BorderSize = 0;
             btnExpand.BackColor = Color.Transparent;
             btnExpand.ForeColor = Color.FromArgb(150, 150, 150);
-            btnExpand.Font = new Font("Arial", 10);
-            btnExpand.Location = new Point(610, 12);
+            btnExpand.Font = new Font("Arial", 9);
+            btnExpand.Location = new Point(615, 15);
+            btnExpand.Cursor = Cursors.Hand;
             btnExpand.Click += BtnExpand_Click;
             pnlHeader.Controls.Add(btnExpand);
 
             // Expanded Content Panel
             pnlExpanded = new Panel();
-            pnlExpanded.BackColor = Color.FromArgb(248, 248, 248);
+            pnlExpanded.BackColor = Color.FromArgb(250, 250, 250);
             pnlExpanded.Dock = DockStyle.Fill;
             pnlExpanded.Visible = false;
             pnlExpanded.Padding = new Padding(15);
@@ -115,100 +117,108 @@ namespace CodeForge_Desktop.Presentation.Controls
         {
             int yPos = 0;
 
-            // Status Info
             if (!_testResult.Passed)
             {
+                // Expected Output
                 Label lblExpectedLabel = new Label();
-                lblExpectedLabel.Text = "Expected Output:";
-                lblExpectedLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                lblExpectedLabel.Text = "Kết quả mong đợi:";
+                lblExpectedLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
                 lblExpectedLabel.ForeColor = Color.FromArgb(50, 50, 50);
                 lblExpectedLabel.AutoSize = true;
                 lblExpectedLabel.Location = new Point(0, yPos);
                 pnlExpanded.Controls.Add(lblExpectedLabel);
-                yPos += 25;
+                yPos += 22;
 
                 TextBox txtExpected = new TextBox();
-                txtExpected.Text = FormatOutput(_testResult.ExpectedOutput);
+                string expectedOutput = FormatOutput(_testResult.ExpectedOutput);
+                txtExpected.Text = expectedOutput;
                 txtExpected.Multiline = true;
                 txtExpected.ReadOnly = true;
-                txtExpected.BackColor = Color.FromArgb(240, 255, 240);
+                txtExpected.BackColor = Color.FromArgb(252, 252, 252);
                 txtExpected.BorderStyle = BorderStyle.FixedSingle;
                 txtExpected.Font = new Font("Consolas", 9);
                 txtExpected.Width = 600;
-                txtExpected.Height = Math.Max(40, _testResult.ExpectedOutput.Split('\n').Length * 18);
+                txtExpected.Height = Math.Max(40, (expectedOutput.Split('\n').Length * 16) + 8);
                 txtExpected.Location = new Point(0, yPos);
+                txtExpected.ForeColor = Color.FromArgb(40, 100, 40);
                 pnlExpanded.Controls.Add(txtExpected);
-                yPos += txtExpected.Height + 15;
+                yPos += txtExpected.Height + 12;
 
+                // Actual Output
                 Label lblActualLabel = new Label();
-                lblActualLabel.Text = "Actual Output:";
-                lblActualLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                lblActualLabel.Text = "Kết quả thực tế:";
+                lblActualLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
                 lblActualLabel.ForeColor = Color.FromArgb(50, 50, 50);
                 lblActualLabel.AutoSize = true;
                 lblActualLabel.Location = new Point(0, yPos);
                 pnlExpanded.Controls.Add(lblActualLabel);
-                yPos += 25;
+                yPos += 22;
 
                 TextBox txtActual = new TextBox();
-                txtActual.Text = FormatOutput(_testResult.Stdout);
+                string actualOutput = FormatOutput(_testResult.Stdout);
+                txtActual.Text = actualOutput;
                 txtActual.Multiline = true;
                 txtActual.ReadOnly = true;
-                txtActual.BackColor = Color.FromArgb(255, 240, 240);
+                txtActual.BackColor = Color.FromArgb(252, 252, 252);
                 txtActual.BorderStyle = BorderStyle.FixedSingle;
                 txtActual.Font = new Font("Consolas", 9);
                 txtActual.Width = 600;
-                txtActual.Height = Math.Max(40, _testResult.Stdout.Split('\n').Length * 18);
+                txtActual.Height = Math.Max(40, (actualOutput.Split('\n').Length * 16) + 8);
                 txtActual.Location = new Point(0, yPos);
+                txtActual.ForeColor = Color.FromArgb(180, 40, 40);
                 pnlExpanded.Controls.Add(txtActual);
-                yPos += txtActual.Height + 15;
+                yPos += txtActual.Height + 12;
 
+                // Error Output (if any)
                 if (!string.IsNullOrEmpty(_testResult.Stderr))
                 {
                     Label lblErrorLabel = new Label();
-                    lblErrorLabel.Text = "Error Output:";
-                    lblErrorLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-                    lblErrorLabel.ForeColor = Color.FromArgb(211, 47, 47);
+                    lblErrorLabel.Text = "Thông báo lỗi:";
+                    lblErrorLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                    lblErrorLabel.ForeColor = Color.FromArgb(200, 50, 50);
                     lblErrorLabel.AutoSize = true;
                     lblErrorLabel.Location = new Point(0, yPos);
                     pnlExpanded.Controls.Add(lblErrorLabel);
-                    yPos += 25;
+                    yPos += 22;
 
                     TextBox txtError = new TextBox();
                     txtError.Text = _testResult.Stderr;
                     txtError.Multiline = true;
                     txtError.ReadOnly = true;
-                    txtError.BackColor = Color.FromArgb(255, 235, 238);
+                    txtError.BackColor = Color.FromArgb(252, 252, 252);
                     txtError.BorderStyle = BorderStyle.FixedSingle;
                     txtError.Font = new Font("Consolas", 9);
-                    txtError.ForeColor = Color.FromArgb(211, 47, 47);
+                    txtError.ForeColor = Color.FromArgb(200, 50, 50);
                     txtError.Width = 600;
-                    txtError.Height = Math.Max(40, _testResult.Stderr.Split('\n').Length * 18);
+                    txtError.Height = Math.Max(40, (_testResult.Stderr.Split('\n').Length * 16) + 8);
                     txtError.Location = new Point(0, yPos);
                     pnlExpanded.Controls.Add(txtError);
-                    yPos += txtError.Height + 15;
                 }
             }
             else
             {
+                // Output for passed tests
                 Label lblOutputLabel = new Label();
-                lblOutputLabel.Text = "Output:";
-                lblOutputLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                lblOutputLabel.Text = "Kết quả:";
+                lblOutputLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
                 lblOutputLabel.ForeColor = Color.FromArgb(50, 50, 50);
                 lblOutputLabel.AutoSize = true;
                 lblOutputLabel.Location = new Point(0, yPos);
                 pnlExpanded.Controls.Add(lblOutputLabel);
-                yPos += 25;
+                yPos += 22;
 
                 TextBox txtOutput = new TextBox();
-                txtOutput.Text = FormatOutput(_testResult.Stdout);
+                string output = FormatOutput(_testResult.Stdout);
+                txtOutput.Text = output;
                 txtOutput.Multiline = true;
                 txtOutput.ReadOnly = true;
-                txtOutput.BackColor = Color.FromArgb(240, 255, 240);
+                txtOutput.BackColor = Color.FromArgb(252, 252, 252);
                 txtOutput.BorderStyle = BorderStyle.FixedSingle;
                 txtOutput.Font = new Font("Consolas", 9);
                 txtOutput.Width = 600;
-                txtOutput.Height = Math.Max(40, _testResult.Stdout.Split('\n').Length * 18);
+                txtOutput.Height = Math.Max(40, (output.Split('\n').Length * 16) + 8);
                 txtOutput.Location = new Point(0, yPos);
+                txtOutput.ForeColor = Color.FromArgb(40, 100, 40);
                 pnlExpanded.Controls.Add(txtOutput);
             }
         }
@@ -216,7 +226,7 @@ namespace CodeForge_Desktop.Presentation.Controls
         private string FormatOutput(string output)
         {
             if (string.IsNullOrEmpty(output))
-                return "(empty)";
+                return "(trống)";
 
             output = output.TrimEnd('\n', '\r');
             return output;

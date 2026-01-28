@@ -85,9 +85,10 @@
             this.pnlMain.Controls.Add(this.lblDashboardTitle);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
+            this.pnlMain.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Padding = new System.Windows.Forms.Padding(20);
-            this.pnlMain.Size = new System.Drawing.Size(1200, 800);
+            this.pnlMain.Padding = new System.Windows.Forms.Padding(15, 16, 15, 16);
+            this.pnlMain.Size = new System.Drawing.Size(900, 650);
             this.pnlMain.TabIndex = 0;
             // 
             // pnlActionsContainer
@@ -97,9 +98,10 @@
             this.pnlActionsContainer.BackColor = System.Drawing.Color.Transparent;
             this.pnlActionsContainer.Controls.Add(this.flowLayoutPanelActions);
             this.pnlActionsContainer.Controls.Add(this.lblActionsTitle);
-            this.pnlActionsContainer.Location = new System.Drawing.Point(20, 658);
+            this.pnlActionsContainer.Location = new System.Drawing.Point(15, 535);
+            this.pnlActionsContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlActionsContainer.Name = "pnlActionsContainer";
-            this.pnlActionsContainer.Size = new System.Drawing.Size(1160, 110);
+            this.pnlActionsContainer.Size = new System.Drawing.Size(870, 89);
             this.pnlActionsContainer.TabIndex = 0;
             // 
             // flowLayoutPanelActions
@@ -108,10 +110,11 @@
             this.flowLayoutPanelActions.Controls.Add(this.btnActionHistory);
             this.flowLayoutPanelActions.Controls.Add(this.btnActionSettings);
             this.flowLayoutPanelActions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanelActions.Location = new System.Drawing.Point(0, 50);
+            this.flowLayoutPanelActions.Location = new System.Drawing.Point(0, 40);
+            this.flowLayoutPanelActions.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.flowLayoutPanelActions.Name = "flowLayoutPanelActions";
-            this.flowLayoutPanelActions.Padding = new System.Windows.Forms.Padding(15, 5, 0, 0);
-            this.flowLayoutPanelActions.Size = new System.Drawing.Size(1160, 60);
+            this.flowLayoutPanelActions.Padding = new System.Windows.Forms.Padding(11, 4, 0, 0);
+            this.flowLayoutPanelActions.Size = new System.Drawing.Size(870, 49);
             this.flowLayoutPanelActions.TabIndex = 0;
             // 
             // btnActionList
@@ -122,10 +125,10 @@
             this.btnActionList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnActionList.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.btnActionList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.btnActionList.Location = new System.Drawing.Point(15, 5);
-            this.btnActionList.Margin = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.btnActionList.Location = new System.Drawing.Point(11, 4);
+            this.btnActionList.Margin = new System.Windows.Forms.Padding(0, 0, 11, 0);
             this.btnActionList.Name = "btnActionList";
-            this.btnActionList.Size = new System.Drawing.Size(180, 40);
+            this.btnActionList.Size = new System.Drawing.Size(135, 32);
             this.btnActionList.TabIndex = 0;
             this.btnActionList.Text = "Xem danh sách bài tập";
             this.btnActionList.UseVisualStyleBackColor = false;
@@ -138,10 +141,10 @@
             this.btnActionHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnActionHistory.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.btnActionHistory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.btnActionHistory.Location = new System.Drawing.Point(210, 5);
-            this.btnActionHistory.Margin = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.btnActionHistory.Location = new System.Drawing.Point(157, 4);
+            this.btnActionHistory.Margin = new System.Windows.Forms.Padding(0, 0, 11, 0);
             this.btnActionHistory.Name = "btnActionHistory";
-            this.btnActionHistory.Size = new System.Drawing.Size(180, 40);
+            this.btnActionHistory.Size = new System.Drawing.Size(135, 32);
             this.btnActionHistory.TabIndex = 1;
             this.btnActionHistory.Text = "Xem lịch sử nộp bài";
             this.btnActionHistory.UseVisualStyleBackColor = false;
@@ -154,10 +157,10 @@
             this.btnActionSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnActionSettings.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.btnActionSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.btnActionSettings.Location = new System.Drawing.Point(405, 5);
-            this.btnActionSettings.Margin = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.btnActionSettings.Location = new System.Drawing.Point(303, 4);
+            this.btnActionSettings.Margin = new System.Windows.Forms.Padding(0, 0, 11, 0);
             this.btnActionSettings.Name = "btnActionSettings";
-            this.btnActionSettings.Size = new System.Drawing.Size(180, 40);
+            this.btnActionSettings.Size = new System.Drawing.Size(135, 32);
             this.btnActionSettings.TabIndex = 2;
             this.btnActionSettings.Text = "Cài đặt";
             this.btnActionSettings.UseVisualStyleBackColor = false;
@@ -167,9 +170,10 @@
             this.lblActionsTitle.AutoSize = true;
             this.lblActionsTitle.Font = new System.Drawing.Font("Segoe UI Semibold", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblActionsTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lblActionsTitle.Location = new System.Drawing.Point(15, 15);
+            this.lblActionsTitle.Location = new System.Drawing.Point(11, 12);
+            this.lblActionsTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblActionsTitle.Name = "lblActionsTitle";
-            this.lblActionsTitle.Size = new System.Drawing.Size(137, 25);
+            this.lblActionsTitle.Size = new System.Drawing.Size(115, 20);
             this.lblActionsTitle.TabIndex = 1;
             this.lblActionsTitle.Text = "Thao tác nhanh";
             // 
@@ -179,9 +183,10 @@
             this.pnlRecentContainer.Controls.Add(this.dgvRecent);
             this.pnlRecentContainer.Controls.Add(this.btnViewAll);
             this.pnlRecentContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlRecentContainer.Location = new System.Drawing.Point(20, 243);
+            this.pnlRecentContainer.Location = new System.Drawing.Point(15, 196);
+            this.pnlRecentContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlRecentContainer.Name = "pnlRecentContainer";
-            this.pnlRecentContainer.Size = new System.Drawing.Size(1160, 534);
+            this.pnlRecentContainer.Size = new System.Drawing.Size(870, 434);
             this.pnlRecentContainer.TabIndex = 1;
             // 
             // dgvRecent
@@ -218,13 +223,14 @@
             this.dgvRecent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvRecent.EnableHeadersVisualStyles = false;
             this.dgvRecent.Location = new System.Drawing.Point(0, 0);
+            this.dgvRecent.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dgvRecent.Name = "dgvRecent";
             this.dgvRecent.ReadOnly = true;
             this.dgvRecent.RowHeadersVisible = false;
             this.dgvRecent.RowHeadersWidth = 51;
             this.dgvRecent.RowTemplate.Height = 45;
             this.dgvRecent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRecent.Size = new System.Drawing.Size(1160, 534);
+            this.dgvRecent.Size = new System.Drawing.Size(870, 434);
             this.dgvRecent.TabIndex = 0;
             // 
             // colIndex
@@ -271,9 +277,10 @@
             this.btnViewAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnViewAll.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnViewAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.btnViewAll.Location = new System.Drawing.Point(2005, 10);
+            this.btnViewAll.Location = new System.Drawing.Point(1504, 8);
+            this.btnViewAll.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnViewAll.Name = "btnViewAll";
-            this.btnViewAll.Size = new System.Drawing.Size(95, 30);
+            this.btnViewAll.Size = new System.Drawing.Size(71, 24);
             this.btnViewAll.TabIndex = 1;
             this.btnViewAll.Text = "Xem tất cả";
             this.btnViewAll.UseVisualStyleBackColor = false;
@@ -283,9 +290,10 @@
             this.spacer1.BackColor = System.Drawing.Color.Transparent;
             this.spacer1.Controls.Add(this.lblRecentTitle);
             this.spacer1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.spacer1.Location = new System.Drawing.Point(20, 213);
+            this.spacer1.Location = new System.Drawing.Point(15, 172);
+            this.spacer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.spacer1.Name = "spacer1";
-            this.spacer1.Size = new System.Drawing.Size(1160, 30);
+            this.spacer1.Size = new System.Drawing.Size(870, 24);
             this.spacer1.TabIndex = 3;
             // 
             // lblRecentTitle
@@ -295,8 +303,9 @@
             this.lblRecentTitle.Font = new System.Drawing.Font("Segoe UI Semibold", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRecentTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.lblRecentTitle.Location = new System.Drawing.Point(0, 0);
+            this.lblRecentTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblRecentTitle.Name = "lblRecentTitle";
-            this.lblRecentTitle.Size = new System.Drawing.Size(139, 25);
+            this.lblRecentTitle.Size = new System.Drawing.Size(115, 20);
             this.lblRecentTitle.TabIndex = 3;
             this.lblRecentTitle.Text = "Bài tập gần đây";
             // 
@@ -305,9 +314,10 @@
             this.pnlStatsContainer.BackColor = System.Drawing.Color.Transparent;
             this.pnlStatsContainer.Controls.Add(this.tblStats);
             this.pnlStatsContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlStatsContainer.Location = new System.Drawing.Point(20, 78);
+            this.pnlStatsContainer.Location = new System.Drawing.Point(15, 62);
+            this.pnlStatsContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pnlStatsContainer.Name = "pnlStatsContainer";
-            this.pnlStatsContainer.Size = new System.Drawing.Size(1160, 135);
+            this.pnlStatsContainer.Size = new System.Drawing.Size(870, 110);
             this.pnlStatsContainer.TabIndex = 2;
             // 
             // tblStats
@@ -322,11 +332,12 @@
             this.tblStats.Controls.Add(this.pnlCardProg, 2, 0);
             this.tblStats.Controls.Add(this.pnlCardAvg, 3, 0);
             this.tblStats.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tblStats.Location = new System.Drawing.Point(0, -25);
+            this.tblStats.Location = new System.Drawing.Point(0, -20);
+            this.tblStats.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tblStats.Name = "tblStats";
-            this.tblStats.Padding = new System.Windows.Forms.Padding(15, 0, 15, 15);
-            this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 145F));
-            this.tblStats.Size = new System.Drawing.Size(1160, 160);
+            this.tblStats.Padding = new System.Windows.Forms.Padding(11, 0, 11, 12);
+            this.tblStats.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 118F));
+            this.tblStats.Size = new System.Drawing.Size(870, 130);
             this.tblStats.TabIndex = 0;
             // 
             // pnlCardTotal
@@ -337,10 +348,10 @@
             this.pnlCardTotal.Controls.Add(this.lblValTotal);
             this.pnlCardTotal.Controls.Add(this.lblDescTotal);
             this.pnlCardTotal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlCardTotal.Location = new System.Drawing.Point(15, 0);
-            this.pnlCardTotal.Margin = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.pnlCardTotal.Location = new System.Drawing.Point(11, 0);
+            this.pnlCardTotal.Margin = new System.Windows.Forms.Padding(0, 0, 11, 0);
             this.pnlCardTotal.Name = "pnlCardTotal";
-            this.pnlCardTotal.Size = new System.Drawing.Size(267, 145);
+            this.pnlCardTotal.Size = new System.Drawing.Size(201, 118);
             this.pnlCardTotal.TabIndex = 0;
             // 
             // stripTotal
@@ -348,8 +359,9 @@
             this.stripTotal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.stripTotal.Dock = System.Windows.Forms.DockStyle.Left;
             this.stripTotal.Location = new System.Drawing.Point(0, 0);
+            this.stripTotal.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.stripTotal.Name = "stripTotal";
-            this.stripTotal.Size = new System.Drawing.Size(4, 115);
+            this.stripTotal.Size = new System.Drawing.Size(3, 94);
             this.stripTotal.TabIndex = 0;
             // 
             // lblIconTotal
@@ -357,9 +369,10 @@
             this.lblIconTotal.AutoSize = true;
             this.lblIconTotal.Font = new System.Drawing.Font("Segoe UI Emoji", 20F);
             this.lblIconTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.lblIconTotal.Location = new System.Drawing.Point(6, 48);
+            this.lblIconTotal.Location = new System.Drawing.Point(4, 39);
+            this.lblIconTotal.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblIconTotal.Name = "lblIconTotal";
-            this.lblIconTotal.Size = new System.Drawing.Size(60, 46);
+            this.lblIconTotal.Size = new System.Drawing.Size(52, 36);
             this.lblIconTotal.TabIndex = 1;
             this.lblIconTotal.Text = "📄";
             // 
@@ -368,9 +381,10 @@
             this.lblValTotal.AutoSize = true;
             this.lblValTotal.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold);
             this.lblValTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.lblValTotal.Location = new System.Drawing.Point(70, 45);
+            this.lblValTotal.Location = new System.Drawing.Point(52, 37);
+            this.lblValTotal.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblValTotal.Name = "lblValTotal";
-            this.lblValTotal.Size = new System.Drawing.Size(46, 54);
+            this.lblValTotal.Size = new System.Drawing.Size(38, 45);
             this.lblValTotal.TabIndex = 2;
             this.lblValTotal.Text = "0";
             // 
@@ -379,10 +393,11 @@
             this.lblDescTotal.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblDescTotal.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblDescTotal.ForeColor = System.Drawing.Color.Gray;
-            this.lblDescTotal.Location = new System.Drawing.Point(0, 115);
+            this.lblDescTotal.Location = new System.Drawing.Point(0, 94);
+            this.lblDescTotal.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDescTotal.Name = "lblDescTotal";
-            this.lblDescTotal.Padding = new System.Windows.Forms.Padding(15, 0, 0, 10);
-            this.lblDescTotal.Size = new System.Drawing.Size(267, 30);
+            this.lblDescTotal.Padding = new System.Windows.Forms.Padding(11, 0, 0, 8);
+            this.lblDescTotal.Size = new System.Drawing.Size(201, 24);
             this.lblDescTotal.TabIndex = 3;
             this.lblDescTotal.Text = "Tổng số bài tập";
             // 
@@ -394,10 +409,10 @@
             this.pnlCardComp.Controls.Add(this.lblValComp);
             this.pnlCardComp.Controls.Add(this.lblDescComp);
             this.pnlCardComp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlCardComp.Location = new System.Drawing.Point(297, 0);
-            this.pnlCardComp.Margin = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.pnlCardComp.Location = new System.Drawing.Point(223, 0);
+            this.pnlCardComp.Margin = new System.Windows.Forms.Padding(0, 0, 11, 0);
             this.pnlCardComp.Name = "pnlCardComp";
-            this.pnlCardComp.Size = new System.Drawing.Size(267, 145);
+            this.pnlCardComp.Size = new System.Drawing.Size(201, 118);
             this.pnlCardComp.TabIndex = 1;
             // 
             // stripComp
@@ -405,8 +420,9 @@
             this.stripComp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
             this.stripComp.Dock = System.Windows.Forms.DockStyle.Left;
             this.stripComp.Location = new System.Drawing.Point(0, 0);
+            this.stripComp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.stripComp.Name = "stripComp";
-            this.stripComp.Size = new System.Drawing.Size(4, 115);
+            this.stripComp.Size = new System.Drawing.Size(3, 94);
             this.stripComp.TabIndex = 0;
             // 
             // lblIconComp
@@ -414,9 +430,10 @@
             this.lblIconComp.AutoSize = true;
             this.lblIconComp.Font = new System.Drawing.Font("Segoe UI Emoji", 20F);
             this.lblIconComp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.lblIconComp.Location = new System.Drawing.Point(6, 48);
+            this.lblIconComp.Location = new System.Drawing.Point(4, 39);
+            this.lblIconComp.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblIconComp.Name = "lblIconComp";
-            this.lblIconComp.Size = new System.Drawing.Size(45, 46);
+            this.lblIconComp.Size = new System.Drawing.Size(35, 36);
             this.lblIconComp.TabIndex = 1;
             this.lblIconComp.Text = "✓";
             // 
@@ -425,9 +442,10 @@
             this.lblValComp.AutoSize = true;
             this.lblValComp.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold);
             this.lblValComp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.lblValComp.Location = new System.Drawing.Point(70, 45);
+            this.lblValComp.Location = new System.Drawing.Point(52, 37);
+            this.lblValComp.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblValComp.Name = "lblValComp";
-            this.lblValComp.Size = new System.Drawing.Size(46, 54);
+            this.lblValComp.Size = new System.Drawing.Size(38, 45);
             this.lblValComp.TabIndex = 2;
             this.lblValComp.Text = "0";
             // 
@@ -436,10 +454,11 @@
             this.lblDescComp.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblDescComp.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblDescComp.ForeColor = System.Drawing.Color.Gray;
-            this.lblDescComp.Location = new System.Drawing.Point(0, 115);
+            this.lblDescComp.Location = new System.Drawing.Point(0, 94);
+            this.lblDescComp.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDescComp.Name = "lblDescComp";
-            this.lblDescComp.Padding = new System.Windows.Forms.Padding(15, 0, 0, 10);
-            this.lblDescComp.Size = new System.Drawing.Size(267, 30);
+            this.lblDescComp.Padding = new System.Windows.Forms.Padding(11, 0, 0, 8);
+            this.lblDescComp.Size = new System.Drawing.Size(201, 24);
             this.lblDescComp.TabIndex = 3;
             this.lblDescComp.Text = "Đã hoàn thành";
             // 
@@ -451,10 +470,10 @@
             this.pnlCardProg.Controls.Add(this.lblValProg);
             this.pnlCardProg.Controls.Add(this.lblDescProg);
             this.pnlCardProg.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlCardProg.Location = new System.Drawing.Point(579, 0);
-            this.pnlCardProg.Margin = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.pnlCardProg.Location = new System.Drawing.Point(435, 0);
+            this.pnlCardProg.Margin = new System.Windows.Forms.Padding(0, 0, 11, 0);
             this.pnlCardProg.Name = "pnlCardProg";
-            this.pnlCardProg.Size = new System.Drawing.Size(267, 145);
+            this.pnlCardProg.Size = new System.Drawing.Size(201, 118);
             this.pnlCardProg.TabIndex = 2;
             // 
             // stripProg
@@ -462,8 +481,9 @@
             this.stripProg.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
             this.stripProg.Dock = System.Windows.Forms.DockStyle.Left;
             this.stripProg.Location = new System.Drawing.Point(0, 0);
+            this.stripProg.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.stripProg.Name = "stripProg";
-            this.stripProg.Size = new System.Drawing.Size(4, 115);
+            this.stripProg.Size = new System.Drawing.Size(3, 94);
             this.stripProg.TabIndex = 0;
             // 
             // lblIconProg
@@ -471,9 +491,10 @@
             this.lblIconProg.AutoSize = true;
             this.lblIconProg.Font = new System.Drawing.Font("Segoe UI Emoji", 20F);
             this.lblIconProg.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
-            this.lblIconProg.Location = new System.Drawing.Point(6, 48);
+            this.lblIconProg.Location = new System.Drawing.Point(4, 39);
+            this.lblIconProg.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblIconProg.Name = "lblIconProg";
-            this.lblIconProg.Size = new System.Drawing.Size(67, 46);
+            this.lblIconProg.Size = new System.Drawing.Size(52, 36);
             this.lblIconProg.TabIndex = 1;
             this.lblIconProg.Text = "🕒";
             // 
@@ -482,9 +503,10 @@
             this.lblValProg.AutoSize = true;
             this.lblValProg.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold);
             this.lblValProg.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
-            this.lblValProg.Location = new System.Drawing.Point(70, 44);
+            this.lblValProg.Location = new System.Drawing.Point(52, 36);
+            this.lblValProg.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblValProg.Name = "lblValProg";
-            this.lblValProg.Size = new System.Drawing.Size(46, 54);
+            this.lblValProg.Size = new System.Drawing.Size(38, 45);
             this.lblValProg.TabIndex = 2;
             this.lblValProg.Text = "0";
             // 
@@ -493,10 +515,11 @@
             this.lblDescProg.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblDescProg.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblDescProg.ForeColor = System.Drawing.Color.Gray;
-            this.lblDescProg.Location = new System.Drawing.Point(0, 115);
+            this.lblDescProg.Location = new System.Drawing.Point(0, 94);
+            this.lblDescProg.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDescProg.Name = "lblDescProg";
-            this.lblDescProg.Padding = new System.Windows.Forms.Padding(15, 0, 0, 10);
-            this.lblDescProg.Size = new System.Drawing.Size(267, 30);
+            this.lblDescProg.Padding = new System.Windows.Forms.Padding(11, 0, 0, 8);
+            this.lblDescProg.Size = new System.Drawing.Size(201, 24);
             this.lblDescProg.TabIndex = 3;
             this.lblDescProg.Text = "Đang làm";
             // 
@@ -508,10 +531,10 @@
             this.pnlCardAvg.Controls.Add(this.lblValAvg);
             this.pnlCardAvg.Controls.Add(this.lblDescAvg);
             this.pnlCardAvg.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlCardAvg.Location = new System.Drawing.Point(861, 0);
+            this.pnlCardAvg.Location = new System.Drawing.Point(647, 0);
             this.pnlCardAvg.Margin = new System.Windows.Forms.Padding(0);
             this.pnlCardAvg.Name = "pnlCardAvg";
-            this.pnlCardAvg.Size = new System.Drawing.Size(284, 145);
+            this.pnlCardAvg.Size = new System.Drawing.Size(212, 118);
             this.pnlCardAvg.TabIndex = 3;
             // 
             // stripAvg
@@ -519,8 +542,9 @@
             this.stripAvg.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(39)))), ((int)(((byte)(176)))));
             this.stripAvg.Dock = System.Windows.Forms.DockStyle.Left;
             this.stripAvg.Location = new System.Drawing.Point(0, 0);
+            this.stripAvg.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.stripAvg.Name = "stripAvg";
-            this.stripAvg.Size = new System.Drawing.Size(4, 115);
+            this.stripAvg.Size = new System.Drawing.Size(3, 94);
             this.stripAvg.TabIndex = 0;
             // 
             // lblIconAvg
@@ -528,9 +552,10 @@
             this.lblIconAvg.AutoSize = true;
             this.lblIconAvg.Font = new System.Drawing.Font("Segoe UI Emoji", 20F);
             this.lblIconAvg.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(39)))), ((int)(((byte)(176)))));
-            this.lblIconAvg.Location = new System.Drawing.Point(6, 48);
+            this.lblIconAvg.Location = new System.Drawing.Point(4, 39);
+            this.lblIconAvg.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblIconAvg.Name = "lblIconAvg";
-            this.lblIconAvg.Size = new System.Drawing.Size(64, 46);
+            this.lblIconAvg.Size = new System.Drawing.Size(52, 36);
             this.lblIconAvg.TabIndex = 1;
             this.lblIconAvg.Text = "📈";
             // 
@@ -539,9 +564,10 @@
             this.lblValAvg.AutoSize = true;
             this.lblValAvg.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold);
             this.lblValAvg.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(39)))), ((int)(((byte)(176)))));
-            this.lblValAvg.Location = new System.Drawing.Point(70, 45);
+            this.lblValAvg.Location = new System.Drawing.Point(52, 37);
+            this.lblValAvg.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblValAvg.Name = "lblValAvg";
-            this.lblValAvg.Size = new System.Drawing.Size(81, 54);
+            this.lblValAvg.Size = new System.Drawing.Size(66, 45);
             this.lblValAvg.TabIndex = 2;
             this.lblValAvg.Text = "0%";
             // 
@@ -550,10 +576,11 @@
             this.lblDescAvg.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblDescAvg.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblDescAvg.ForeColor = System.Drawing.Color.Gray;
-            this.lblDescAvg.Location = new System.Drawing.Point(0, 115);
+            this.lblDescAvg.Location = new System.Drawing.Point(0, 94);
+            this.lblDescAvg.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDescAvg.Name = "lblDescAvg";
-            this.lblDescAvg.Padding = new System.Windows.Forms.Padding(15, 0, 0, 10);
-            this.lblDescAvg.Size = new System.Drawing.Size(284, 30);
+            this.lblDescAvg.Padding = new System.Windows.Forms.Padding(11, 0, 0, 8);
+            this.lblDescAvg.Size = new System.Drawing.Size(212, 24);
             this.lblDescAvg.TabIndex = 3;
             this.lblDescAvg.Text = "Điểm trung bình";
             // 
@@ -562,9 +589,10 @@
             this.lblGreeting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGreeting.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblGreeting.ForeColor = System.Drawing.Color.Gray;
-            this.lblGreeting.Location = new System.Drawing.Point(869, 35);
+            this.lblGreeting.Location = new System.Drawing.Point(652, 28);
+            this.lblGreeting.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblGreeting.Name = "lblGreeting";
-            this.lblGreeting.Size = new System.Drawing.Size(292, 23);
+            this.lblGreeting.Size = new System.Drawing.Size(219, 19);
             this.lblGreeting.TabIndex = 1;
             this.lblGreeting.Text = "Xin chào, User";
             this.lblGreeting.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -575,21 +603,23 @@
             this.lblDashboardTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblDashboardTitle.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDashboardTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(33)))), ((int)(((byte)(33)))));
-            this.lblDashboardTitle.Location = new System.Drawing.Point(20, 20);
+            this.lblDashboardTitle.Location = new System.Drawing.Point(15, 16);
+            this.lblDashboardTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDashboardTitle.Name = "lblDashboardTitle";
-            this.lblDashboardTitle.Padding = new System.Windows.Forms.Padding(0, 0, 0, 20);
-            this.lblDashboardTitle.Size = new System.Drawing.Size(140, 58);
+            this.lblDashboardTitle.Padding = new System.Windows.Forms.Padding(0, 0, 0, 16);
+            this.lblDashboardTitle.Size = new System.Drawing.Size(109, 46);
             this.lblDashboardTitle.TabIndex = 0;
             this.lblDashboardTitle.Text = "Thống kê";
             // 
             // ucStudentDashboard
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.Controls.Add(this.pnlMain);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "ucStudentDashboard";
-            this.Size = new System.Drawing.Size(1200, 800);
+            this.Size = new System.Drawing.Size(900, 650);
             this.pnlMain.ResumeLayout(false);
             this.pnlMain.PerformLayout();
             this.pnlActionsContainer.ResumeLayout(false);

@@ -202,6 +202,14 @@ namespace CodeForge_Desktop.Presentation.Forms
             registrationForm.Show();
         }
 
+        /// <summary>
+        /// Xử lý sự kiện khi người dùng nhấn liên kết Quên Mật Khẩu.
+        /// </summary>
+        private void lblForgotPasswordLink_Click(object sender, EventArgs e)
+        {
+            ForgotPassword forgotPasswordForm = new ForgotPassword();
+            forgotPasswordForm.ShowDialog();
+        }
         private void lblQuenMKLink_Click(object sender, EventArgs e)
         {
             using (var forgotForm = new ForgotPassword())

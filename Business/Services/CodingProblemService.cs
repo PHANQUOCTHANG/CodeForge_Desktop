@@ -59,7 +59,7 @@ namespace CodeForge_Desktop.Business.Services
             return _repo.Delete(id) > 0;
         }
 
-        // --- THÊM PH??NG TH?C NÀY ---
+        
         public bool DeleteListProblems(List<Guid> ids)
         {
             if (ids == null || ids.Count == 0) return false;
