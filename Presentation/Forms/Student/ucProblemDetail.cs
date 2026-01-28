@@ -46,6 +46,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             btnSave.Click += (s, e) => SaveCode();
             btnSubmit.Click += (s, e) => SubmitCode();
 
+            // ✅ SET DEFAULT LANGUAGE TO C++
+            if (cmbLanguage.Items.Count > 0)
+            {
+                cmbLanguage.SelectedItem = "C++";
+            }
+
             // Khởi tạo loading timer
             InitializeLoadingTimer();
         }
@@ -56,7 +62,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private void InitializeLoadingTimer()
         {
             _loadingTimer = new Timer();
-            _loadingTimer.Interval = 300; // Cập nhật mỗi 300ms
+            _loadingTimer.Interval = 300;
             _loadingTimer.Tick += (s, e) => UpdateLoadingAnimation();
         }
 
@@ -93,8 +99,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             _loadingLabel.Dock = DockStyle.Fill;
 
             _loadingPanel.Controls.Add(_loadingLabel);
-
-            // Clear txtConsole và thêm loading panel
             txtConsole.Controls.Clear();
             txtConsole.Controls.Add(_loadingPanel);
 
@@ -144,24 +148,18 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     return;
                 }
 
-                // 1. TIÊU ĐỀ: Mô tả bài toán
                 AddSectionTitle(_currentProblem.Title);
-
-                // 2. Độ khó + Tags trên 1 dòng
                 AddDifficultyAndTags(_currentProblem.Difficulty, _currentProblem.Tags);
 
-                // 3. Mô tả bài toán
                 if (!string.IsNullOrEmpty(_currentProblem.Description))
                 {
                     AddLabel("Mô tả:", true);
                     AddLabel(_currentProblem.Description, false);
                 }
 
-                // 4. TIÊU ĐỀ: Ví dụ Test Case
-                AddSectionTitle("Test Case");
+                AddSectionTitle("Bài kiểm tra");
                 LoadTestCases();
 
-                // 5. TIÊU ĐỀ: Ràng buộc
                 AddSectionTitle("Ràng buộc");
 
                 if (!string.IsNullOrEmpty(_currentProblem.Constraints))
@@ -173,16 +171,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     AddLabel("Chưa có ràng buộc", false);
                 }
 
-                // 6. TIÊU ĐỀ: Giới hạn
                 AddSectionTitle("Giới hạn");
-
                 AddLabel($"⏱️  Thời gian: {_currentProblem.TimeLimit}ms", false);
                 AddLabel($"💾 Bộ nhớ: {_currentProblem.MemoryLimit}MB", false);
-
-                // 7. Thêm khoảng trắng ở cuối
                 AddLabel("", false);
 
-                // 8. Khởi tạo editor với template function
                 UpdateEditorForLanguage(_currentLanguage);
             }
             catch (Exception ex)
@@ -207,7 +200,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 btnRun.Enabled = false;
                 ShowLoadingPanel("Đang chạy code");
 
-                // Lấy các visible test cases
                 var testCases = _testCaseService.GetVisibleByProblemId(_problemId);
                 var testCaseIds = new List<Guid>();
                 foreach (var tc in testCases)
@@ -215,7 +207,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     testCaseIds.Add(tc.TestCaseID);
                 }
 
-                // Tạo request
                 var runRequest = new RunProblem
                 {
                     UserId = GetCurrentUserId(),
@@ -226,10 +217,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     TestCases = testCaseIds
                 };
 
-                // Gửi request
                 var result = await _runnerService.RunProblemAsync(runRequest);
-
-                // Hiển thị kết quả
                 HideLoadingPanel();
                 DisplayRunResult(result);
             }
@@ -246,7 +234,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         }
 
         /// <summary>
-        /// Hiển thị kết quả chạy code giống LeetCode - Version 2
+        /// Hiển thị kết quả chạy code - Phiên bản đơn giản, chuyên nghiệp
         /// </summary>
         private void DisplayRunResult(RunResultResponse result)
         {
@@ -257,10 +245,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             {
                 Label lblError = new Label();
                 lblError.Text = $"❌ Lỗi: {result.Message}";
-                lblError.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-                lblError.ForeColor = Color.FromArgb(244, 67, 54);
+                lblError.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+                lblError.ForeColor = Color.FromArgb(200, 50, 50);
                 lblError.AutoSize = true;
-                lblError.Location = new Point(15, 15);
+                lblError.Location = new Point(20, 20);
                 txtConsole.Controls.Add(lblError);
                 return;
             }
@@ -268,16 +256,15 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             if (result.Data == null || result.Data.Count == 0)
             {
                 Label lblEmpty = new Label();
-                lblEmpty.Text = "⚠️ Không có kết quả test case";
-                lblEmpty.Font = new Font("Segoe UI", 11);
-                lblEmpty.ForeColor = Color.FromArgb(255, 152, 0);
+                lblEmpty.Text = "Không có kết quả bài kiểm tra";
+                lblEmpty.Font = new Font("Segoe UI", 10);
+                lblEmpty.ForeColor = Color.FromArgb(100, 100, 100);
                 lblEmpty.AutoSize = true;
-                lblEmpty.Location = new Point(15, 15);
+                lblEmpty.Location = new Point(20, 20);
                 txtConsole.Controls.Add(lblEmpty);
                 return;
             }
 
-            // Tính toán thống kê
             int passedCount = 0;
             int failedCount = 0;
             long totalMemory = 0;
@@ -290,85 +277,55 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 else
                     failedCount++;
 
-                totalMemory += testResult.Memory;
+                totalMemory += testResult.Memory ?? 0;
 
-                if (double.TryParse(testResult.Time, out double timeValue))
+                if (double.TryParse(testResult.Time ?? "0", out double timeValue))
                     totalTime += timeValue;
             }
 
-            // Create scrollable container
             Panel pnlContainer = new Panel();
             pnlContainer.AutoScroll = true;
             pnlContainer.Dock = DockStyle.Fill;
-            pnlContainer.BackColor = Color.FromArgb(245, 245, 245);
+            pnlContainer.BackColor = Color.White;
             txtConsole.Controls.Add(pnlContainer);
 
             int yPos = 15;
 
-            // Header Section
+            // Header Section - Status
+            bool allPassed = passedCount == result.Data.Count;
             Panel pnlHeader = new Panel();
-            pnlHeader.BackColor = passedCount == result.Data.Count ? Color.FromArgb(232, 245, 233) : Color.FromArgb(255, 235, 238);
-            pnlHeader.BorderStyle = BorderStyle.FixedSingle;
+            pnlHeader.BackColor = Color.FromArgb(248, 249, 250);
+            pnlHeader.BorderStyle = BorderStyle.None;
             pnlHeader.Width = 650;
-            pnlHeader.Height = 80;
+            pnlHeader.Height = 70;
             pnlHeader.Location = new Point(15, yPos);
 
-            // Status
-            Label lblMainStatus = new Label();
-            lblMainStatus.Text = passedCount == result.Data.Count ? "✓ All Tests Passed" : "✗ Some Tests Failed";
-            lblMainStatus.Font = new Font("Segoe UI", 14, FontStyle.Bold);
-            lblMainStatus.ForeColor = passedCount == result.Data.Count ? Color.FromArgb(76, 175, 80) : Color.FromArgb(244, 67, 54);
-            lblMainStatus.Location = new Point(15, 10);
-            pnlHeader.Controls.Add(lblMainStatus);
+            Label lblStatus = new Label();
+            lblStatus.Text = allPassed ? "✓ Tất cả bài kiểm tra vượt qua" : "✗ Một số bài kiểm tra thất bại";
+            lblStatus.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            lblStatus.ForeColor = allPassed ? Color.FromArgb(70, 140, 70) : Color.FromArgb(200, 50, 50);
+            lblStatus.AutoSize = true;
+            lblStatus.Location = new Point(15, 10);
+            pnlHeader.Controls.Add(lblStatus);
 
-            // Stats
             Label lblStats = new Label();
-            lblStats.Text = $"{passedCount} Accepted, {failedCount} Failed | ⏱️ {totalTime:F3}s | 💾 {totalMemory / 1024.0:F2} MB";
-            lblStats.Font = new Font("Segoe UI", 10);
-            lblStats.ForeColor = Color.FromArgb(100, 100, 100);
-            lblStats.Location = new Point(15, 35);
+            lblStats.Text = $"Vượt qua: {passedCount}/{result.Data.Count}  |  Thời gian: {totalTime:F2}s  |  Bộ nhớ: {totalMemory / 1024.0:F1} MB";
+            lblStats.Font = new Font("Segoe UI", 9);
+            lblStats.ForeColor = Color.FromArgb(120, 120, 120);
+            lblStats.AutoSize = true;
+            lblStats.Location = new Point(15, 38);
             pnlHeader.Controls.Add(lblStats);
 
-            Label lblMessage = new Label();
-            lblMessage.Text = result.Message;
-            lblMessage.Font = new Font("Segoe UI", 9);
-            lblMessage.ForeColor = Color.FromArgb(150, 150, 150);
-            lblMessage.Location = new Point(15, 55);
-            pnlHeader.Controls.Add(lblMessage);
-
             pnlContainer.Controls.Add(pnlHeader);
-            yPos += 95;
+            yPos += 85;
 
-            // Test Results
             for (int i = 0; i < result.Data.Count; i++)
             {
                 TestResultPanel testPanel = new TestResultPanel(result.Data[i], i + 1);
                 testPanel.Location = new Point(15, yPos);
                 pnlContainer.Controls.Add(testPanel);
-                yPos += testPanel.Height + 10;
+                yPos += testPanel.Height + 8;
             }
-
-            // Summary Footer
-            Panel pnlFooter = new Panel();
-            pnlFooter.BackColor = Color.FromArgb(250, 250, 250);
-            pnlFooter.BorderStyle = BorderStyle.FixedSingle;
-            pnlFooter.Width = 650;
-            pnlFooter.Height = 50;
-            pnlFooter.Location = new Point(15, yPos);
-
-            Label lblFooter = new Label();
-            lblFooter.Text = passedCount == result.Data.Count ? 
-                "🎉 Perfect! All test cases passed successfully!" : 
-                $"⚠️ {failedCount} test case(s) failed. Please review your solution.";
-            lblFooter.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            lblFooter.ForeColor = passedCount == result.Data.Count ? 
-                Color.FromArgb(76, 175, 80) : 
-                Color.FromArgb(244, 67, 54);
-            lblFooter.Location = new Point(15, 15);
-            lblFooter.AutoSize = true;
-            pnlFooter.Controls.Add(lblFooter);
-
-            pnlContainer.Controls.Add(pnlFooter);
         }
 
         /// <summary>
@@ -390,7 +347,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     return;
                 }
 
-                // Tạo submission entity
                 var submission = new Submission
                 {
                     SubmissionID = Guid.NewGuid(),
@@ -402,7 +358,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     SubmitTime = DateTime.Now
                 };
 
-                // Lưu submission
                 bool result = _submissionService.SaveSubmission(submission);
 
                 if (result)
@@ -436,7 +391,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 btnSubmit.Enabled = false;
                 ShowLoadingPanel("Đang submit code");
 
-                //Lấy tất cả test cases(không chỉ visible)
                 var testCases = _testCaseService.GetByProblemId(_problemId);
                 var testCaseIds = new List<Guid>();
                 foreach (var tc in testCases)
@@ -444,7 +398,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     testCaseIds.Add(tc.TestCaseID);
                 }
 
-                // Tạo request
                 var submitRequest = new RunProblem
                 {
                     UserId = GetCurrentUserId(),
@@ -455,17 +408,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     TestCases = testCaseIds
                 };
 
-                // Gửi request
                 var result = await _runnerService.SubmitProblemAsync(submitRequest);
-
-                // Hiển thị kết quả
                 HideLoadingPanel();
                 DisplaySubmitResult(result);
 
-                // ✅ LƯU SUBMISSION NGAY SAU KHI SUBMIT XONG
                 if (result.IsSuccess && result.Data != null)
                 {
                     SaveSubmissionAfterSubmit(result.Data);
+                    UpdateProblemStatusAfterSubmit(result.Data);
                 }
             }
             catch (Exception ex)
@@ -481,7 +431,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         }
 
         /// <summary>
-        /// Hiển thị kết quả submit
+        /// Hiển thị kết quả submit - Phiên bản đơn giản, chuyên nghiệp
         /// </summary>
         private void DisplaySubmitResult(SubmitResultResponse result)
         {
@@ -492,10 +442,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             {
                 Label lblError = new Label();
                 lblError.Text = $"❌ Lỗi: {result.Message}";
-                lblError.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-                lblError.ForeColor = Color.FromArgb(244, 67, 54);
+                lblError.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+                lblError.ForeColor = Color.FromArgb(200, 50, 50);
                 lblError.AutoSize = true;
-                lblError.Location = new Point(15, 15);
+                lblError.Location = new Point(20, 20);
                 txtConsole.Controls.Add(lblError);
                 return;
             }
@@ -503,97 +453,112 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             if (result.Data == null)
             {
                 Label lblEmpty = new Label();
-                lblEmpty.Text = "⚠️ Không có kết quả submit";
-                lblEmpty.Font = new Font("Segoe UI", 11);
-                lblEmpty.ForeColor = Color.FromArgb(255, 152, 0);
+                lblEmpty.Text = "Không có kết quả submit";
+                lblEmpty.Font = new Font("Segoe UI", 10);
+                lblEmpty.ForeColor = Color.FromArgb(100, 100, 100);
                 lblEmpty.AutoSize = true;
-                lblEmpty.Location = new Point(15, 15);
+                lblEmpty.Location = new Point(20, 20);
                 txtConsole.Controls.Add(lblEmpty);
                 return;
             }
 
-            // Create scrollable container
             Panel pnlContainer = new Panel();
             pnlContainer.AutoScroll = true;
             pnlContainer.Dock = DockStyle.Fill;
-            pnlContainer.BackColor = Color.FromArgb(245, 245, 245);
+            pnlContainer.BackColor = Color.White;
             txtConsole.Controls.Add(pnlContainer);
 
             int yPos = 15;
 
-            // Header Section
-            Panel pnlHeader = new Panel();
             bool isAccepted = result.Data.Status == "Accepted";
-            pnlHeader.BackColor = isAccepted ? Color.FromArgb(232, 245, 233) : Color.FromArgb(255, 235, 238);
-            pnlHeader.BorderStyle = BorderStyle.FixedSingle;
+            Panel pnlHeader = new Panel();
+            pnlHeader.BackColor = Color.FromArgb(248, 249, 250);
+            pnlHeader.BorderStyle = BorderStyle.None;
             pnlHeader.Width = 650;
-            pnlHeader.Height = 120;
+            pnlHeader.Height = 80;
             pnlHeader.Location = new Point(15, yPos);
 
-            // Status
             Label lblMainStatus = new Label();
-            lblMainStatus.Text = isAccepted ? "✓ Accepted" : $"✗ {result.Data.Status}";
-            lblMainStatus.Font = new Font("Segoe UI", 16, FontStyle.Bold);
-            lblMainStatus.ForeColor = isAccepted ? Color.FromArgb(76, 175, 80) : Color.FromArgb(244, 67, 54);
-            lblMainStatus.Location = new Point(15, 10);
+            lblMainStatus.Text = isAccepted ? "✓ Chấp nhận" : "✗ " + result.Data.Status;
+            lblMainStatus.Font = new Font("Segoe UI", 13, FontStyle.Bold);
+            lblMainStatus.ForeColor = isAccepted ? Color.FromArgb(70, 140, 70) : Color.FromArgb(200, 50, 50);
             lblMainStatus.AutoSize = true;
+            lblMainStatus.Location = new Point(15, 10);
             pnlHeader.Controls.Add(lblMainStatus);
 
-            // Test case results
             Label lblTestCase = new Label();
-            lblTestCase.Text = $"Test Cases: {result.Data.TestCasePass}/{result.Data.TotalTestCase}";
-            lblTestCase.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            lblTestCase.ForeColor = Color.FromArgb(50, 50, 50);
-            lblTestCase.Location = new Point(15, 40);
+            lblTestCase.Text = $"Bài kiểm tra: {result.Data.TestCasePass}/{result.Data.TotalTestCase}";
+            lblTestCase.Font = new Font("Segoe UI", 10);
+            lblTestCase.ForeColor = Color.FromArgb(80, 80, 80);
             lblTestCase.AutoSize = true;
+            lblTestCase.Location = new Point(15, 38);
             pnlHeader.Controls.Add(lblTestCase);
 
-            // Performance stats
             Label lblStats = new Label();
-            lblStats.Text = $"⏱️  Time: {result.Data.Time:F3}s | 💾 Memory: {result.Data.Memory / 1024.0:F2} MB";
-            lblStats.Font = new Font("Segoe UI", 10);
-            lblStats.ForeColor = Color.FromArgb(100, 100, 100);
-            lblStats.Location = new Point(15, 65);
+            double displayTime = result.Data.Time ?? 0;
+            int displayMemory = result.Data.Memory ?? 0;
+            lblStats.Text = $"Thời gian: {displayTime:F2}s  |  Bộ nhớ: {displayMemory / 1024.0:F1} MB";
+            lblStats.Font = new Font("Segoe UI", 9);
+            lblStats.ForeColor = Color.FromArgb(120, 120, 120);
             lblStats.AutoSize = true;
+            lblStats.Location = new Point(15, 60);
             pnlHeader.Controls.Add(lblStats);
 
-            // Message
-            Label lblMessage = new Label();
-            lblMessage.Text = string.IsNullOrEmpty(result.Data.Message) ? result.Message : result.Data.Message;
-            lblMessage.Font = new Font("Segoe UI", 9);
-            lblMessage.ForeColor = Color.FromArgb(150, 150, 150);
-            lblMessage.Location = new Point(15, 90);
-            lblMessage.AutoSize = true;
-            pnlHeader.Controls.Add(lblMessage);
-
             pnlContainer.Controls.Add(pnlHeader);
-            yPos += 135;
+            yPos += 95;
 
-            // Summary Footer
-            Panel pnlFooter = new Panel();
-            pnlFooter.BackColor = Color.FromArgb(250, 250, 250);
-            pnlFooter.BorderStyle = BorderStyle.FixedSingle;
-            pnlFooter.Width = 650;
-            pnlFooter.Height = 50;
-            pnlFooter.Location = new Point(15, yPos);
-
-            Label lblFooter = new Label();
-            if (isAccepted)
+            if (!string.IsNullOrEmpty(result.Data.Message))
             {
-                lblFooter.Text = "🎉 Congratulations! Your solution was accepted!";
-                lblFooter.ForeColor = Color.FromArgb(76, 175, 80);
+                Label lblMessage = new Label();
+                lblMessage.Text = result.Data.Message;
+                lblMessage.Font = new Font("Segoe UI", 9);
+                lblMessage.ForeColor = Color.FromArgb(100, 100, 100);
+                lblMessage.AutoSize = true;
+                lblMessage.Location = new Point(15, yPos);
+                pnlContainer.Controls.Add(lblMessage);
+                yPos += 30;
             }
-            else
-            {
-                lblFooter.Text = $"⚠️ {result.Data.TotalTestCase - result.Data.TestCasePass} test case(s) failed.";
-                lblFooter.ForeColor = Color.FromArgb(244, 67, 54);
-            }
-            lblFooter.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            lblFooter.Location = new Point(15, 15);
-            lblFooter.AutoSize = true;
-            pnlFooter.Controls.Add(lblFooter);
+        }
 
-            pnlContainer.Controls.Add(pnlFooter);
+        /// <summary>
+        /// Cập nhật status của problem sau khi submit
+        /// SOLVED: nếu tất cả test case pass
+        /// ATTEMPTED: nếu có test case fail
+        /// </summary>
+        private void UpdateProblemStatusAfterSubmit(SubmitData submitData)
+        {
+            try
+            {
+                if (_currentProblem.Status != "SOLVED")
+                {
+                    string newStatus = (submitData.TestCasePass == submitData.TotalTestCase) ? "SOLVED" : "ATTEMPTED";
+                    
+                    if (_currentProblem.Status != newStatus)
+                    {
+                        _currentProblem.Status = newStatus;
+                        _currentProblem.UpdatedAt = DateTime.Now;
+                        
+                        bool updateResult = _problemService.Update(_currentProblem);
+                        
+                        if (updateResult)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"✓ Status problem được cập nhật thành: {newStatus}");
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"❌ Không thể cập nhật status problem");
+                        }
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("ℹ️ Problem đã có status SOLVED, không cần cập nhật");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi cập nhật status problem: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -603,6 +568,14 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         {
             try
             {
+                int executionTime = submitData.Time.HasValue 
+                    ? (int)Math.Round(submitData.Time.Value * 1000) 
+                    : 0;
+                
+                int memoryUsed = submitData.Memory.HasValue 
+                    ? (int)Math.Round(submitData.Memory.Value / 1024.0) 
+                    : 0;
+
                 var submission = new Submission
                 {
                     SubmissionID = Guid.NewGuid(),
@@ -610,10 +583,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     ProblemID = _problemId,
                     Code = scintillaEditor.Text,
                     Language = _currentLanguage.ToLower(),
-                    Status = submitData.Status, // "Accepted" hoặc "Failed"
+                    Status = submitData.Status,
                     SubmitTime = DateTime.Now,
-                    ExecutionTime = (int)Math.Round(submitData.Time * 1000), // Convert từ giây sang millisecond
-                    MemoryUsed = (int)Math.Round(submitData.Memory / 1024.0), // Convert từ byte sang MB
+                    ExecutionTime = executionTime,
+                    MemoryUsed = memoryUsed,
                     QuantityTestPassed = submitData.TestCasePass,
                     QuantityTest = submitData.TotalTestCase
                 };
@@ -622,7 +595,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
                 if (saveResult)
                 {
-                    // Không hiển thị thông báo thêm, chỉ log nếu cần
                     System.Diagnostics.Debug.WriteLine("✓ Submission đã được lưu thành công!");
                 }
                 else
@@ -708,37 +680,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             return $"function {functionName}({parameters}) {{\n\n}}";
         }
 
-        private string GetSampleCall(string parameters)
-        {
-            if (string.IsNullOrWhiteSpace(parameters))
-                return "";
-
-            try
-            {
-                var paramList = parameters.Split(',');
-                var sampleParams = new List<string>();
-
-                foreach (var param in paramList)
-                {
-                    var trimmed = param.Trim();
-                    if (string.IsNullOrWhiteSpace(trimmed))
-                        continue;
-
-                    string[] parts = trimmed.Split(new[] { ' ', '*', '&' }, System.StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length > 0)
-                    {
-                        sampleParams.Add(parts[parts.Length - 1]);
-                    }
-                }
-
-                return string.Join(", ", sampleParams);
-            }
-            catch
-            {
-                return "";
-            }
-        }
-
         private void LoadTestCases()
         {
             try
@@ -747,7 +688,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
                 if (testCases.Count == 0)
                 {
-                    AddLabel("Chưa có ví dụ test case", false);
+                    AddLabel("Chưa có ví dụ bài kiểm tra", false);
                     return;
                 }
 
@@ -755,11 +696,11 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 {
                     AddLabel($"Ví dụ {i + 1}:", true);
 
-                    AddLabel("Input:", true);
+                    AddLabel("Đầu vào:", true);
                     string formattedInput = JsonConverter.JsonToVariableFormat(testCases[i].Input ?? "");
                     AddCodeBox(string.IsNullOrWhiteSpace(formattedInput) ? testCases[i].Input ?? "" : formattedInput);
 
-                    AddLabel("Output:", true);
+                    AddLabel("Đầu ra:", true);
                     AddCodeBox(testCases[i].ExpectedOutput ?? "");
 
                     if (!string.IsNullOrEmpty(testCases[i].Explain))
@@ -773,7 +714,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải test case: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi khi tải bài kiểm tra: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -865,26 +806,5 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             txt.ScrollBars = ScrollBars.Vertical;
             flowDescription.Controls.Add(txt);
         }
-
-        /// <summary>
-        /// Xử lý sự kiện kéo thanh Splitter
-        /// </summary>
-        // ĐỔI TÊN HÀM NẾU BẠN GẮN VÀO SplitterMoved
-        //private void SplitContainerVertical_SplitterMoved(object sender, System.Windows.Forms.SplitterEventArgs e)
-        //{
-        //    // Lấy đối tượng SplitContainer
-        //    SplitContainer splitContainer = (SplitContainer)sender;
-
-        //    // Giới hạn dưới (Tối thiểu 200px cho editor - Panel 1)
-        //    if (splitContainer.SplitterDistance < 200)
-        //    {
-        //        splitContainer.SplitterDistance = 200;
-        //    }
-        //    // Giới hạn trên (Tối đa là Chiều cao - 100px cho output - Panel 2)
-        //    else if (splitContainer.SplitterDistance > splitContainer.Height - 100)
-        //    {
-        //        splitContainer.SplitterDistance = splitContainer.Height - 100;
-        //    }
-        //}
     }
-}
+}                               
