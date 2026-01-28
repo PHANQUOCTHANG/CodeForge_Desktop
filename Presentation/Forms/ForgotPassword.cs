@@ -1,27 +1,38 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using CodeForge_Desktop.Business.Helpers;
-using CodeForge_Desktop.Business.Interfaces;
-using CodeForge_Desktop.Business.Models;
-using CodeForge_Desktop.Business.Services;
-using CodeForge_Desktop.DataAccess.Entities;
-using CodeForge_Desktop.DataAccess.Repositories;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CodeForge_Desktop.Presentation.Forms
 {
     public partial class ForgotPassword : Form
     {
-        private IUserService _userService;
-        private User _currentUser = null;
         private System.Windows.Forms.Timer _otpTimer;
         private int _otpCountdown = 300;
         private const int OTP_EXPIRATION_SECONDS = 300;
 
+        // Front-end state for reset flow (use backend API instead of local OtpHelper/UserRepository)
+        private string _emailForReset = null;
+        private string _lastOtpEntered = null;
+        private bool _otpVerified = false;
+
+        // HttpClient for calling backend API
+        private readonly HttpClient _httpClient;
+
         public ForgotPassword()
         {
             InitializeComponent();
-            _userService = new UserService(new UserRepository());
+
+            // Configure HttpClient to point to backend auth endpoints
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://localhost:7225/api/Auth/")
+            };
+
             SetupOtpTimer();
         }
 
@@ -31,7 +42,7 @@ namespace CodeForge_Desktop.Presentation.Forms
             pnlChangePassword.Visible = false;
             btnChangePassword.Visible = false;
             lblStepInfo.Text = "📝 Bước 1: Nhập Email";
-            
+
             // Setup placeholder text
             SetupPlaceholder();
             txtEmail.Focus();
@@ -86,7 +97,9 @@ namespace CodeForge_Desktop.Presentation.Forms
             {
                 _otpTimer.Stop();
                 MessageBox.Show("Mã OTP đã hết hạn. Vui lòng yêu cầu mã mới.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                OtpHelper.ClearOtp(_currentUser.Email);
+                // Reset local state (backend handles OTP lifecycle)
+                _emailForReset = null;
+                _otpVerified = false;
                 pnlOtpVerification.Visible = false;
                 pnlEmailVerification.Enabled = true;
                 lblStepInfo.Text = "Bước 1: Nhập email";
@@ -94,9 +107,9 @@ namespace CodeForge_Desktop.Presentation.Forms
         }
 
         /// <summary>
-        /// Bước 1: Gửi OTP qua email
+        /// Bước 1: Gửi OTP qua email (calls backend)
         /// </summary>
-        private void btnSendOtp_Click(object sender, EventArgs e)
+        private async void btnSendOtp_Click(object sender, EventArgs e)
         {
             string email = txtEmail.Text.Trim();
 
@@ -120,53 +133,34 @@ namespace CodeForge_Desktop.Presentation.Forms
 
             try
             {
-                // Tìm user với email này
-                var allUsers = _userService.GetAllUsers();
-                if (allUsers == null || allUsers.Count == 0)
+                var (success, otpForDev, message, error) = await SendForgotPasswordOtpAsync(email);
+                if (!success)
                 {
-                    MessageBox.Show("Email không tồn tại trong hệ thống!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Không thể gửi OTP: {error ?? message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                _currentUser = null;
-                foreach (var user in allUsers)
+                _emailForReset = email;
+                _otpVerified = false;
+
+                if (!string.IsNullOrEmpty(otpForDev))
                 {
-                    if (user.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
-                    {
-                        _currentUser = user;
-                        break;
-                    }
-                }
-
-                if (_currentUser == null)
-                {
-                    MessageBox.Show("Email không tồn tại trong hệ thống!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Tạo và gửi OTP
-                string otp = OtpHelper.GenerateOtp();
-                OtpHelper.SaveOtp(_currentUser.Email, otp);
-                bool emailSent = OtpHelper.SendOtpEmail(_currentUser.Email, otp);
-
-                if (emailSent)
-                {
-                    MessageBox.Show($"✓ Mã OTP đã được gửi tới:\n{_currentUser.Email}\n\nVui lòng kiểm tra email của bạn để lấy mã OTP.",
-                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    pnlEmailVerification.Enabled = false;
-                    pnlOtpVerification.Visible = true;
-                    lblStepInfo.Text = "🔐 Bước 2: Xác thực mã OTP";
-                    txtOtp.Clear();
-                    txtOtp.Focus();
-
-                    _otpCountdown = OTP_EXPIRATION_SECONDS;
-                    _otpTimer.Start();
+                    // Development mode — backend returned OTP for dev
+                    MessageBox.Show($"✓ Mã OTP (dev): {otpForDev}\nMã này đã được gửi tới email (dev).", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show("Không thể gửi email OTP. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"✓ Mã OTP đã được yêu cầu. Nếu tài khoản tồn tại, mã sẽ được gửi tới:\n{email}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+
+                pnlEmailVerification.Enabled = false;
+                pnlOtpVerification.Visible = true;
+                lblStepInfo.Text = "🔐 Bước 2: Xác thực mã OTP";
+                txtOtp.Clear();
+                txtOtp.Focus();
+
+                _otpCountdown = OTP_EXPIRATION_SECONDS;
+                _otpTimer.Start();
             }
             catch (Exception ex)
             {
@@ -175,9 +169,9 @@ namespace CodeForge_Desktop.Presentation.Forms
         }
 
         /// <summary>
-        /// Bước 2: Xác thực OTP
+        /// Bước 2: Xác thực OTP (calls backend)
         /// </summary>
-        private void btnVerifyOtp_Click(object sender, EventArgs e)
+        private async void btnVerifyOtp_Click(object sender, EventArgs e)
         {
             string inputOtp = txtOtp.Text.Trim();
 
@@ -195,53 +189,91 @@ namespace CodeForge_Desktop.Presentation.Forms
                 return;
             }
 
-            if (OtpHelper.VerifyOtp(_currentUser.Email, inputOtp))
+            if (string.IsNullOrEmpty(_emailForReset))
             {
-                MessageBox.Show("✓ OTP hợp lệ!\nVui lòng đặt mật khẩu mới.", "Thành công",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                _otpTimer.Stop();
-                pnlOtpVerification.Visible = false;
-                pnlChangePassword.Visible = true;
-                btnChangePassword.Visible = true;
-                lblStepInfo.Text = "Bước 3: Đặt mật khẩu mới";
-                txtNewPassword.Clear();
-                txtConfirmPassword.Clear();
-                txtNewPassword.Focus();
+                MessageBox.Show("Vui lòng yêu cầu mã OTP trước.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else
+
+            try
             {
-                MessageBox.Show("❌ Mã OTP không hợp lệ hoặc đã hết hạn!\nVui lòng thử lại.", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var (verified, message, error) = await VerifyOtpAsync(_emailForReset, inputOtp);
+                if (verified)
+                {
+                    MessageBox.Show("✓ OTP hợp lệ!\nVui lòng đặt mật khẩu mới.", "Thành công",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    _otpTimer.Stop();
+                    _otpVerified = true;
+                    _lastOtpEntered = inputOtp;
+
+                    pnlOtpVerification.Visible = false;
+                    pnlChangePassword.Visible = true;
+                    btnChangePassword.Visible = true;
+                    lblStepInfo.Text = "Bước 3: Đặt mật khẩu mới";
+                    txtNewPassword.Clear();
+                    txtConfirmPassword.Clear();
+                    txtNewPassword.Focus();
+                }
+                else
+                {
+                    MessageBox.Show($"❌ OTP không hợp lệ: {error ?? message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtOtp.Clear();
+                    txtOtp.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Gửi lại OTP (calls backend)
+        /// </summary>
+        private async void btnResendOtp_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_emailForReset))
+            {
+                MessageBox.Show("Vui lòng nhập email và gửi mã OTP trước.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            _otpTimer.Stop();
+
+            try
+            {
+                var (success, otpForDev, message, error) = await SendForgotPasswordOtpAsync(_emailForReset);
+                if (!success)
+                {
+                    MessageBox.Show($"Không thể gửi OTP: {error ?? message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(otpForDev))
+                {
+                    MessageBox.Show($"✓ Mã OTP mới (dev): {otpForDev}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("✓ Mã OTP mới đã được gửi!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                _otpCountdown = OTP_EXPIRATION_SECONDS;
+                _otpTimer.Start();
                 txtOtp.Clear();
                 txtOtp.Focus();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
-        /// Gửi lại OTP
+        /// Bước 3: Đổi mật khẩu (calls backend reset-password)
         /// </summary>
-        private void btnResendOtp_Click(object sender, EventArgs e)
-        {
-            _otpTimer.Stop();
-            OtpHelper.ClearOtp(_currentUser.Email);
-            
-            string otp = OtpHelper.GenerateOtp();
-            OtpHelper.SaveOtp(_currentUser.Email, otp);
-            OtpHelper.SendOtpEmail(_currentUser.Email, otp);
-
-            MessageBox.Show("✓ Mã OTP mới đã được gửi!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            
-            _otpCountdown = OTP_EXPIRATION_SECONDS;
-            _otpTimer.Start();
-            txtOtp.Clear();
-            txtOtp.Focus();
-        }
-
-        /// <summary>
-        /// Bước 3: Đổi mật khẩu
-        /// </summary>
-        private void btnChangePassword_Click(object sender, EventArgs e)
+        private async void btnChangePassword_Click(object sender, EventArgs e)
         {
             string newPassword = txtNewPassword.Text.Trim();
             string confirmPassword = txtConfirmPassword.Text.Trim();
@@ -271,11 +303,22 @@ namespace CodeForge_Desktop.Presentation.Forms
                 return;
             }
 
+            if (string.IsNullOrEmpty(_emailForReset))
+            {
+                MessageBox.Show("Vui lòng bắt đầu quy trình quên mật khẩu trước.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!_otpVerified)
+            {
+                MessageBox.Show("Vui lòng xác thực OTP trước khi đổi mật khẩu.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
-                var response = ChangeUserPassword(_currentUser.UserID, newPassword);
-
-                if (response.Code == 1)
+                var (success, message, error) = await ResetPasswordAsync(_emailForReset, _lastOtpEntered, newPassword);
+                if (success)
                 {
                     MessageBox.Show("✓ Đổi mật khẩu thành công!\nVui lòng đăng nhập lại.", "Thành công",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -283,7 +326,7 @@ namespace CodeForge_Desktop.Presentation.Forms
                 }
                 else
                 {
-                    MessageBox.Show($"❌ Lỗi: {response.Message}", "Thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"❌ Lỗi khi đổi mật khẩu: {error ?? message}", "Thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
@@ -340,61 +383,12 @@ namespace CodeForge_Desktop.Presentation.Forms
             return true;
         }
 
-        private Response<User> ChangeUserPassword(Guid userId, string newPassword)
-        {
-            try
-            {
-                var userRepository = new UserRepository();
-                var user = userRepository.GetById(userId);
-
-                if (user == null)
-                {
-                    return new Response<User>
-                    {
-                        Code = 0,
-                        Message = "Không tìm thấy người dùng!"
-                    };
-                }
-
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-                int updateResult = userRepository.Update(user);
-
-                if (updateResult != -1)
-                {
-                    System.Diagnostics.Debug.WriteLine($"✓ Password changed for: {user.Username}");
-                    return new Response<User>
-                    {
-                        Code = 1,
-                        Message = "Đổi mật khẩu thành công!",
-                        Data = user
-                    };
-                }
-                else
-                {
-                    return new Response<User>
-                    {
-                        Code = 0,
-                        Message = "Lỗi khi cập nhật mật khẩu!"
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new Response<User>
-                {
-                    Code = 0,
-                    Message = $"Lỗi: {ex.Message}"
-                };
-            }
-        }
-
         private void btnCancel_Click(object sender, EventArgs e)
         {
             _otpTimer?.Stop();
-            if (!string.IsNullOrWhiteSpace(_currentUser?.Email))
-            {
-                OtpHelper.ClearOtp(_currentUser.Email);
-            }
+            // Backend manages OTP lifecycle; just reset local state
+            _emailForReset = null;
+            _otpVerified = false;
             this.Close();
         }
 
@@ -408,6 +402,113 @@ namespace CodeForge_Desktop.Presentation.Forms
         {
             txtConfirmPassword.PasswordChar = txtConfirmPassword.PasswordChar == '*' ? '\0' : '*';
             txtConfirmPassword.Focus();
+        }
+
+        // ---- Backend API helpers ----
+
+        // Returns: (success, otpForDev, message, error)
+        private async Task<(bool success, string otpForDev, string message, string error)> SendForgotPasswordOtpAsync(string email)
+        {
+            var payload = new { email };
+            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            var resp = await _httpClient.PostAsync("forgot-password", content);
+            var respStr = await resp.Content.ReadAsStringAsync();
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                // Try to extract message if response body is JSON
+                try
+                {
+                    var j = JObject.Parse(respStr);
+                    return (false, null, j["message"]?.ToString(), j["errors"]?.ToString() ?? resp.ReasonPhrase);
+                }
+                catch
+                {
+                    return (false, null, respStr, resp.ReasonPhrase);
+                }
+            }
+
+            try
+            {
+                var j = JObject.Parse(respStr);
+                var data = j["data"]?.ToString();
+                var message = j["message"]?.ToString();
+                return (true, data, message, null);
+            }
+            catch (Exception ex)
+            {
+                return (true, null, respStr, null);
+            }
+        }
+
+        // Returns: (verified, message, error)
+        private async Task<(bool verified, string message, string error)> VerifyOtpAsync(string email, string otp)
+        {
+            var payload = new { email, otp };
+            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            var resp = await _httpClient.PostAsync("verify-otp", content);
+            var respStr = await resp.Content.ReadAsStringAsync();
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var j = JObject.Parse(respStr);
+                    return (false, j["message"]?.ToString(), j["errors"]?.ToString() ?? resp.ReasonPhrase);
+                }
+                catch
+                {
+                    return (false, respStr, resp.ReasonPhrase);
+                }
+            }
+
+            try
+            {
+                var j = JObject.Parse(respStr);
+                return (true, j["message"]?.ToString(), null);
+            }
+            catch
+            {
+                return (true, respStr, null);
+            }
+        }
+
+        // Returns: (success, message, error)
+        private async Task<(bool success, string message, string error)> ResetPasswordAsync(string email, string otp, string newPassword)
+        {
+            // Send email, otp and newPassword. Backend may ignore otp if VerifyOtp already validated it.
+            var payload = new
+            {
+                email,
+                otp,
+                newPassword
+            };
+            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            var resp = await _httpClient.PostAsync("reset-password", content);
+            var respStr = await resp.Content.ReadAsStringAsync();
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var j = JObject.Parse(respStr);
+                    return (false, j["message"]?.ToString(), j["errors"]?.ToString() ?? resp.ReasonPhrase);
+                }
+                catch
+                {
+                    return (false, respStr, resp.ReasonPhrase);
+                }
+            }
+
+            try
+            {
+                var j = JObject.Parse(respStr);
+                return (true, j["message"]?.ToString(), null);
+            }
+            catch
+            {
+                return (true, respStr, null);
+            }
         }
     }
 }
