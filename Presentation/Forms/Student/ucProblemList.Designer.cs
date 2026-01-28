@@ -17,6 +17,8 @@
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlMain = new System.Windows.Forms.Panel();
             this.dgvProblemList = new System.Windows.Forms.DataGridView();
             this.colHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -24,6 +26,12 @@
             this.colDifficulty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TagProblem = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pnlPagination = new System.Windows.Forms.Panel();
+            this.lblPageInfo = new System.Windows.Forms.Label();
+            this.btnLastPage = new System.Windows.Forms.Button();
+            this.btnNextPage = new System.Windows.Forms.Button();
+            this.btnPrevPage = new System.Windows.Forms.Button();
+            this.btnFirstPage = new System.Windows.Forms.Button();
             this.pnlFilters = new System.Windows.Forms.Panel();
             this.cmbDifficulty = new System.Windows.Forms.ComboBox();
             this.lblDifficultyFilter = new System.Windows.Forms.Label();
@@ -40,6 +48,7 @@
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProblemList)).BeginInit();
+            this.pnlPagination.SuspendLayout();
             this.pnlFilters.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picSearchIcon)).BeginInit();
@@ -51,12 +60,13 @@
             // 
             this.pnlMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.pnlMain.Controls.Add(this.dgvProblemList);
+            this.pnlMain.Controls.Add(this.pnlPagination);
             this.pnlMain.Controls.Add(this.pnlFilters);
             this.pnlMain.Controls.Add(this.pnlHeader);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Padding = new System.Windows.Forms.Padding(20, 20, 20, 20);
+            this.pnlMain.Padding = new System.Windows.Forms.Padding(20);
             this.pnlMain.Size = new System.Drawing.Size(1000, 600);
             this.pnlMain.TabIndex = 0;
             // 
@@ -67,14 +77,16 @@
             this.dgvProblemList.AllowUserToResizeRows = false;
             this.dgvProblemList.BackgroundColor = System.Drawing.Color.White;
             this.dgvProblemList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvProblemList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.dgvProblemList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.dgvProblemList.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.dgvProblemList.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.dgvProblemList.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            this.dgvProblemList.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(16, 12, 16, 12);
-            this.dgvProblemList.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.dgvProblemList.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
+            this.dgvProblemList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.Padding = new System.Windows.Forms.Padding(16, 12, 16, 12);
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvProblemList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvProblemList.ColumnHeadersHeight = 50;
             this.dgvProblemList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvProblemList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -83,23 +95,27 @@
             this.colDifficulty,
             this.TagProblem,
             this.colStatus});
-            this.dgvProblemList.DefaultCellStyle.BackColor = System.Drawing.Color.White;
-            this.dgvProblemList.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.dgvProblemList.DefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.dgvProblemList.DefaultCellStyle.Padding = new System.Windows.Forms.Padding(16, 8, 16, 8);
-            this.dgvProblemList.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.dgvProblemList.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            dataGridViewCellStyle6.Padding = new System.Windows.Forms.Padding(16, 8, 16, 8);
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvProblemList.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvProblemList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvProblemList.EnableHeadersVisualStyles = false;
-            this.dgvProblemList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.dgvProblemList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
             this.dgvProblemList.Location = new System.Drawing.Point(20, 210);
             this.dgvProblemList.MultiSelect = false;
             this.dgvProblemList.Name = "dgvProblemList";
             this.dgvProblemList.ReadOnly = true;
+            this.dgvProblemList.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dgvProblemList.RowHeadersVisible = false;
             this.dgvProblemList.RowTemplate.Height = 56;
             this.dgvProblemList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvProblemList.Size = new System.Drawing.Size(960, 370);
+            this.dgvProblemList.Size = new System.Drawing.Size(960, 310);
             this.dgvProblemList.TabIndex = 2;
             this.dgvProblemList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProblemList_CellContentClick);
             this.dgvProblemList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvProblemList_CellPainting);
@@ -147,6 +163,100 @@
             this.colStatus.ReadOnly = true;
             this.colStatus.Width = 150;
             // 
+            // pnlPagination
+            // 
+            this.pnlPagination.BackColor = System.Drawing.Color.White;
+            this.pnlPagination.Controls.Add(this.lblPageInfo);
+            this.pnlPagination.Controls.Add(this.btnLastPage);
+            this.pnlPagination.Controls.Add(this.btnNextPage);
+            this.pnlPagination.Controls.Add(this.btnPrevPage);
+            this.pnlPagination.Controls.Add(this.btnFirstPage);
+            this.pnlPagination.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlPagination.Location = new System.Drawing.Point(20, 520);
+            this.pnlPagination.Name = "pnlPagination";
+            this.pnlPagination.Padding = new System.Windows.Forms.Padding(20, 16, 20, 16);
+            this.pnlPagination.Size = new System.Drawing.Size(960, 60);
+            this.pnlPagination.TabIndex = 3;
+            // 
+            // lblPageInfo
+            // 
+            this.lblPageInfo.AutoSize = true;
+            this.lblPageInfo.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblPageInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
+            this.lblPageInfo.Location = new System.Drawing.Point(20, 20);
+            this.lblPageInfo.Name = "lblPageInfo";
+            this.lblPageInfo.Size = new System.Drawing.Size(151, 17);
+            this.lblPageInfo.TabIndex = 5;
+            this.lblPageInfo.Text = "Hiển thị 1-15 trong 0 bài";
+            // 
+            // btnLastPage
+            // 
+            this.btnLastPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLastPage.BackColor = System.Drawing.Color.White;
+            this.btnLastPage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLastPage.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.btnLastPage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLastPage.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnLastPage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            this.btnLastPage.Location = new System.Drawing.Point(898, 14);
+            this.btnLastPage.Name = "btnLastPage";
+            this.btnLastPage.Size = new System.Drawing.Size(42, 32);
+            this.btnLastPage.TabIndex = 4;
+            this.btnLastPage.Text = "»";
+            this.btnLastPage.UseVisualStyleBackColor = false;
+            this.btnLastPage.Click += new System.EventHandler(this.btnLastPage_Click);
+            // 
+            // btnNextPage
+            // 
+            this.btnNextPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNextPage.BackColor = System.Drawing.Color.White;
+            this.btnNextPage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNextPage.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.btnNextPage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNextPage.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnNextPage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            this.btnNextPage.Location = new System.Drawing.Point(850, 14);
+            this.btnNextPage.Name = "btnNextPage";
+            this.btnNextPage.Size = new System.Drawing.Size(42, 32);
+            this.btnNextPage.TabIndex = 3;
+            this.btnNextPage.Text = "›";
+            this.btnNextPage.UseVisualStyleBackColor = false;
+            this.btnNextPage.Click += new System.EventHandler(this.btnNextPage_Click);
+            // 
+            // btnPrevPage
+            // 
+            this.btnPrevPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPrevPage.BackColor = System.Drawing.Color.White;
+            this.btnPrevPage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPrevPage.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.btnPrevPage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPrevPage.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnPrevPage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            this.btnPrevPage.Location = new System.Drawing.Point(712, 14);
+            this.btnPrevPage.Name = "btnPrevPage";
+            this.btnPrevPage.Size = new System.Drawing.Size(42, 32);
+            this.btnPrevPage.TabIndex = 1;
+            this.btnPrevPage.Text = "‹";
+            this.btnPrevPage.UseVisualStyleBackColor = false;
+            this.btnPrevPage.Click += new System.EventHandler(this.btnPrevPage_Click);
+            // 
+            // btnFirstPage
+            // 
+            this.btnFirstPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFirstPage.BackColor = System.Drawing.Color.White;
+            this.btnFirstPage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnFirstPage.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.btnFirstPage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFirstPage.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnFirstPage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            this.btnFirstPage.Location = new System.Drawing.Point(664, 14);
+            this.btnFirstPage.Name = "btnFirstPage";
+            this.btnFirstPage.Size = new System.Drawing.Size(42, 32);
+            this.btnFirstPage.TabIndex = 0;
+            this.btnFirstPage.Text = "«";
+            this.btnFirstPage.UseVisualStyleBackColor = false;
+            this.btnFirstPage.Click += new System.EventHandler(this.btnFirstPage_Click);
+            // 
             // pnlFilters
             // 
             this.pnlFilters.BackColor = System.Drawing.Color.White;
@@ -187,13 +297,13 @@
             this.lblDifficultyFilter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblDifficultyFilter.Location = new System.Drawing.Point(720, 23);
             this.lblDifficultyFilter.Name = "lblDifficultyFilter";
-            this.lblDifficultyFilter.Size = new System.Drawing.Size(54, 17);
+            this.lblDifficultyFilter.Size = new System.Drawing.Size(55, 17);
             this.lblDifficultyFilter.TabIndex = 1;
             this.lblDifficultyFilter.Text = "Độ khó:";
             // 
             // pnlSearchContainer
             // 
-            this.pnlSearchContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.pnlSearchContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlSearchContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.pnlSearchContainer.Controls.Add(this.picSearchIcon);
@@ -217,7 +327,7 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -313,7 +423,7 @@
             this.lblDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.lblDescription.Location = new System.Drawing.Point(24, 56);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(284, 19);
+            this.lblDescription.Size = new System.Drawing.Size(288, 19);
             this.lblDescription.TabIndex = 1;
             this.lblDescription.Text = "Giải các bài tập để nâng cao kỹ năng lập trình";
             // 
@@ -324,7 +434,7 @@
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.lblTitle.Location = new System.Drawing.Point(20, 18);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(220, 37);
+            this.lblTitle.Size = new System.Drawing.Size(223, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Bài tập lập trình";
             // 
@@ -338,6 +448,8 @@
             this.Size = new System.Drawing.Size(1000, 600);
             this.pnlMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvProblemList)).EndInit();
+            this.pnlPagination.ResumeLayout(false);
+            this.pnlPagination.PerformLayout();
             this.pnlFilters.ResumeLayout(false);
             this.pnlFilters.PerformLayout();
             this.pnlSearchContainer.ResumeLayout(false);
@@ -373,5 +485,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colDifficulty;
         private System.Windows.Forms.DataGridViewTextBoxColumn TagProblem;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
+        private System.Windows.Forms.Panel pnlPagination;
+        private System.Windows.Forms.Button btnFirstPage;
+        private System.Windows.Forms.Button btnPrevPage;
+        private System.Windows.Forms.Button btnNextPage;
+        private System.Windows.Forms.Button btnLastPage;
+        private System.Windows.Forms.Label lblPageInfo;
     }
 }

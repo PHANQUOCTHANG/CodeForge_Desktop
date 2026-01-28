@@ -12,31 +12,41 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
     public partial class ucProblemList : UserControl
     {
         private const string PlaceholderText = "Tìm kiếm bài tập...";
+        private const int ItemsPerPage = 5;
+        private const int MaxVisiblePageButtons = 5;
+
         public event EventHandler<Guid> ProblemClicked;
         private ICodingProblemService _problemService;
         private List<CodeForge_Desktop.DataAccess.Entities.CodingProblem> _allProblems;
-        private List<CodeForge_Desktop.DataAccess.Entities.CodingProblem> _displayedProblems;
+        private List<CodeForge_Desktop.DataAccess.Entities.CodingProblem> _filteredProblems;
         private string _currentSearchText = "";
         private string _currentDifficultyFilter = "Tất cả";
         private int _lastHoveredRow = -1;
+
+        // Pagination
+        private int _currentPage = 1;
+        private int _totalPages = 1;
+        private List<Button> _pageButtons = new List<Button>();
+
+        // Fonts
         private Font _headerFont;
         private Font _cellFont;
         private Font _cellBoldFont;
 
-        // Color Palette - Slate Theme
+        // Color Palette
         private readonly Color _slateHeader = Color.FromArgb(51, 65, 85);
         private readonly Color _slateText = Color.FromArgb(51, 65, 85);
         private readonly Color _slateSecondary = Color.FromArgb(71, 85, 105);
         private readonly Color _slateTertiary = Color.FromArgb(100, 116, 139);
         private readonly Color _slateLight = Color.FromArgb(148, 163, 184);
-        private readonly Color _slateBorder = Color.FromArgb(226, 232, 240);
+        private readonly Color _slateBorder = Color.FromArgb(203, 213, 225);
         private readonly Color _slateHover = Color.FromArgb(248, 250, 252);
         private readonly Color _linkBlue = Color.FromArgb(59, 130, 246);
 
         public ucProblemList()
         {
             _problemService = new CodingProblemService();
-            _displayedProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>();
+            _filteredProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>();
             _allProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>();
 
             _headerFont = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
@@ -60,9 +70,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             cmbDifficulty.SelectedIndexChanged += CmbDifficulty_SelectedIndexChanged;
         }
 
-        /// <summary>
-        /// Thiết lập style tùy chỉnh cho các controls
-        /// </summary>
         private void SetupCustomStyles()
         {
             // Rounded corners for search box
@@ -72,16 +79,13 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     Color.FromArgb(248, 250, 252), 6);
             };
 
-            // Rounded corners for stat badges
-            lblTotal.Paint += (s, e) => DrawStatBadge(e.Graphics, lblTotal);
-            lblSolved.Paint += (s, e) => DrawStatBadge(e.Graphics, lblSolved);
-            lblAttempted.Paint += (s, e) => DrawStatBadge(e.Graphics, lblAttempted);
-            lblNotStarted.Paint += (s, e) => DrawStatBadge(e.Graphics, lblNotStarted);
+            // Rounded corners for stat badges - với text hiển thị rõ ràng
+            lblTotal.Paint += (s, e) => DrawStatBadgeWithText(e.Graphics, lblTotal);
+            lblSolved.Paint += (s, e) => DrawStatBadgeWithText(e.Graphics, lblSolved);
+            lblAttempted.Paint += (s, e) => DrawStatBadgeWithText(e.Graphics, lblAttempted);
+            lblNotStarted.Paint += (s, e) => DrawStatBadgeWithText(e.Graphics, lblNotStarted);
         }
 
-        /// <summary>
-        /// Vẽ panel bo tròn góc
-        /// </summary>
         private void DrawRoundedPanel(Graphics g, Rectangle bounds, Color color, int radius)
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -92,9 +96,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             }
         }
 
-        /// <summary>
-        /// Vẽ stat badge với góc bo tròn
-        /// </summary>
         private void DrawStatBadge(Graphics g, Label label)
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -106,9 +107,30 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             }
         }
 
-        /// <summary>
-        /// Tạo path cho hình chữ nhật bo góc
-        /// </summary>
+        private void DrawStatBadgeWithText(Graphics g, Label label)
+        {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            Rectangle bounds = new Rectangle(0, 0, label.Width, label.Height);
+
+            // Vẽ background bo góc
+            using (GraphicsPath path = GetRoundedRectPath(bounds, 6))
+            using (SolidBrush bgBrush = new SolidBrush(label.BackColor))
+            {
+                g.FillPath(bgBrush, path);
+            }
+
+            // Vẽ text lên trên
+            using (SolidBrush textBrush = new SolidBrush(label.ForeColor))
+            {
+                StringFormat sf = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+                g.DrawString(label.Text, label.Font, textBrush, bounds, sf);
+            }
+        }
+
         private GraphicsPath GetRoundedRectPath(Rectangle bounds, int radius)
         {
             int diameter = radius * 2;
@@ -122,35 +144,23 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 return path;
             }
 
-            // Top left arc
             path.AddArc(arc, 180, 90);
-
-            // Top right arc
             arc.X = bounds.Right - diameter;
             path.AddArc(arc, 270, 90);
-
-            // Bottom right arc
             arc.Y = bounds.Bottom - diameter;
             path.AddArc(arc, 0, 90);
-
-            // Bottom left arc
             arc.X = bounds.Left;
             path.AddArc(arc, 90, 90);
-
             path.CloseFigure();
             return path;
         }
 
-        /// <summary>
-        /// Xử lý hover effect
-        /// </summary>
         private void DgvProblemList_MouseMove(object sender, MouseEventArgs e)
         {
             DataGridView.HitTestInfo hit = dgvProblemList.HitTest(e.X, e.Y);
 
             if (hit.RowIndex != _lastHoveredRow)
             {
-                // Restore previous row
                 if (_lastHoveredRow >= 0 && _lastHoveredRow < dgvProblemList.Rows.Count)
                 {
                     dgvProblemList.Rows[_lastHoveredRow].DefaultCellStyle.BackColor = Color.White;
@@ -158,7 +168,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
                 _lastHoveredRow = hit.RowIndex;
 
-                // Highlight current row
                 if (hit.RowIndex >= 0 && hit.RowIndex < dgvProblemList.Rows.Count)
                 {
                     dgvProblemList.Rows[hit.RowIndex].DefaultCellStyle.BackColor = _slateHover;
@@ -185,11 +194,12 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         {
             string selectedDifficulty = cmbDifficulty.SelectedItem?.ToString();
             _currentDifficultyFilter = selectedDifficulty ?? "Tất cả";
+            _currentPage = 1; // Reset to first page
             ApplyCombinedFilters();
         }
 
         /// <summary>
-        /// Áp dụng filter kết hợp
+        /// Áp dụng filter và phân trang
         /// </summary>
         private void ApplyCombinedFilters()
         {
@@ -197,10 +207,8 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             {
                 if (_allProblems == null) return;
 
-                dgvProblemList.SuspendLayout();
-                dgvProblemList.Rows.Clear();
-
-                var filteredProblems = _allProblems.Where(p =>
+                // Apply filters
+                var filtered = _allProblems.Where(p =>
                 {
                     if (_currentDifficultyFilter != "Tất cả" && p.Difficulty != _currentDifficultyFilter)
                         return false;
@@ -214,21 +222,17 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     return true;
                 }).ToList();
 
-                _displayedProblems = filteredProblems;
+                _filteredProblems = filtered;
 
-                foreach (var problem in filteredProblems)
-                {
-                    dgvProblemList.Rows.Add(
-                        problem.ProblemID.ToString(),
-                        problem.Title,
-                        problem.Difficulty,
-                        problem.Tags ?? "",
-                        problem.Status
-                    );
-                }
+                // Calculate pagination
+                _totalPages = (int)Math.Ceiling((double)_filteredProblems.Count / ItemsPerPage);
+                if (_totalPages == 0) _totalPages = 1;
+                if (_currentPage > _totalPages) _currentPage = _totalPages;
 
-                dgvProblemList.ResumeLayout();
-                UpdateStatistics(filteredProblems);
+                // Update display
+                DisplayCurrentPage();
+                UpdateStatistics(_filteredProblems);
+                UpdatePaginationControls();
             }
             catch (Exception ex)
             {
@@ -238,8 +242,253 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         }
 
         /// <summary>
-        /// Cập nhật thống kê
+        /// Hiển thị dữ liệu trang hiện tại
         /// </summary>
+        private void DisplayCurrentPage()
+        {
+            dgvProblemList.SuspendLayout();
+            dgvProblemList.Rows.Clear();
+
+            int startIndex = (_currentPage - 1) * ItemsPerPage;
+            int endIndex = Math.Min(startIndex + ItemsPerPage, _filteredProblems.Count);
+
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                var problem = _filteredProblems[i];
+                dgvProblemList.Rows.Add(
+                    problem.ProblemID.ToString(),
+                    problem.Title,
+                    problem.Difficulty,
+                    problem.Tags ?? "",
+                    problem.Status
+                );
+            }
+
+            dgvProblemList.ResumeLayout();
+        }
+
+        /// <summary>
+        /// Tạo các nút phân trang động
+        /// </summary>
+        private void CreatePageButtons()
+        {
+            // Xóa các nút cũ
+            foreach (var btn in _pageButtons)
+            {
+                pnlPagination.Controls.Remove(btn);
+                btn.Dispose();
+            }
+            _pageButtons.Clear();
+
+            // Tính toán các trang cần hiển thị
+            int startPage, endPage;
+
+            if (_totalPages <= MaxVisiblePageButtons)
+            {
+                startPage = 1;
+                endPage = _totalPages;
+            }
+            else
+            {
+                // Hiển thị 5 trang: current page ở giữa khi có thể
+                int pagesBeforeCurrent = MaxVisiblePageButtons / 2;
+                int pagesAfterCurrent = MaxVisiblePageButtons - pagesBeforeCurrent - 1;
+
+                startPage = Math.Max(1, _currentPage - pagesBeforeCurrent);
+                endPage = Math.Min(_totalPages, _currentPage + pagesAfterCurrent);
+
+                // Điều chỉnh nếu chưa đủ 5 trang
+                if (endPage - startPage + 1 < MaxVisiblePageButtons)
+                {
+                    if (startPage == 1)
+                    {
+                        endPage = Math.Min(_totalPages, startPage + MaxVisiblePageButtons - 1);
+                    }
+                    else if (endPage == _totalPages)
+                    {
+                        startPage = Math.Max(1, endPage - MaxVisiblePageButtons + 1);
+                    }
+                }
+            }
+
+            // Tính số lượng nút cần tạo
+            int totalPageButtons = endPage - startPage + 1;
+
+            // Vị trí của nút Last (cố định ở bên phải)
+            int lastBtnX = pnlPagination.Width - 20 - 42; // 20 padding + 42 width
+
+            // Đặt lại vị trí cho btnLastPage và btnNextPage
+            btnLastPage.Location = new Point(lastBtnX, 14);
+            btnNextPage.Location = new Point(lastBtnX - 48, 14); // 48 = 42 + 6
+
+            // Vị trí bắt đầu của các nút số trang (tính từ bên phải btnNextPage)
+            int startX = btnNextPage.Location.X - (totalPageButtons * 48);
+
+            // Đặt lại vị trí cho btnPrevPage và btnFirstPage
+            btnPrevPage.Location = new Point(startX - 48, 14);
+            btnFirstPage.Location = new Point(startX - 96, 14); // 96 = 48 * 2
+
+            // Tạo các nút số trang từ trái sang phải
+            int buttonX = startX;
+            for (int i = startPage; i <= endPage; i++)
+            {
+                Button pageBtn = CreatePageButton(i);
+                pageBtn.Location = new Point(buttonX, 14);
+                pageBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                pnlPagination.Controls.Add(pageBtn);
+                _pageButtons.Add(pageBtn);
+                buttonX += 48;
+            }
+        }
+
+        /// <summary>
+        /// Tạo một nút số trang
+        /// </summary>
+        private Button CreatePageButton(int pageNumber)
+        {
+            Button btn = new Button
+            {
+                Size = new Size(42, 32),
+                Text = pageNumber.ToString(),
+                Cursor = Cursors.Hand,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold),
+                Tag = pageNumber
+            };
+
+            // Style dựa theo trang hiện tại
+            if (pageNumber == _currentPage)
+            {
+                btn.BackColor = _linkBlue;
+                btn.ForeColor = Color.White;
+                btn.FlatAppearance.BorderColor = _linkBlue;
+            }
+            else
+            {
+                btn.BackColor = Color.White;
+                btn.ForeColor = _slateSecondary;
+                btn.FlatAppearance.BorderColor = _slateBorder;
+            }
+
+            // Event handler
+            btn.Click += (s, e) =>
+            {
+                _currentPage = pageNumber;
+                DisplayCurrentPage();
+                UpdatePaginationControls();
+            };
+
+            // Hover effect cho nút không phải current page
+            if (pageNumber != _currentPage)
+            {
+                btn.MouseEnter += (s, e) =>
+                {
+                    btn.BackColor = _slateHover;
+                };
+                btn.MouseLeave += (s, e) =>
+                {
+                    btn.BackColor = Color.White;
+                };
+            }
+
+            return btn;
+        }
+
+        /// <summary>
+        /// Cập nhật controls phân trang
+        /// </summary>
+        private void UpdatePaginationControls()
+        {
+            // Tạo lại các nút số trang
+            CreatePageButtons();
+
+            // Cập nhật thông tin hiển thị
+            int startItem = _filteredProblems.Count == 0 ? 0 : ((_currentPage - 1) * ItemsPerPage + 1);
+            int endItem = Math.Min(_currentPage * ItemsPerPage, _filteredProblems.Count);
+
+            lblPageInfo.Text = $"Hiển thị {startItem}-{endItem} trong {_filteredProblems.Count} bài";
+
+            // Enable/disable buttons
+            bool canGoPrev = _currentPage > 1;
+            bool canGoNext = _currentPage < _totalPages;
+
+            btnFirstPage.Enabled = canGoPrev;
+            btnPrevPage.Enabled = canGoPrev;
+            btnNextPage.Enabled = canGoNext;
+            btnLastPage.Enabled = canGoNext;
+
+            // Update button styles
+            UpdateButtonStyle(btnFirstPage, canGoPrev);
+            UpdateButtonStyle(btnPrevPage, canGoPrev);
+            UpdateButtonStyle(btnNextPage, canGoNext);
+            UpdateButtonStyle(btnLastPage, canGoNext);
+
+            // Thay đổi cursor
+            btnFirstPage.Cursor = canGoPrev ? Cursors.Hand : Cursors.Default;
+            btnPrevPage.Cursor = canGoPrev ? Cursors.Hand : Cursors.Default;
+            btnNextPage.Cursor = canGoNext ? Cursors.Hand : Cursors.Default;
+            btnLastPage.Cursor = canGoNext ? Cursors.Hand : Cursors.Default;
+        }
+
+        private void UpdateButtonStyle(Button btn, bool enabled)
+        {
+            if (enabled)
+            {
+                btn.ForeColor = _slateSecondary;
+                btn.FlatAppearance.BorderColor = _slateBorder;
+                btn.BackColor = Color.White;
+            }
+            else
+            {
+                btn.ForeColor = _slateLight;
+                btn.FlatAppearance.BorderColor = Color.FromArgb(226, 232, 240);
+                btn.BackColor = Color.FromArgb(249, 250, 251);
+            }
+        }
+
+        /// <summary>
+        /// Pagination button handlers
+        /// </summary>
+        private void btnFirstPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage = 1;
+                DisplayCurrentPage();
+                UpdatePaginationControls();
+            }
+        }
+
+        private void btnPrevPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                DisplayCurrentPage();
+                UpdatePaginationControls();
+            }
+        }
+
+        private void btnNextPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage < _totalPages)
+            {
+                _currentPage++;
+                DisplayCurrentPage();
+                UpdatePaginationControls();
+            }
+        }
+
+        private void btnLastPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage < _totalPages)
+            {
+                _currentPage = _totalPages;
+                DisplayCurrentPage();
+                UpdatePaginationControls();
+            }
+        }
+
         private void UpdateStatistics(List<CodeForge_Desktop.DataAccess.Entities.CodingProblem> problems)
         {
             if (problems == null || problems.Count == 0)
@@ -262,16 +511,10 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             lblNotStarted.Text = $"Chưa: {notStarted}";
         }
 
-        /// <summary>
-        /// Load dữ liệu từ database
-        /// </summary>
         private void LoadDataFromDatabase()
         {
             try
             {
-                dgvProblemList.SuspendLayout();
-                dgvProblemList.Rows.Clear();
-
                 _allProblems = _problemService.GetAll();
 
                 if (_allProblems == null)
@@ -279,21 +522,17 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                     _allProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>();
                 }
 
-                _displayedProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>(_allProblems);
+                _filteredProblems = new List<CodeForge_Desktop.DataAccess.Entities.CodingProblem>(_allProblems);
+                _currentPage = 1;
 
-                foreach (var problem in _allProblems)
-                {
-                    dgvProblemList.Rows.Add(
-                        problem.ProblemID.ToString(),
-                        problem.Title,
-                        problem.Difficulty,
-                        problem.Tags ?? "",
-                        problem.Status
-                    );
-                }
+                // Calculate pagination
+                _totalPages = (int)Math.Ceiling((double)_filteredProblems.Count / ItemsPerPage);
+                if (_totalPages == 0) _totalPages = 1;
 
-                dgvProblemList.ResumeLayout();
+                DisplayCurrentPage();
                 UpdateStatistics(_allProblems);
+                UpdatePaginationControls();
+
                 cmbDifficulty.SelectedIndex = 0;
                 _currentDifficultyFilter = "Tất cả";
                 _currentSearchText = "";
@@ -305,16 +544,13 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             }
         }
 
-        /// <summary>
-        /// Custom paint cho cells
-        /// </summary>
         private void dgvProblemList_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0 || e.Value == null) return;
 
             try
             {
-                // Status column - Beautiful badges
+                // Status column
                 if (e.ColumnIndex == dgvProblemList.Columns["colStatus"].Index)
                 {
                     e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
@@ -342,7 +578,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                             break;
                     }
 
-                    // Draw rounded badge
                     Rectangle badgeRect = new Rectangle(
                         e.CellBounds.X + 16,
                         e.CellBounds.Y + (e.CellBounds.Height - 28) / 2,
@@ -362,7 +597,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
                     e.Handled = true;
                 }
-                // Problem name - Link style
+                // Problem name
                 else if (e.ColumnIndex == dgvProblemList.Columns["colProblemName"].Index)
                 {
                     e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
@@ -373,7 +608,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
                     e.Handled = true;
                 }
-                // Difficulty - Color coded
+                // Difficulty
                 else if (e.ColumnIndex == dgvProblemList.Columns["colDifficulty"].Index)
                 {
                     e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
@@ -393,7 +628,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
 
                     e.Handled = true;
                 }
-                // Tags - Subtle color
+                // Tags
                 else if (e.ColumnIndex == dgvProblemList.Columns["TagProblem"].Index)
                 {
                     e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
@@ -411,9 +646,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             }
         }
 
-        /// <summary>
-        /// Placeholder handling
-        /// </summary>
         private void SetupPlaceholder()
         {
             txtSearch.Text = PlaceholderText;
@@ -440,9 +672,6 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             }
         }
 
-        /// <summary>
-        /// Search với debouncing
-        /// </summary>
         private void SetupSearchBox()
         {
             System.Windows.Forms.Timer searchTimer = new System.Windows.Forms.Timer();
@@ -450,6 +679,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             searchTimer.Tick += (s, e) =>
             {
                 searchTimer.Stop();
+                _currentPage = 1; // Reset to first page on search
                 ApplyCombinedFilters();
             };
 

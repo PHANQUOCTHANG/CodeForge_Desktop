@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CodeForge_Desktop.Presentation.Forms.Student
@@ -15,87 +9,91 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         public ucStudentSettings()
         {
             InitializeComponent();
-            SwitchTab(pnlGeneral, btnGeneral);
 
-            cboNgonNgu.Items.Add("Tiếng Việt");
-            cboNgonNgu.Items.Add("English");
-            cboNgonNgu.Items.Add("Español");
-            cboNgonNgu.Items.Add("Français");
-            cboNgonNgu.Items.Add("日本語");
-            cboNgonNgu.SelectedIndex = 0;
+            // Init Data
+            InitData();
 
-            cboMuiGio.Items.Add("GMT+7 (Vietnam)");
-            cboMuiGio.Items.Add("GMT+8 (Singapore, Beijing)");
-            cboMuiGio.Items.Add("GMT+0 (UTC/GMT)");
-            cboMuiGio.Items.Add("GMT-5 (New York)");
-            cboMuiGio.SelectedIndex = 0;
+            // Set Default Active Tab
+            SwitchTab(pnlGeneral, btnTabGeneral);
 
-            cboTheme.Items.Add("Dark");
-            cboTheme.Items.Add("Light");
+            // Events
+            btnTabGeneral.Click += (s, e) => SwitchTab(pnlGeneral, btnTabGeneral);
+            btnTabEditor.Click += (s, e) => SwitchTab(pnlEditor, btnTabEditor);
+            btnTabNotifications.Click += (s, e) => SwitchTab(pnlNotifications, btnTabNotifications);
+
+            btnSave.Click += BtnSave_Click;
+            btnReset.Click += BtnReset_Click;
+        }
+
+        private void InitData()
+        {
+            // General
+            cboLanguage.Items.AddRange(new object[] { "Tiếng Việt", "English", "日本語" });
+            cboLanguage.SelectedIndex = 0;
+
+            cboTimezone.Items.AddRange(new object[] { "GMT+7 (Vietnam)", "GMT+8 (Singapore)", "GMT+0 (UTC)" });
+            cboTimezone.SelectedIndex = 0;
+
+            // Editor
+            cboTheme.Items.AddRange(new object[] { "Dark (Mặc định)", "Light", "Monokai" });
             cboTheme.SelectedIndex = 0;
 
-            AddFontSizes(cboFontSize);
-            cboFontSize.SelectedIndex = 12;
+            for (int i = 10; i <= 24; i += 2) cboFontSize.Items.Add(i.ToString());
+            cboFontSize.SelectedIndex = 2; // 14
 
-            cboTabSize.Items.Add("2 spaces");
-            cboTabSize.Items.Add("4 spaces");
-            cboTabSize.Items.Add("8 spaces");
-            cboTabSize.SelectedIndex = 0;
+            cboTabSize.Items.AddRange(new object[] { "2 spaces", "4 spaces", "8 spaces" });
+            cboTabSize.SelectedIndex = 1;
 
+            // Checkbox defaults
+            chkAutoSave.Checked = true;
+            chkConfirmSubmit.Checked = true;
+            chkLineNumbers.Checked = true;
+            chkAutoCloseBrackets.Checked = true;
+            chkNotiEmailNewProblem.Checked = true;
+            chkInAppNoti.Checked = true;
         }
 
         private void SwitchTab(Panel activePanel, Button activeButton)
         {
-            ResetMenuButtons(btnGeneral);
-            ResetMenuButtons(btnEditor);
-            ResetMenuButtons(btnNotifications);
+            // Reset styles
+            ResetButtonStyle(btnTabGeneral);
+            ResetButtonStyle(btnTabEditor);
+            ResetButtonStyle(btnTabNotifications);
 
+            // Hide all panels
             pnlGeneral.Visible = false;
             pnlEditor.Visible = false;
             pnlNotifications.Visible = false;
 
+            // Activate new tab
             activePanel.Visible = true;
-            activeButton.BackColor = Color.DodgerBlue; 
-            activeButton.ForeColor = Color.White;      
-            activeButton.FlatAppearance.BorderSize = 0;
-        }
-        private void ResetMenuButtons(Button btn)
-        {
-            btn.BackColor = Color.White; 
-            btn.ForeColor = Color.Black;     
-                                             
-        }
-        private void btnGeneral_Click(object sender, EventArgs e)
-        {
-            SwitchTab(pnlGeneral, btnGeneral);
-        }
-        private void AddFontSizes(ComboBox cbo)
-        {
-            int minSize = 8;
-            int maxSize = 72;
-            int step = 2;
 
-            for (int size = minSize; size <= 28; size += step)
-            {
-                cbo.Items.Add(size);
-            }
-            for (int size = 32; size <= 48; size += 4)
-            {
-                cbo.Items.Add(size);
-            }
-            for (int size = 60; size <= maxSize; size += 12)
-            {
-                cbo.Items.Add(size);
-            }
-        }
-        private void btnEditor_Click(object sender, EventArgs e)
-        {
-            SwitchTab(pnlEditor, btnEditor);
+            // Highlight Button (Blue background, White text)
+            activeButton.BackColor = Color.FromArgb(235, 245, 255); // Xanh rất nhạt
+            activeButton.ForeColor = Color.FromArgb(0, 120, 215);   // Chữ xanh đậm
+            activeButton.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            // Thêm vạch màu bên trái để chỉ định active (nếu muốn cầu kỳ hơn, nhưng đổi màu nền là đủ đẹp)
         }
 
-        private void btnNotifications_Click(object sender, EventArgs e)
+        private void ResetButtonStyle(Button btn)
         {
-            SwitchTab(pnlNotifications, btnNotifications);
+            btn.BackColor = Color.White;
+            btn.ForeColor = Color.Black;
+            btn.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
+        }
+
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            // Logic lưu cài đặt xuống file config hoặc database
+            MessageBox.Show("Đã lưu cài đặt thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void BtnReset_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn có chắc muốn khôi phục mặc định?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                InitData(); // Reload default values
+            }
         }
     }
 }
