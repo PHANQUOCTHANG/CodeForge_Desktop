@@ -24,6 +24,20 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private void MainFormStudent_Load(object sender, EventArgs e)
         {
             btnTrangChu.PerformClick();
+
+            // Install AI chat dock after the initial layout completes so designer docking isn't disturbed.
+            // Use BeginInvoke to run after Load/layout.
+            this.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    ChatDockInstaller.EnsureChatDock(this, DockSide.Left, autoHide: true, enableAnimation: true, autoHideDelayMs: 1200);
+                }
+                catch
+                {
+                    // non-fatal: silently ignore installer failures
+                }
+            }));
         }   
 
         private void LoadUserControl(UserControl userControl)
