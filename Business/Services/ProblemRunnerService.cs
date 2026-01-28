@@ -178,10 +178,10 @@ namespace CodeForge_Desktop.Business.Services
         public string Message { get; set; }
 
         [JsonProperty("time")]
-        public double Time { get; set; }
+        public double? Time { get; set; }
 
         [JsonProperty("memory")]
-        public int Memory { get; set; }
+        public int? Memory { get; set; }
 
         [JsonProperty("resultFail")]
         public object ResultFail { get; set; }
@@ -217,7 +217,7 @@ namespace CodeForge_Desktop.Business.Services
         public string Time { get; set; }
 
         [JsonProperty("memory")]
-        public int Memory { get; set; }
+        public int? Memory { get; set; }
 
         [JsonProperty("status")]
         public StatusInfo Status { get; set; }

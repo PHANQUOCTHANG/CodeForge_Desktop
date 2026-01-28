@@ -189,7 +189,7 @@
             this.btnTogglePassword.Name = "btnTogglePassword";
             this.btnTogglePassword.Size = new System.Drawing.Size(44, 28);
             this.btnTogglePassword.TabIndex = 8;
-            this.btnTogglePassword.Text = "Hiện";
+            this.btnTogglePassword.Text = "👁️";
             this.btnTogglePassword.UseVisualStyleBackColor = false;
             this.btnTogglePassword.Click += new System.EventHandler(this.btnTogglePassword_Click);
             // 
