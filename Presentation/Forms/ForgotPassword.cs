@@ -17,7 +17,7 @@ namespace CodeForge_Desktop.Presentation.Forms
 
         // Front-end state for reset flow (use backend API instead of local OtpHelper/UserRepository)
         private string _emailForReset = null;
-        private string _lastOtpEntered = null;
+        private string _resetToken = null;
         private bool _otpVerified = false;
 
         // HttpClient for calling backend API
@@ -99,6 +99,7 @@ namespace CodeForge_Desktop.Presentation.Forms
                 MessageBox.Show("Mã OTP đã hết hạn. Vui lòng yêu cầu mã mới.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 // Reset local state (backend handles OTP lifecycle)
                 _emailForReset = null;
+                _resetToken = null;
                 _otpVerified = false;
                 pnlOtpVerification.Visible = false;
                 pnlEmailVerification.Enabled = true;
@@ -141,6 +142,7 @@ namespace CodeForge_Desktop.Presentation.Forms
                 }
 
                 _emailForReset = email;
+                _resetToken = null;
                 _otpVerified = false;
 
                 if (!string.IsNullOrEmpty(otpForDev))
@@ -169,7 +171,7 @@ namespace CodeForge_Desktop.Presentation.Forms
         }
 
         /// <summary>
-        /// Bước 2: Xác thực OTP (calls backend)
+        /// Bước 2: Xác thực OTP (calls backend which returns a reset token)
         /// </summary>
         private async void btnVerifyOtp_Click(object sender, EventArgs e)
         {
@@ -197,15 +199,21 @@ namespace CodeForge_Desktop.Presentation.Forms
 
             try
             {
-                var (verified, message, error) = await VerifyOtpAsync(_emailForReset, inputOtp);
+                var (verified, resetToken, message, error) = await VerifyOtpAsync(_emailForReset, inputOtp);
                 if (verified)
                 {
+                    if (string.IsNullOrEmpty(resetToken))
+                    {
+                        MessageBox.Show("Xác thực OTP thành công nhưng backend không trả về reset token.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     MessageBox.Show("✓ OTP hợp lệ!\nVui lòng đặt mật khẩu mới.", "Thành công",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     _otpTimer.Stop();
                     _otpVerified = true;
-                    _lastOtpEntered = inputOtp;
+                    _resetToken = resetToken;
 
                     pnlOtpVerification.Visible = false;
                     pnlChangePassword.Visible = true;
@@ -259,6 +267,10 @@ namespace CodeForge_Desktop.Presentation.Forms
                     MessageBox.Show("✓ Mã OTP mới đã được gửi!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
+                // Reset client-side token/state because a new OTP invalidates previous OTP and reset token flow
+                _resetToken = null;
+                _otpVerified = false;
+
                 _otpCountdown = OTP_EXPIRATION_SECONDS;
                 _otpTimer.Start();
                 txtOtp.Clear();
@@ -271,7 +283,7 @@ namespace CodeForge_Desktop.Presentation.Forms
         }
 
         /// <summary>
-        /// Bước 3: Đổi mật khẩu (calls backend reset-password)
+        /// Bước 3: Đổi mật khẩu (calls backend reset-password using resetToken)
         /// </summary>
         private async void btnChangePassword_Click(object sender, EventArgs e)
         {
@@ -309,15 +321,15 @@ namespace CodeForge_Desktop.Presentation.Forms
                 return;
             }
 
-            if (!_otpVerified)
+            if (!_otpVerified || string.IsNullOrEmpty(_resetToken))
             {
-                MessageBox.Show("Vui lòng xác thực OTP trước khi đổi mật khẩu.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng xác thực OTP và đảm bảo reset token tồn tại trước khi đổi mật khẩu.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
-                var (success, message, error) = await ResetPasswordAsync(_emailForReset, _lastOtpEntered, newPassword);
+                var (success, message, error) = await ResetPasswordAsync(_emailForReset, _resetToken, newPassword);
                 if (success)
                 {
                     MessageBox.Show("✓ Đổi mật khẩu thành công!\nVui lòng đăng nhập lại.", "Thành công",
@@ -388,6 +400,7 @@ namespace CodeForge_Desktop.Presentation.Forms
             _otpTimer?.Stop();
             // Backend manages OTP lifecycle; just reset local state
             _emailForReset = null;
+            _resetToken = null;
             _otpVerified = false;
             this.Close();
         }
@@ -411,7 +424,7 @@ namespace CodeForge_Desktop.Presentation.Forms
         {
             var payload = new { email };
             var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-            var resp = await _httpClient.PostAsync("forgot-password", content);
+            var resp = await _httpClient.PostAsync("send-otp", content);
             var respStr = await resp.Content.ReadAsStringAsync();
 
             if (!resp.IsSuccessStatusCode)
@@ -435,64 +448,88 @@ namespace CodeForge_Desktop.Presentation.Forms
                 var message = j["message"]?.ToString();
                 return (true, data, message, null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return (true, null, respStr, null);
             }
         }
 
-        // Returns: (verified, message, error)
-        private async Task<(bool verified, string message, string error)> VerifyOtpAsync(string email, string otp)
+        // Returns: (verified, resetToken, message, error)
+        private async Task<(bool verified, string resetToken, string message, string error)>
+VerifyOtpAsync(string email, string otp)
         {
             var payload = new { email, otp };
-            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            var json = JsonConvert.SerializeObject(payload);
+
+            Log("VERIFY OTP - REQUEST", json);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
             var resp = await _httpClient.PostAsync("verify-otp", content);
             var respStr = await resp.Content.ReadAsStringAsync();
 
+            Log("VERIFY OTP - RESPONSE", respStr);
+
             if (!resp.IsSuccessStatusCode)
             {
                 try
                 {
-                    var j = JObject.Parse(respStr);
-                    return (false, j["message"]?.ToString(), j["errors"]?.ToString() ?? resp.ReasonPhrase);
+                    var jErr = JObject.Parse(respStr);
+                    return (false, null,
+                        jErr["message"]?.ToString(),
+                        jErr["errors"]?.ToString());
                 }
                 catch
                 {
-                    return (false, respStr, resp.ReasonPhrase);
+                    return (false, null, respStr, resp.ReasonPhrase);
                 }
             }
 
-            try
+            var j = JObject.Parse(respStr);
+
+            // ✅ ĐỌC ĐÚNG resetToken
+            var resetToken = j["data"]?["resetToken"]?.ToString();
+
+            if (string.IsNullOrEmpty(resetToken))
             {
-                var j = JObject.Parse(respStr);
-                return (true, j["message"]?.ToString(), null);
+                Log("VERIFY OTP - ERROR", "resetToken is NULL");
+                return (false, null, "Backend không trả resetToken", null);
             }
-            catch
-            {
-                return (true, respStr, null);
-            }
+
+            Log("VERIFY OTP - RESET TOKEN", resetToken);
+
+            return (true, resetToken, j["message"]?.ToString(), null);
         }
 
+
+
         // Returns: (success, message, error)
-        private async Task<(bool success, string message, string error)> ResetPasswordAsync(string email, string otp, string newPassword)
+        private async Task<(bool success, string message, string error)>
+ResetPasswordAsync(string email, string resetToken, string newPassword)
         {
-            // Send email, otp and newPassword. Backend may ignore otp if VerifyOtp already validated it.
             var payload = new
             {
-                email,
-                otp,
-                newPassword
+                Email = email,
+                Otp = resetToken,                 // ✅ resetToken gán vào Otp
+                NewPassword = newPassword,
+                ConfirmPassword = newPassword     // ✅ để BE pass validation
             };
-            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+
+            var json = JsonConvert.SerializeObject(payload);
+
+            Log("RESET PASSWORD - REQUEST", json);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
             var resp = await _httpClient.PostAsync("reset-password", content);
             var respStr = await resp.Content.ReadAsStringAsync();
 
+            Log("RESET PASSWORD - RESPONSE", respStr);
+
             if (!resp.IsSuccessStatusCode)
             {
                 try
                 {
                     var j = JObject.Parse(respStr);
-                    return (false, j["message"]?.ToString(), j["errors"]?.ToString() ?? resp.ReasonPhrase);
+                    return (false, j["message"]?.ToString(), j["errors"]?.ToString());
                 }
                 catch
                 {
@@ -500,15 +537,18 @@ namespace CodeForge_Desktop.Presentation.Forms
                 }
             }
 
-            try
-            {
-                var j = JObject.Parse(respStr);
-                return (true, j["message"]?.ToString(), null);
-            }
-            catch
-            {
-                return (true, respStr, null);
-            }
+            var jOk = JObject.Parse(respStr);
+            return (true, jOk["message"]?.ToString(), null);
         }
+
+
+        private void Log(string title, string content)
+        {
+            Console.WriteLine("====================================");
+            Console.WriteLine(title);
+            Console.WriteLine(content);
+            Console.WriteLine("====================================");
+        }
+
     }
 }
