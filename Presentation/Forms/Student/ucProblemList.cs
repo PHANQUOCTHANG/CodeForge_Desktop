@@ -51,7 +51,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             {
                 if (_lastHoveredRow >= 0 && _lastHoveredRow < dgvProblemList.Rows.Count)
                 {
-                    dgvProblemList.Rows[_lastHoveredRow].DefaultCellStyle.BackColor = 
+                    dgvProblemList.Rows[_lastHoveredRow].DefaultCellStyle.BackColor =
                         _lastHoveredRow % 2 == 0 ? Color.White : Color.FromArgb(247, 249, 252);
                 }
 
@@ -75,9 +75,9 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
         private void CmbDifficulty_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedDifficulty = cmbDifficulty.SelectedItem?.ToString();
-            
+
             _currentDifficultyFilter = selectedDifficulty ?? "Tất cả";
-            
+
             // Áp dụng cả search và filter
             ApplyCombinedFilters();
         }
@@ -120,13 +120,13 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
                 }
 
                 // Cập nhật summary text
-                string summary = $"📊 Hiển thị {filteredProblems.Count} bài tập";
-                
+                string summary = $"📊 Tổng cộng: {filteredProblems.Count} bài tập";
+
                 if (!string.IsNullOrWhiteSpace(_currentSearchText))
                 {
                     summary += $" (Tìm: '{_currentSearchText}')";
                 }
-                
+
                 if (_currentDifficultyFilter != "Tất cả")
                 {
                     summary += $" (Độ khó: {_currentDifficultyFilter})";
@@ -266,7 +266,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             txtSearch.TextChanged += (s, e) =>
             {
                 string searchText = txtSearch.Text.Trim();
-                
+
                 // Nếu text là placeholder hoặc rỗng
                 if (searchText == PlaceholderText || string.IsNullOrWhiteSpace(searchText))
                 {
@@ -314,7 +314,7 @@ namespace CodeForge_Desktop.Presentation.Forms.Student
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
                 string problemIdStr = dgvProblemList.Rows[e.RowIndex].Cells["colHash"].Value?.ToString();
-                
+
                 if (Guid.TryParse(problemIdStr, out Guid problemId))
                 {
                     ProblemClicked?.Invoke(this, problemId);

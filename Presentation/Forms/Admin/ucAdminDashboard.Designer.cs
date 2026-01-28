@@ -17,8 +17,8 @@
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlMain = new System.Windows.Forms.Panel();
             this.pnlQuickAccess = new System.Windows.Forms.Panel();
             this.tblQuickAccess = new System.Windows.Forms.TableLayoutPanel();
@@ -90,7 +90,7 @@
             this.pnlQuickAccess.Controls.Add(this.tblQuickAccess);
             this.pnlQuickAccess.Controls.Add(this.lblQuickAccessTitle);
             this.pnlQuickAccess.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlQuickAccess.Location = new System.Drawing.Point(20, 590);
+            this.pnlQuickAccess.Location = new System.Drawing.Point(20, 540);
             this.pnlQuickAccess.Name = "pnlQuickAccess";
             this.pnlQuickAccess.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
             this.pnlQuickAccess.Size = new System.Drawing.Size(1160, 150);
@@ -176,7 +176,7 @@
             this.lblQuickAccessTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblQuickAccessTitle.Location = new System.Drawing.Point(5, 20);
             this.lblQuickAccessTitle.Name = "lblQuickAccessTitle";
-            this.lblQuickAccessTitle.Size = new System.Drawing.Size(68, 21);
+            this.lblQuickAccessTitle.Size = new System.Drawing.Size(85, 28);
             this.lblQuickAccessTitle.TabIndex = 0;
             this.lblQuickAccessTitle.Text = "Quản lý";
             // 
@@ -185,7 +185,7 @@
             this.pnlRecentActivity.Controls.Add(this.dgvRecentActivity);
             this.pnlRecentActivity.Controls.Add(this.lblRecentActivityTitle);
             this.pnlRecentActivity.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlRecentActivity.Location = new System.Drawing.Point(20, 250);
+            this.pnlRecentActivity.Location = new System.Drawing.Point(20, 200);
             this.pnlRecentActivity.Name = "pnlRecentActivity";
             this.pnlRecentActivity.Padding = new System.Windows.Forms.Padding(0, 20, 0, 0);
             this.pnlRecentActivity.Size = new System.Drawing.Size(1160, 340);
@@ -199,14 +199,14 @@
             this.dgvRecentActivity.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvRecentActivity.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvRecentActivity.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRecentActivity.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRecentActivity.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvRecentActivity.ColumnHeadersHeight = 40;
             this.dgvRecentActivity.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colIndex,
@@ -214,14 +214,14 @@
             this.colAction,
             this.colDetail,
             this.colTime});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvRecentActivity.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvRecentActivity.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvRecentActivity.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dgvRecentActivity.EnableHeadersVisualStyles = false;
             this.dgvRecentActivity.GridColor = System.Drawing.Color.WhiteSmoke;
@@ -229,6 +229,7 @@
             this.dgvRecentActivity.Name = "dgvRecentActivity";
             this.dgvRecentActivity.ReadOnly = true;
             this.dgvRecentActivity.RowHeadersVisible = false;
+            this.dgvRecentActivity.RowHeadersWidth = 51;
             this.dgvRecentActivity.RowTemplate.Height = 40;
             this.dgvRecentActivity.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvRecentActivity.Size = new System.Drawing.Size(1160, 290);
@@ -237,6 +238,7 @@
             // colIndex
             // 
             this.colIndex.HeaderText = "#";
+            this.colIndex.MinimumWidth = 6;
             this.colIndex.Name = "colIndex";
             this.colIndex.ReadOnly = true;
             this.colIndex.Width = 50;
@@ -244,6 +246,7 @@
             // colUser
             // 
             this.colUser.HeaderText = "User";
+            this.colUser.MinimumWidth = 6;
             this.colUser.Name = "colUser";
             this.colUser.ReadOnly = true;
             this.colUser.Width = 150;
@@ -251,6 +254,7 @@
             // colAction
             // 
             this.colAction.HeaderText = "Hành động";
+            this.colAction.MinimumWidth = 6;
             this.colAction.Name = "colAction";
             this.colAction.ReadOnly = true;
             this.colAction.Width = 150;
@@ -259,12 +263,14 @@
             // 
             this.colDetail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colDetail.HeaderText = "Chi tiết";
+            this.colDetail.MinimumWidth = 6;
             this.colDetail.Name = "colDetail";
             this.colDetail.ReadOnly = true;
             // 
             // colTime
             // 
             this.colTime.HeaderText = "Thời gian";
+            this.colTime.MinimumWidth = 6;
             this.colTime.Name = "colTime";
             this.colTime.ReadOnly = true;
             this.colTime.Width = 150;
@@ -275,7 +281,7 @@
             this.lblRecentActivityTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblRecentActivityTitle.Location = new System.Drawing.Point(5, 20);
             this.lblRecentActivityTitle.Name = "lblRecentActivityTitle";
-            this.lblRecentActivityTitle.Size = new System.Drawing.Size(155, 21);
+            this.lblRecentActivityTitle.Size = new System.Drawing.Size(195, 28);
             this.lblRecentActivityTitle.TabIndex = 0;
             this.lblRecentActivityTitle.Text = "Hoạt động gần đây";
             // 
@@ -284,7 +290,7 @@
             this.pnlStats.Controls.Add(this.tblStats);
             this.pnlStats.Controls.Add(this.lblStatsTitle);
             this.pnlStats.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlStats.Location = new System.Drawing.Point(20, 70);
+            this.pnlStats.Location = new System.Drawing.Point(20, 20);
             this.pnlStats.Name = "pnlStats";
             this.pnlStats.Size = new System.Drawing.Size(1160, 180);
             this.pnlStats.TabIndex = 1;
@@ -338,7 +344,7 @@
             this.lblRateTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblRateTitle.Location = new System.Drawing.Point(20, 100);
             this.lblRateTitle.Name = "lblRateTitle";
-            this.lblRateTitle.Size = new System.Drawing.Size(97, 15);
+            this.lblRateTitle.Size = new System.Drawing.Size(118, 20);
             this.lblRateTitle.TabIndex = 2;
             this.lblRateTitle.Text = "Tỷ lệ hoàn thành";
             // 
@@ -349,7 +355,7 @@
             this.lblRateValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(51)))), ((int)(((byte)(153)))));
             this.lblRateValue.Location = new System.Drawing.Point(15, 55);
             this.lblRateValue.Name = "lblRateValue";
-            this.lblRateValue.Size = new System.Drawing.Size(64, 45);
+            this.lblRateValue.Size = new System.Drawing.Size(81, 54);
             this.lblRateValue.TabIndex = 1;
             this.lblRateValue.Text = "0%";
             // 
@@ -360,7 +366,7 @@
             this.lblIconRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(51)))), ((int)(((byte)(153)))));
             this.lblIconRate.Location = new System.Drawing.Point(20, 15);
             this.lblIconRate.Name = "lblIconRate";
-            this.lblIconRate.Size = new System.Drawing.Size(43, 37);
+            this.lblIconRate.Size = new System.Drawing.Size(64, 46);
             this.lblIconRate.TabIndex = 0;
             this.lblIconRate.Text = "📈";
             // 
@@ -394,7 +400,7 @@
             this.lblSubmissionTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblSubmissionTitle.Location = new System.Drawing.Point(20, 100);
             this.lblSubmissionTitle.Name = "lblSubmissionTitle";
-            this.lblSubmissionTitle.Size = new System.Drawing.Size(123, 15);
+            this.lblSubmissionTitle.Size = new System.Drawing.Size(151, 20);
             this.lblSubmissionTitle.TabIndex = 2;
             this.lblSubmissionTitle.Text = "Submissions hôm nay";
             // 
@@ -405,7 +411,7 @@
             this.lblSubmissionCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
             this.lblSubmissionCount.Location = new System.Drawing.Point(15, 55);
             this.lblSubmissionCount.Name = "lblSubmissionCount";
-            this.lblSubmissionCount.Size = new System.Drawing.Size(38, 45);
+            this.lblSubmissionCount.Size = new System.Drawing.Size(46, 54);
             this.lblSubmissionCount.TabIndex = 1;
             this.lblSubmissionCount.Text = "0";
             // 
@@ -416,7 +422,7 @@
             this.lblIconSubmission.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(152)))), ((int)(((byte)(0)))));
             this.lblIconSubmission.Location = new System.Drawing.Point(20, 15);
             this.lblIconSubmission.Name = "lblIconSubmission";
-            this.lblIconSubmission.Size = new System.Drawing.Size(43, 37);
+            this.lblIconSubmission.Size = new System.Drawing.Size(64, 46);
             this.lblIconSubmission.TabIndex = 0;
             this.lblIconSubmission.Text = "📉";
             // 
@@ -450,7 +456,7 @@
             this.lblAssignmentTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblAssignmentTitle.Location = new System.Drawing.Point(20, 100);
             this.lblAssignmentTitle.Name = "lblAssignmentTitle";
-            this.lblAssignmentTitle.Size = new System.Drawing.Size(91, 15);
+            this.lblAssignmentTitle.Size = new System.Drawing.Size(113, 20);
             this.lblAssignmentTitle.TabIndex = 2;
             this.lblAssignmentTitle.Text = "Tổng số Bài tập";
             // 
@@ -461,7 +467,7 @@
             this.lblAssignmentCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
             this.lblAssignmentCount.Location = new System.Drawing.Point(15, 55);
             this.lblAssignmentCount.Name = "lblAssignmentCount";
-            this.lblAssignmentCount.Size = new System.Drawing.Size(38, 45);
+            this.lblAssignmentCount.Size = new System.Drawing.Size(46, 54);
             this.lblAssignmentCount.TabIndex = 1;
             this.lblAssignmentCount.Text = "0";
             // 
@@ -472,7 +478,7 @@
             this.lblIconAssignment.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
             this.lblIconAssignment.Location = new System.Drawing.Point(20, 15);
             this.lblIconAssignment.Name = "lblIconAssignment";
-            this.lblIconAssignment.Size = new System.Drawing.Size(43, 37);
+            this.lblIconAssignment.Size = new System.Drawing.Size(60, 46);
             this.lblIconAssignment.TabIndex = 0;
             this.lblIconAssignment.Text = "📋";
             // 
@@ -506,7 +512,7 @@
             this.lblUserTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblUserTitle.Location = new System.Drawing.Point(20, 100);
             this.lblUserTitle.Name = "lblUserTitle";
-            this.lblUserTitle.Size = new System.Drawing.Size(83, 15);
+            this.lblUserTitle.Size = new System.Drawing.Size(101, 20);
             this.lblUserTitle.TabIndex = 2;
             this.lblUserTitle.Text = "Tổng số Users";
             // 
@@ -517,7 +523,7 @@
             this.lblUserCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.lblUserCount.Location = new System.Drawing.Point(15, 55);
             this.lblUserCount.Name = "lblUserCount";
-            this.lblUserCount.Size = new System.Drawing.Size(38, 45);
+            this.lblUserCount.Size = new System.Drawing.Size(46, 54);
             this.lblUserCount.TabIndex = 1;
             this.lblUserCount.Text = "0";
             // 
@@ -528,7 +534,7 @@
             this.lblIconUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.lblIconUser.Location = new System.Drawing.Point(20, 15);
             this.lblIconUser.Name = "lblIconUser";
-            this.lblIconUser.Size = new System.Drawing.Size(43, 37);
+            this.lblIconUser.Size = new System.Drawing.Size(67, 46);
             this.lblIconUser.TabIndex = 0;
             this.lblIconUser.Text = "👥";
             // 
@@ -538,7 +544,7 @@
             this.lblStatsTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblStatsTitle.Location = new System.Drawing.Point(5, 0);
             this.lblStatsTitle.Name = "lblStatsTitle";
-            this.lblStatsTitle.Size = new System.Drawing.Size(163, 21);
+            this.lblStatsTitle.Size = new System.Drawing.Size(203, 28);
             this.lblStatsTitle.TabIndex = 0;
             this.lblStatsTitle.Text = "Thống kê tổng quan";
             // 
@@ -549,7 +555,7 @@
             this.lblDashboardTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(33)))), ((int)(((byte)(33)))));
             this.lblDashboardTitle.Location = new System.Drawing.Point(20, 20);
             this.lblDashboardTitle.Name = "lblDashboardTitle";
-            this.lblDashboardTitle.Size = new System.Drawing.Size(248, 37);
+            this.lblDashboardTitle.Size = new System.Drawing.Size(309, 46);
             this.lblDashboardTitle.TabIndex = 0;
             this.lblDashboardTitle.Text = "Admin Dashboard";
             // 
